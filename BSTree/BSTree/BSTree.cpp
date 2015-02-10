@@ -33,6 +33,9 @@ int main() {
 
 	//-- Keep looping until the user enters "exit"
 	while (true) {
+		//-- Display a command prompt-like pointer
+		cout << "BSTree> ";
+
 		//-- Take user input from the console
 		string input;
 		cin >> input;
@@ -42,33 +45,36 @@ int main() {
 
 		//-- Go to the appropriate action the user requested
 		if (input == "search") {
-			cout << "Entered search" << endl;
-			//-- go to search
+			string wordToSearch;
+			cin >> wordToSearch;
+
+			cout << search(tree, wordToSearch);
 		} else if (input == "insert") {
-			cout << "Entered insert" << endl;
-			//-- go to insert
+			string wordToInsert;
+			cin >> wordToInsert;
+
+			cout << insertValue(tree, wordToInsert);
 		} else if (input == "delete") {
-			cout << "Entered delete" << endl;
-			//-- go to delete
+			string wordToDelete;
+			cin >> wordToDelete;
+
+			cout << deleteValue(tree, wordToDelete);
 		} else if (input == "min") {
-			cout << "Entered min" << endl;
-			//-- go to min
+			cout << min(tree);
 		} else if (input == "max") {
-			cout << "Entered max" << endl;
-			//-- go to max
+			cout << max(tree);
 		} else if (input == "next") {
 			string stringToFind;
 			cin >> stringToFind;
-			cout << "Entered next with stringToFind = " << stringToFind << endl;
-			//-- go to next
+
+			cout << next(tree, stringToFind);
 		} else if (input == "prev") {
 			string stringToFind;
 			cin >> stringToFind;
-			cout << "Entered prev with stringToFind = " << stringToFind << endl;
-			//-- go to previous
+
+			cout << previous(tree, stringToFind);
 		} else if (input == "list") {
-			cout << "Entered list" << endl;
-			//-- go to list
+			cout << list(tree);
 		} else if (input == "help") {
 			cout << help();
 		} else if (input == "exit") {
@@ -123,5 +129,54 @@ string list(Tree* tree) {
 
 // Outputs help text to the user, showing a list of available commands
 string help() {
-	return "TODO: Help text.";
+	string helpText = "Available Commands (Case INsensitive)\n=====================================\n";
+
+	//-- insert
+	helpText += "insert <string>: Inserts the string into the tree. If <string> already exists,      ";
+	helpText += "its counter is incremented by 1. <string> and its count is then displayed.";
+	helpText += "\n\n";
+	
+	//-- delete
+	helpText += "delete <string>: Decrements <string>s counter by 1. If <string>'s counter is 0";
+	helpText += "      after decrementing, <string> is removed from the tree. If <string> is not in";
+	helpText += "    the tree,  <string> <-1> is displayed";
+	helpText += "\n\n";
+
+	//-- search
+	helpText += "search <string>: Searches for <string> in the tree. If <string> is in the set,";
+	helpText += "      <string> <nnn> is displayed, where <nnn> is the number of occurrences in the";
+	helpText += "    set. Otherwise <string> <0> is displayed.";
+	helpText += "\n\n";
+	
+	//-- min
+	helpText += "min: Displays <string>, where <string> is the smallest value in the set. If the";
+	helpText += "     set is empty, a blank line is displayed.";
+	helpText += "\n\n";
+
+	//-- max
+	helpText += "max: Displays <string>, where <string> is the largest value in the set. If the";
+	helpText += "      set is empty, a blank line is displayed.";
+	helpText += "\n\n";
+
+	//-- next
+	helpText += "next <string>: If <string> is in the set, the next value in the set is shown. If";
+	helpText += "    <string> is the max, or is not in the set, a blank line is shown.";
+	helpText += "\n\n";
+
+	//-- prev
+	helpText += "prev <string>: If <string> is in the set, the previous value in the set is";
+	helpText += "          shown. If <string> is the min, or is not in the set, a blank line is shown.";
+	helpText += "\n\n";
+
+	//-- list
+	helpText += "list: Outputs all items in the set in order from min to max.";
+	helpText += "\n\n";
+
+	//-- help
+	helpText += "help: Displays this screen";
+	helpText += "\n\n";
+
+	//-- exit
+	helpText += "exit: Exits the program \n";
+	return helpText;
 }
