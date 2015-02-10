@@ -3,9 +3,20 @@
 #include <algorithm>
 using namespace std;
 
+struct Node
+{
+	string key;
+	string value;
+	Node* leftChild;
+	Node* rightChild;
+};
+struct Tree
+{
+	Node* root;
+};
 int main() {
 
-	// keep looping until "exit" is retrieved.
+	// Keep looping until the user enters "exit"
 	while (true) {
 		// Take user input from the console
 		string input;
