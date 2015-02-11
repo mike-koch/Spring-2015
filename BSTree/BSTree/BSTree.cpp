@@ -52,33 +52,42 @@ int main() {
 			cin >> wordToSearch;
 
 			Node* node = search(tree->root, wordToSearch);
-			cout << node->key + " " + to_string(node->numberOfOccurrences);
+			if (node == NULL) {
+				cout << wordToSearch + " " + "0\n";
+			} else {
+				cout << node->key + " " + to_string(node->numberOfOccurrences) << endl;
+			}
 		} else if (input == "insert") {
 			string wordToInsert;
 			cin >> wordToInsert;
 
-			cout << insertValue(tree, wordToInsert);
+			cout << insertValue(tree, wordToInsert) << endl;
 		} else if (input == "delete") {
 			string wordToDelete;
 			cin >> wordToDelete;
 
-			cout << deleteValue(tree, wordToDelete);
+			cout << deleteValue(tree, wordToDelete) << endl;
 		} else if (input == "min") {
-			cout << min(tree->root);
+			Node* minNode = min(tree->root);
+			if (minNode == NULL) {
+				cout << endl;
+			} else {
+				cout << minNode->key + " " + to_string(minNode->numberOfOccurrences) << endl;
+			}
 		} else if (input == "max") {
-			cout << max(tree->root);
+			cout << max(tree->root) << endl;
 		} else if (input == "next") {
 			string stringToFind;
 			cin >> stringToFind;
 
-			cout << next(tree->root, stringToFind);
+			cout << next(tree->root, stringToFind) << endl;
 		} else if (input == "prev") {
 			string stringToFind;
 			cin >> stringToFind;
 
-			cout << previous(tree->root, stringToFind);
+			cout << previous(tree->root, stringToFind) << endl;
 		} else if (input == "list") {
-			cout << list(tree->root);
+			cout << list(tree->root) << endl;
 		} else if (input == "help") {
 			cout << help();
 		} else if (input == "exit") {
@@ -169,11 +178,20 @@ string deleteValue(Tree* tree, string key) {
 
 	if (nodeToDelete != NULL) {
 		if (nodeToDelete->numberOfOccurrences == 1) {
-			// 2. If the counter is currently at one, actually delete the node.
+			// Keep the key for output after the node has been deleted
+			string key = nodeToDelete->key;
 
+			// 2. If the counter is currently at one, actually delete the node.
+			deleteNode(tree, nodeToDelete);
+			
+			// Delete the node from memory
+			delete nodeToDelete;
+
+			return key + " " + "0";
 		} else {
 			// 3. Otherwise, just decrement the counter
 			nodeToDelete->numberOfOccurrences--;
+			return nodeToDelete->key + " " + to_string(nodeToDelete->numberOfOccurrences);
 		}
 	}
 	// 4. The node does not exist
@@ -225,7 +243,7 @@ void transplant(Tree* tree, Node* nodeOne, Node* nodeTwo) {
 
 // Returns the node with the smallest value (ex. a < z)
 Node* min(Node* node) {
-	while (node->leftChild != NULL) {
+	while (node != NULL && node->leftChild != NULL) {
 		node = node->leftChild;
 	}
 	return node;
@@ -233,8 +251,12 @@ Node* min(Node* node) {
 
 // Outputs the text with the largest value (ex z > a)
 string max(Node* node) {
-	while (node->rightChild != NULL) {
+	while (node != NULL && node->rightChild != NULL) {
 		node = node->rightChild;
+	}
+
+	if (node == NULL) {
+		return "";
 	}
 	return node->key + " " + to_string(node->numberOfOccurrences);
 }
@@ -275,14 +297,13 @@ string list(Node* node) {
 	//    1. Call this function on the left child if it's not null. (recursive call)
 	//    2. Output the current node.
 	//    3. Call this function on the right child if it's not null. (recursive call)
+	if (node == NULL) {
+		return "";
+	}
 	string output;
-	if (node->leftChild != NULL) {
-		output += list(node->leftChild);
-	}
+	output += list(node->leftChild);
 	output += node->key + " ";
-	if (node->rightChild != NULL) {
-		output += list(node->rightChild);
-	}
+	output += list(node->rightChild);
 	return output;
 }
 
