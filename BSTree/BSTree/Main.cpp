@@ -84,7 +84,7 @@ string help() {
 	helpText += "\n\n";
 
 	//-- delete
-	helpText += "delete <string>: Decrements <string>s counter by 1. If <string>'s counter is 0";
+	helpText += "delete <string>: Decrements <string>'s counter by 1. If <string>'s counter is 0";
 	helpText += "      after decrementing, <string> is removed from the tree. If <string> is not in";
 	helpText += "    the tree,  <string> <-1> is displayed";
 	helpText += "\n\n";
