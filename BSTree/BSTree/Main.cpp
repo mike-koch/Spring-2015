@@ -97,22 +97,22 @@ string help() {
 
 	//-- min
 	helpText += "min: Displays <string>, where <string> is the smallest value in the set. If the";
-	helpText += "     set is empty, a blank line is displayed.";
+	helpText += "     set is empty, there is no output.";
 	helpText += "\n\n";
 
 	//-- max
 	helpText += "max: Displays <string>, where <string> is the largest value in the set. If the";
-	helpText += "      set is empty, a blank line is displayed.";
+	helpText += "      set is empty, there is no output.";
 	helpText += "\n\n";
 
 	//-- next
 	helpText += "next <string>: If <string> is in the set, the next value in the set is shown. If";
-	helpText += "    <string> is the max, or is not in the set, a blank line is shown.";
+	helpText += "    <string> is the max, or is not in the set, there is no output.";
 	helpText += "\n\n";
 
 	//-- prev
 	helpText += "prev <string>: If <string> is in the set, the previous value in the set is";
-	helpText += "          shown. If <string> is the min, or is not in the set, a blank line is shown.";
+	helpText += "          shown. If <string> is the min, or is not in the set, there is no output.";
 	helpText += "\n\n";
 
 	//-- list
