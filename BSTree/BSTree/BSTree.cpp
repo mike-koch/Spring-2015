@@ -10,9 +10,11 @@ void BSTree::searchForValue(string key) {
 	Node* searchedNode = search(root, key);
 
 	if (searchedNode == NULL) {
+		//-- If the key does not exist in the tree, output the key and "0"
 		outputNodeInformation(key, "0");
 	}
 	else {
+		//-- Otherwise, output the key and the number of times it is in the tree
 		outputNodeInformation(key, to_string(searchedNode->numberOfOccurrences));
 	}
 }
@@ -75,38 +77,51 @@ void BSTree::deleteValue(string key) {
 }
 
 void BSTree::findMin() {
+	//-- Get the lowest value based on the root
 	Node* minNode = min(root);
 
 	if (minNode != NULL) {
+		//-- If there is at least one node, we'll output the key and the number of occurrences in the tree.
+		//   Otherwise, nothing will be outputted to the console.
 		outputNodeInformation(minNode->key, to_string(minNode->numberOfOccurrences));
 	}
 }
 
 void BSTree::findMax() {
+	//-- Get the largest value, starting at the root.
 	Node* maxNode = max(root);
 
 	if (maxNode != NULL) {
+		//-- If there is at least one node, we'll output the key and the number of occurrences in the tree.
+		//   Otherwise, nothing will be outputted to the console.
 		outputNodeInformation(maxNode->key, to_string(maxNode->numberOfOccurrences));
 	}
 }
 
 void BSTree::findNext(string key) {
+	//-- Gets the node immediately after the key entered.
 	Node* nextNode = next(root, key);
 
 	if (nextNode != NULL) {
+		//-- If there is a successor, we'll output the key and the number of occurrences in the tree.
+		//   Otherwise, nothing will be outputted to the console.
 		outputNodeInformation(nextNode->key);
 	}
 }
 
 void BSTree::findPrevious(string key) {
+	//-- Gets the node immediately before the one with the key entered.
 	Node* previousNode = previous(root, key);
 
 	if (previousNode != NULL) {
+		//-- If there is a predecessor, we'll output the key and the number of occurrences in the tree.
+		//   Otherwise, nothing will be outputted to the console.
 		outputNodeInformation(previousNode->key);
 	}
 }
 
 void BSTree::listTree() {
+	//-- This function simply calls a private function to output the contents of the tree, starting at the root. Nothing fancy here.
 	list(root);
 }
 
@@ -199,6 +214,7 @@ void BSTree::transplant(Node* nodeOne, Node* nodeTwo) {
 
 // Returns the node with the smallest value (ex. a < z)
 Node* BSTree::min(Node* node) {
+	//-- By taking each left child until we reach the end, we will reach the minimum value relative to the node passed in.
 	while (node != NULL && node->leftChild != NULL) {
 		node = node->leftChild;
 	}
@@ -208,6 +224,7 @@ Node* BSTree::min(Node* node) {
 
 // Outputs the text with the largest value (ex z > a)
 Node* BSTree::max(Node* node) {
+	//-- By taking each right child, we will find the max node relative to the node passed in.
 	while (node != NULL && node->rightChild != NULL) {
 		node = node->rightChild;
 	}
@@ -271,5 +288,7 @@ void BSTree::list(Node* node) {
 }
 
 void BSTree::outputNodeInformation(string key, string value) {
+	//-- Outputs in the form: <key> <number of occurrences>. If value is ommitted, only <key> is displayed to the console.
+	//   Each output is followed by a new line.
 	cout << key + " " + value << endl;
 }
