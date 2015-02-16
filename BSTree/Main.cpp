@@ -12,11 +12,14 @@ int main() {
 	//-- Keep looping until the user enters "exit"
 	while (true) {
 		//-- Take user input from the console
-		string input;
-		cin >> input;
+		string originalInput;
+		cin >> originalInput;
 
-		//-- The transform method will convert the input string to all lowercase, making it easier to evaluate.
-		transform(input.begin(), input.end(), input.begin(), tolower);
+		string input = "";
+		for (int i = 0; i < originalInput.length(); i++) {
+			char characterToAdd = tolower(originalInput[i]);
+			input += characterToAdd;
+		}
 
 		//-- Go to the appropriate action the user requested
 		if (input == "search") {
