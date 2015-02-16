@@ -84,6 +84,8 @@ void BSTree::findMin() {
 		//-- If there is at least one node, we'll output the key and the number of occurrences in the tree.
 		//   Otherwise, nothing will be outputted to the console.
 		outputNodeInformation(minNode->key, to_string(minNode->numberOfOccurrences));
+	} else {
+		cout << endl;
 	}
 }
 
@@ -95,6 +97,8 @@ void BSTree::findMax() {
 		//-- If there is at least one node, we'll output the key and the number of occurrences in the tree.
 		//   Otherwise, nothing will be outputted to the console.
 		outputNodeInformation(maxNode->key, to_string(maxNode->numberOfOccurrences));
+	} else {
+		cout << endl;
 	}
 }
 
@@ -102,10 +106,12 @@ void BSTree::findNext(string key) {
 	//-- Gets the node immediately after the key entered.
 	Node* nextNode = next(root, key);
 
-	if (nextNode != NULL) {
+	if (nextNode != NULL && nextNode->key != key) {
 		//-- If there is a successor, we'll output the key and the number of occurrences in the tree.
 		//   Otherwise, nothing will be outputted to the console.
 		outputNodeInformation(nextNode->key);
+	} else {
+		cout << endl;
 	}
 }
 
@@ -113,10 +119,12 @@ void BSTree::findPrevious(string key) {
 	//-- Gets the node immediately before the one with the key entered.
 	Node* previousNode = previous(root, key);
 
-	if (previousNode != NULL) {
+	if (previousNode != NULL && previousNode->key != key) {
 		//-- If there is a predecessor, we'll output the key and the number of occurrences in the tree.
 		//   Otherwise, nothing will be outputted to the console.
 		outputNodeInformation(previousNode->key);
+	} else {
+		cout << endl;
 	}
 }
 
@@ -262,7 +270,7 @@ Node* BSTree::previous(Node* node, string key) {
 		return NULL;
 	}
 	if (node->leftChild != NULL) {
-		return next(node->leftChild, key);
+		return previous(node->leftChild, key);
 	}
 	Node* predecessor = node->parent;
 	while (predecessor != NULL && node->parent == predecessor->leftChild) {

@@ -11,9 +11,6 @@ int main() {
 	BSTree* tree = new BSTree();
 	//-- Keep looping until the user enters "exit"
 	while (true) {
-		//-- Display a command prompt-like pointer
-		cout << "BSTree> ";
-
 		//-- Take user input from the console
 		string input;
 		cin >> input;
@@ -27,47 +24,37 @@ int main() {
 			cin >> wordToSearch;
 
 			tree->searchForValue(wordToSearch);
-		}
-		else if (input == "insert") {
+		} else if (input == "insert") {
 			string wordToInsert;
 			cin >> wordToInsert;
 
 			tree->insertValue(wordToInsert);
-		}
-		else if (input == "delete") {
+		} else if (input == "delete") {
 			string wordToDelete;
 			cin >> wordToDelete;
 
 			tree->deleteValue(wordToDelete);
-		}
-		else if (input == "min") {
+		} else if (input == "min") {
 			tree->findMin();
-		}
-		else if (input == "max") {
+		} else if (input == "max") {
 			tree->findMax();
-		}
-		else if (input == "next") {
+		} else if (input == "next") {
 			string stringToFind;
 			cin >> stringToFind;
 			tree->findNext(stringToFind);
-		}
-		else if (input == "prev") {
+		} else if (input == "prev") {
 			string stringToFind;
 			cin >> stringToFind;
 
 			tree->findPrevious(stringToFind);
-		}
-		else if (input == "list") {
+		} else if (input == "list") {
 			tree->listTree();
-		}
-		else if (input == "help") {
+		} else if (input == "help") {
 			cout << help();
-		}
-		else if (input == "exit") {
+		} else if (input == "exit") {
 			//-- Exit the application
 			return 0;
-		}
-		else {
+		} else {
 			//-- User entered invalid input. Notify the user that their input was invalid and have them prompt again.
 			cout << "The input '" + input + "' is invalid. Enter 'help' for a list of commands." << endl;
 		}
@@ -79,40 +66,36 @@ string help() {
 	string helpText = "Available Commands (Case INsensitive)\n=====================================\n";
 
 	//-- insert
-	helpText += "insert <string>: Inserts the string into the tree. If <string> already exists,      ";
-	helpText += "its counter is incremented by 1. <string> and its count is then displayed.";
+	helpText += "insert <string>: Inserts the string into the tree. If <string> already exists, its counter is incremented by 1. <string> and ";
+	helpText += "its count is then displayed.";
 	helpText += "\n\n";
 
 	//-- delete
-	helpText += "delete <string>: Decrements <string>'s counter by 1. If <string>'s counter is 0";
-	helpText += "      after decrementing, <string> is removed from the tree. If <string> is not in";
-	helpText += "    the tree,  <string> <-1> is displayed";
+	helpText += "delete <string>: Decrements <string>'s counter by 1. If <string>'s counter is 0 after decrementing, <string> is removed from ";
+	helpText += "the tree.If <string> is not in the tree, <string> <-1> is displayed";
 	helpText += "\n\n";
 
 	//-- search
-	helpText += "search <string>: Searches for <string> in the tree. If <string> is in the set,";
-	helpText += "      <string> <nnn> is displayed, where <nnn> is the number of occurrences in the";
-	helpText += "    set. Otherwise <string> <0> is displayed.";
+	helpText += "search <string>: Searches for <string> in the tree. If <string> is in the set, <string> <nnn> is displayed, where <nnn> is ";
+	helpText += "the number of occurrences in the set.Otherwise <string> <0> is displayed.";
 	helpText += "\n\n";
 
 	//-- min
-	helpText += "min: Displays <string>, where <string> is the smallest value in the set. If the";
-	helpText += "     set is empty, there is no output.";
+	helpText += "min: Displays <string>, where <string> is the smallest value in the set. If the set is empty, a blank line is displayed.";
 	helpText += "\n\n";
 
 	//-- max
-	helpText += "max: Displays <string>, where <string> is the largest value in the set. If the";
-	helpText += "      set is empty, there is no output.";
+	helpText += "max: Displays <string>, where <string> is the largest value in the set. If the set is empty, a blank line is displayed.";
 	helpText += "\n\n";
 
 	//-- next
-	helpText += "next <string>: If <string> is in the set, the next value in the set is shown. If";
-	helpText += "    <string> is the max, or is not in the set, there is no output.";
+	helpText += "next <string>: If <string> is in the set, the next value in the set is shown. If <string> is the max, or is not in the set, ";
+	helpText += "a blank line is displayed.";
 	helpText += "\n\n";
 
 	//-- prev
-	helpText += "prev <string>: If <string> is in the set, the previous value in the set is";
-	helpText += "          shown. If <string> is the min, or is not in the set, there is no output.";
+	helpText += "prev <string>: If <string> is in the set, the previous value in the set is shown. If <string> is the min, or is not in the ";
+	helpText += "set, a blank line is displayed.";
 	helpText += "\n\n";
 
 	//-- list
