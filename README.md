@@ -1,5 +1,5 @@
-# BSTree - A Binary Search Tree Implementation
-BSTree is a simple "dictionary" application. Below are the supported features.
+# Binary Search Tree
+"Binary Search Tree" is a simple "dictionary" application. Below are the supported features.
 
 ## Supported Features
 This list has been taken directly from the application's "help" screen. `<string>` indicates the string entered / found, and `<nnn>` indicates its count.
