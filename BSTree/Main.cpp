@@ -1,3 +1,7 @@
+// Binary Search Tree Implementation
+// Mike Koch - EECS 2510
+// Main.cpp - Parses input and displays help text
+
 #include <algorithm>
 #include <iostream>
 #include <string>

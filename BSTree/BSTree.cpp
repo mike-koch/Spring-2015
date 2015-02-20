@@ -1,3 +1,7 @@
+// Binary Search Tree Implementation
+// Mike Koch - EECS 2510
+// BSTree.cpp - The binary search tree class implementation that holds all required methods to use the tree adequately.
+
 #include <iostream>
 #include <string>
 #include <algorithm>

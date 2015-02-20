@@ -1,3 +1,7 @@
+// Binary Search Tree Implementation
+// Mike Koch - EECS 2510
+// BSTree.h - Interface for the BSTree class and Node struct. Contains all private and public methods that BSTree needs.
+
 #include <string>
 using namespace std;
 
