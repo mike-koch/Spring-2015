@@ -1,3 +1,6 @@
+# Visual Studio's IntelliSense SDF database
+*.sdf
+
 # Compiled Object files
 *.slo
 *.lo
