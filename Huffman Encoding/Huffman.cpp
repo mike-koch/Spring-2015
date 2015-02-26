@@ -140,7 +140,7 @@ void Huffman::buildEncodingArray(string encodingArray[256], Node* startingNode, 
 	//   mark the encoding string for it's ASCII character.
 
 	// check if we're at a leaf node (no left/right children). If so, set the array's encoded value
-	/*if (startingNode->leftChild == NULL && startingNode->rightChild == NULL) {
+	if (startingNode->leftChild == NULL && startingNode->rightChild == NULL) {
 		encodingArray[(unsigned char)startingNode->key] = encodedValue;
 	}
 	
@@ -153,16 +153,6 @@ void Huffman::buildEncodingArray(string encodingArray[256], Node* startingNode, 
 	if (startingNode->rightChild != NULL) {
 		//-- Now go right, adding a 1 to the encodedValue
 		buildEncodingArray(encodingArray, startingNode->rightChild, encodedValue += "1");
-	}*/
-	string throwawayArray[256];
-
-	if (startingNode == NULL) {
-		stackCount--;
-		return;
 	}
-
-	buildEncodingArray(throwawayArray, startingNode->leftChild, "");
-	cout << to_string(startingNode->key) + to_string(startingNode->weight) << endl;
-	buildEncodingArray(throwawayArray, startingNode->rightChild, "");
 }
 
