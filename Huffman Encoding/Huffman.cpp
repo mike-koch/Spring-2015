@@ -29,6 +29,9 @@ void Huffman::initializeFromFile(string fileName) {
 	//-- Process the input file with the array
 	processFile(inputFile);
 
+	//-- The input file can now be closed.
+	inputFile.close();
+
 	//-- Build the huffman tree
 	buildTree();
 }
@@ -42,7 +45,13 @@ void Huffman::encodeFile(string inFile, string outFile) {
 	//-- First, build an array of ASCII character to encoding string that we can use to encode our file.
 	string encodingArray[256];
 	buildEncodingArray(encodingArray, root, "");
-	string throwaway = "debugging...";
+	
+	//-- Using the encoding strings, encode the file.
+
+	// build a string containing all of the bits that will be processed
+	string outputBits = getOutputBits(inFile, encodingArray);
+	// save the file
+	saveFile(outputBits, outFile);
 }
 
 /*
@@ -149,7 +158,11 @@ void Huffman::buildEncodingArray(string encodingArray[256], Node* startingNode, 
 		//-- Now go left, adding a 0 to the encodedValue
 		buildEncodingArray(encodingArray, startingNode->leftChild, encodedValue += "0");
 	}
-	// we know that this isn't a leaf node, since that was checked earlier. So there's nothing to do with this node. Just go to the right now.
+
+	// Remove the last character added to the encodedValue string since we're no longer at the left child's subtree any more.
+	encodedValue = encodedValue.substr(0, encodedValue.length() - 1);
+
+	// Move to the right node
 	if (startingNode->rightChild != NULL) {
 		//-- Now go right, adding a 1 to the encodedValue
 		buildEncodingArray(encodingArray, startingNode->rightChild, encodedValue += "1");

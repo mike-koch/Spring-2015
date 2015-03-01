@@ -20,4 +20,5 @@ private:
 	int min(int exclusionIndex = INT_MAX);
 	bool treeIsBuilt();
 	void buildEncodingArray(string encodingArray[256], Node* startingNode, string encodedValue);
+	void saveFile(string outputBits, string outFile);
 };
