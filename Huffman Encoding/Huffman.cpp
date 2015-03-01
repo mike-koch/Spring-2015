@@ -8,6 +8,7 @@ using namespace std;
 
 Node* nodeArray[256];
 Node* root;
+string encodingArray[256];
 //-- PUBLIC methods
 
 // Builds a Huffman tree based on each byte processed. Each byte will be one of the ASCII characters with an int value of 0-255.
@@ -43,7 +44,6 @@ void Huffman::initializeFromFile(string fileName) {
 */
 void Huffman::encodeFile(string inFile, string outFile) {
 	//-- First, build an array of ASCII character to encoding string that we can use to encode our file.
-	string encodingArray[256];
 	buildEncodingArray(encodingArray, root, "");
 	
 	//-- Using the encoding strings, encode the file.
@@ -142,15 +142,14 @@ bool Huffman::treeIsBuilt() {
 	return true;
 }
 
-int stackCount = 0;
 void Huffman::buildEncodingArray(string encodingArray[256], Node* startingNode, string encodedValue) {
-	stackCount++;
 	//-- Perform an in-order traversal of the tree, keeping track of each branch taken (0 = left, 1 = right). Once we find a leaf node,
 	//   mark the encoding string for it's ASCII character.
 
 	// check if we're at a leaf node (no left/right children). If so, set the array's encoded value
 	if (startingNode->leftChild == NULL && startingNode->rightChild == NULL) {
 		encodingArray[(unsigned char)startingNode->key] = encodedValue;
+		
 	}
 	
 	// start by going left, only if not null.
@@ -169,3 +168,98 @@ void Huffman::buildEncodingArray(string encodingArray[256], Node* startingNode, 
 	}
 }
 
+string Huffman::getOutputBits(string inFile, string encodingArray[256]) {
+	string outputBits;
+	//loop through each character, getting its encoded value and appending it to the outputBits string
+	ifstream inputStream;
+	inputStream.open(inFile, ios::binary);
+	if (inputStream.fail()) {
+		cout << "ERROR: The file could not be opened. Check that the path exists and try again. Press ENTER to exit." << endl;
+		char waitChar;
+		cin.get(waitChar);
+		exit(1);
+	}
+
+	while (!inputStream.eof()) {
+		// get the encoded value and append it to outputBits
+		char symbol;
+		inputStream.get(symbol);
+		outputBits += encodingArray[(unsigned char)symbol];
+	}
+
+
+	return outputBits;
+}
+
+void Huffman::saveFile(string outputBits, string outFile) {
+	// Loop through the ouputBits, grabbing the next 8 at a time and appending it to the output stream.
+	int currentIndex = 0;
+	ofstream outputStream;
+	outputStream.open(outFile, ios::binary);
+	if (outputStream.fail()) {
+		cout << "ERROR: Could not open the output file for writing. Ensure that you have permission" <<
+			" to save the file in this location and try again. Press ENTER to exit.";
+		char waitChar;
+		cin.get(waitChar);
+		exit(1);
+	}
+	for (unsigned int i = 0; i < outputBits.length(); i += 8) {
+		outputStream.put(getNextByte(outputBits, i));
+	}
+	outputStream.close();
+	cout << "FINISHED ENCODING";
+}
+
+unsigned char Huffman::getNextByte(string& outputBits, int startingIndex) {
+	int nextBits[8];
+	int arrayIndex = 0;
+	bool needToPad = false;
+	unsigned int numberOfBitsToPad = 0;
+
+	//-- Get (what will become) the next 8 bits in an int array
+	//  1. Are there less than 8 bits left in the string? If yes, only loop to the max
+	unsigned int loopEnd = startingIndex + 8;
+	if (loopEnd > outputBits.length()) {
+		loopEnd = outputBits.length();
+		needToPad = true;
+		numberOfBitsToPad = loopEnd - outputBits.length();
+	}
+
+	for (unsigned int i = startingIndex; i < loopEnd; i++) {
+		nextBits[arrayIndex] = outputBits[i] == '0' 
+			? 0 
+			: 1;
+		arrayIndex++;
+	}
+
+	//-- If all 8 indexes aren't filled, we will need to pad them. Loop through the encoding array and find an encoding string that is
+	//   at least 1 bit longer than the number of bits we need to pad.
+	if (needToPad) {
+		string bitsToAdd;
+		int startingPadIndex = 7 - numberOfBitsToPad;
+		//-- find an encoding value that is larger than X, and then get the first X number of bits in its sequence, where X is numberOfBitsToPad
+		for (int i = 0; i < 256; i++) {
+			if (encodingArray[i].length() > numberOfBitsToPad) {
+				bitsToAdd = encodingArray[i].substr(0, numberOfBitsToPad);
+				break;
+			}
+		}
+		int bitsToAddIndex = 0;
+		for (int i = startingIndex; i < 8; i++) {
+			nextBits[i] = bitsToAdd[bitsToAddIndex];
+			bitsToAddIndex++;
+		}
+	}
+	
+
+	//-- Set the bits in the char to return
+	char byte = 0;
+	for (int i = 0; i < 8; i++) {
+		if (nextBits[i]) {
+			byte |= (1 << (7 - i));
+		}
+	}
+
+	return (unsigned char)byte;
+}
+}
