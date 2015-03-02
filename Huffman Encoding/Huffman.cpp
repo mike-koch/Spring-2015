@@ -55,10 +55,34 @@ void Huffman::encodeFile(string inFile, string outFile) {
 }
 
 /*
-   Summary: takes the contents of the "inFile" and stores the decoded result in the "outFiel". Function also outputs in / out byte counts, as well as elapsed time.
+   Summary: takes the contents of the "inFile" and stores the decoded result in the "outFile". Function also outputs in / out byte counts, as well as elapsed time.
    Requires: initializeFromFile must have been ran before encoding; otherwise there is no tree to use as the key!
 */
 void Huffman::decodeFile(string inFile, string outFile) {
+	ifstream inputStream;
+	inputStream.open(inFile, ios::binary);
+	if (inputStream.fail()) {
+		cout << "ERROR: Could not open the file for decoding. Ensure the file path is correct and try again. Press ENTER to exit.";
+		char waitChar;
+		cin.get(waitChar);
+		exit(1);
+	}
+	// take each byte and build the entire bit string.
+	string bitString;
+	while (!inputStream.eof()) {
+		char symbol;
+		inputStream.get(symbol);
+		//convert to binary
+		string* binaryValue = getBinaryValueForChar((unsigned char)symbol);
+		//append to bit string
+		bitString += *binaryValue;
+	}
+
+	// Now that we have the bit string, go through and find each letter that cooresponds to the bit values. Output to the output stream
+	ofstream outputStream;
+	outputStream.open(outFile, ios::binary);
+	decodeBitString(outputStream, bitString);
+	outputStream.close();
 }
 
 //-- PRIVATE functions
@@ -220,9 +244,9 @@ unsigned char Huffman::getNextByte(string& outputBits, int startingIndex) {
 	//  1. Are there less than 8 bits left in the string? If yes, only loop to the max
 	unsigned int loopEnd = startingIndex + 8;
 	if (loopEnd > outputBits.length()) {
-		loopEnd = outputBits.length();
 		needToPad = true;
 		numberOfBitsToPad = loopEnd - outputBits.length();
+		loopEnd = outputBits.length();
 	}
 
 	for (unsigned int i = startingIndex; i < loopEnd; i++) {
@@ -236,7 +260,7 @@ unsigned char Huffman::getNextByte(string& outputBits, int startingIndex) {
 	//   at least 1 bit longer than the number of bits we need to pad.
 	if (needToPad) {
 		string bitsToAdd;
-		int startingPadIndex = 7 - numberOfBitsToPad;
+		int startingPadIndex = 8 - numberOfBitsToPad;
 		//-- find an encoding value that is larger than X, and then get the first X number of bits in its sequence, where X is numberOfBitsToPad
 		for (int i = 0; i < 256; i++) {
 			if (encodingArray[i].length() > numberOfBitsToPad) {
@@ -245,8 +269,10 @@ unsigned char Huffman::getNextByte(string& outputBits, int startingIndex) {
 			}
 		}
 		int bitsToAddIndex = 0;
-		for (int i = startingIndex; i < 8; i++) {
-			nextBits[i] = bitsToAdd[bitsToAddIndex];
+		for (int i = startingPadIndex; i < 8; i++) {
+			nextBits[i] = bitsToAdd[bitsToAddIndex] == '0'
+				? 0
+				: 1;
 			bitsToAddIndex++;
 		}
 	}
@@ -262,4 +288,43 @@ unsigned char Huffman::getNextByte(string& outputBits, int startingIndex) {
 
 	return (unsigned char)byte;
 }
+
+string* Huffman::getBinaryValueForChar(unsigned char theChar) {
+	string* bitString = new string();
+	unsigned char dividedChar = theChar;
+	int values[8];
+	for (int i = 0; i < 8; i++) {
+		values[i] = 0;
+	}
+	int index = 0;
+	while (true) {
+		int quotient = (dividedChar / 2);
+		values[index] = (dividedChar % 2);
+		if (quotient == 0) {
+			// we're done dividing. loop through the array in reverse to get the string representation of the binary bits.
+			for (int i = 7; i > -1; i--) {
+				bitString->append(to_string(values[i]));
+			}
+			return bitString;
+		}
+		index++;
+		dividedChar = quotient;
+	}
+}
+
+void Huffman::decodeBitString(ofstream& outputStream, string& bitString) {
+	Node* currentNode = root;
+	for (unsigned int i = 0; i < bitString.length(); i++) {
+		//-- Go to this node's left or right child, depending if the number at the current string position is a 0 or 1.
+		if (bitString[i] == '0') {
+			currentNode = currentNode->leftChild;
+		} else {
+			currentNode = currentNode->rightChild;
+		}
+		if (currentNode->leftChild == NULL && currentNode->rightChild == NULL) {
+			//-- We hit a leaf node, and subsequently, a character. Output this character to the output stream and go back to the root
+			outputStream.put(currentNode->key);
+			currentNode = root;
+		}
+	}
 }

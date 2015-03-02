@@ -20,5 +20,9 @@ private:
 	int min(int exclusionIndex = INT_MAX);
 	bool treeIsBuilt();
 	void buildEncodingArray(string encodingArray[256], Node* startingNode, string encodedValue);
+	string getOutputBits(string inFile, string encodingArray[256]);
 	void saveFile(string outputBits, string outFile);
+	unsigned char getNextByte(string& outputBits, int startingIndex);
+	string* getBinaryValueForChar(unsigned char theChar);
+	void decodeBitString(ofstream& outputStream, string& bitString);
 };
