@@ -19,7 +19,7 @@ void Huffman::initializeFromFile(string fileName) {
 
 	if (inputFile.fail()) {
 		char waitChar;
-		cout << "ERROR: The file could not be opened. Check that the path exists and try again. Press ENTER to exit.";
+		cout << "ERROR: The file \"" + fileName + "\" could not be opened. Check that the path exists and try again. Press ENTER to exit.";
 		cin.get(waitChar);
 		exit(1);
 	}
@@ -69,9 +69,12 @@ void Huffman::decodeFile(string inFile, string outFile) {
 	}
 	// take each byte and build the entire bit string.
 	string bitString;
-	while (!inputStream.eof()) {
+	while (true) {
 		char symbol;
 		inputStream.get(symbol);
+		if (inputStream.eof()) {
+			break;
+		}
 		//convert to binary
 		string* binaryValue = getBinaryValueForChar((unsigned char)symbol);
 		//append to bit string
@@ -97,9 +100,12 @@ void Huffman::initializeNodeArray() {
 
 void Huffman::processFile(ifstream& inputFile) {
 	//-- Process each symbol, by incrementing the node's count.
-	while (!inputFile.eof()) {
+	while (true) {
 		char symbol;
 		inputFile.get(symbol);
+		if (inputFile.eof()) {
+			break;
+		}
 		nodeArray[(unsigned char)symbol]->weight++;
 	}
 }
@@ -204,10 +210,13 @@ string Huffman::getOutputBits(string inFile, string encodingArray[256]) {
 		exit(1);
 	}
 
-	while (!inputStream.eof()) {
+	while (true) {
 		// get the encoded value and append it to outputBits
 		char symbol;
 		inputStream.get(symbol);
+		if (inputStream.eof()) {
+			break;
+		}
 		outputBits += encodingArray[(unsigned char)symbol];
 	}
 
