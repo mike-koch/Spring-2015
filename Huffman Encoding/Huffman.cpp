@@ -1,4 +1,5 @@
 #include <string>
+#include <ctime>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -9,17 +10,24 @@ using namespace std;
 Node* nodeArray[256];
 Node* root;
 string encodingArray[256];
+int inputFileSize;
+bool initializeFromFileHasBeenRan = false;
 //-- PUBLIC methods
 
 // Builds a Huffman tree based on each byte processed. Each byte will be one of the ASCII characters with an int value of 0-255.
 void Huffman::initializeFromFile(string fileName) {
+	initializeFromFileHasBeenRan = true;
+	//-- Start a timer so we can calculate how long the operation takes
+	time_t startTime = time(NULL);
+	cout << "INITIALIZING FILE" << endl << "------------------------" << endl;
+
 	// Obtain the file from the filepath
 	ifstream inputFile;
 	inputFile.open(fileName, ios::binary);
 
 	if (inputFile.fail()) {
 		char waitChar;
-		cout << "ERROR: The file \"" + fileName + "\" could not be opened. Check that the path exists and try again. Press ENTER to exit.";
+		cout << "ERROR: The file \"" + fileName + "\" could not be opened. Check that the path exists and try again. Press ENTER to exit." << endl;
 		cin.get(waitChar);
 		exit(1);
 	}
@@ -35,6 +43,10 @@ void Huffman::initializeFromFile(string fileName) {
 
 	//-- Build the huffman tree
 	buildTree();
+
+	//-- Initialization complete. Print out the elapsed time
+	time_t finishedTime = time(NULL);
+	cout << "File initialization finished. Total time to complete: " << (finishedTime-startTime) << " seconds" << "\n\n";
 }
 
 /*
@@ -43,15 +55,27 @@ void Huffman::initializeFromFile(string fileName) {
    Requires: initializeFromFile must have been ran before encoding; otherwise there is no tree to use as the key!
 */
 void Huffman::encodeFile(string inFile, string outFile) {
+	if (!initializeFromFileHasBeenRan) {
+		cout << "ERROR: You cannot run encodeFile until initializeFromFile has been ran! Press ENTER to exit." << endl;
+		char waitChar;
+		cin.get(waitChar);
+		exit(2);
+	}
+	cout << "ENCODING FILE" << endl << "------------------------" << endl;
+	time_t startTime = time(NULL);
 	//-- First, build an array of ASCII character to encoding string that we can use to encode our file.
 	buildEncodingArray(encodingArray, root, "");
 	
-	//-- Using the encoding strings, encode the file.
-
 	// build a string containing all of the bits that will be processed
 	string outputBits = getOutputBits(inFile, encodingArray);
 	// save the file
-	saveFile(outputBits, outFile);
+	int outputFileSize = saveFile(outputBits, outFile);
+	time_t endTime = time(NULL);
+	cout << "Encoding complete." << endl;
+	cout << "Time elapsed: " << endTime - startTime << " seconds\n";
+	cout << "Original Filesize: " << inputFileSize << " bytes" << endl;
+	cout << "Encoded Filesize: " << outputFileSize << " bytes" << endl;
+	cout << "Compression Ratio: " << (double)outputFileSize * 100 / inputFileSize << "%\n\n";
 }
 
 /*
@@ -59,6 +83,14 @@ void Huffman::encodeFile(string inFile, string outFile) {
    Requires: initializeFromFile must have been ran before encoding; otherwise there is no tree to use as the key!
 */
 void Huffman::decodeFile(string inFile, string outFile) {
+	if (!initializeFromFileHasBeenRan) {
+		cout << "ERROR: You cannot run decodeFile until initializeFromFile has been ran! Press ENTER to exit." << endl;
+		char waitChar;
+		cin.get(waitChar);
+		exit(2);
+	}
+	cout << "DECODING FILE" << endl << "------------------------" << endl;
+	time_t startTime = time(NULL);
 	ifstream inputStream;
 	inputStream.open(inFile, ios::binary);
 	if (inputStream.fail()) {
@@ -69,6 +101,7 @@ void Huffman::decodeFile(string inFile, string outFile) {
 	}
 	// take each byte and build the entire bit string.
 	string bitString;
+	int encodedByteCount = 0;
 	while (true) {
 		char symbol;
 		inputStream.get(symbol);
@@ -79,16 +112,27 @@ void Huffman::decodeFile(string inFile, string outFile) {
 		string* binaryValue = getBinaryValueForChar((unsigned char)symbol);
 		//append to bit string
 		bitString += *binaryValue;
+		encodedByteCount++;
 	}
 
 	// Now that we have the bit string, go through and find each letter that cooresponds to the bit values. Output to the output stream
 	ofstream outputStream;
 	outputStream.open(outFile, ios::binary);
-	decodeBitString(outputStream, bitString);
+	int decodedByteCount = decodeBitString(outputStream, bitString);
 	outputStream.close();
+	time_t endTime = time(NULL);
+
+	//Output
+	cout << "Decoding complete." << endl;
+	cout << "Time elapsed: " << endTime - startTime << " seconds\n";
+	cout << "Encoded Filesize: " << encodedByteCount << " bytes" << endl;
+	cout << "Decoded Filesize: " << decodedByteCount << " bytes" << endl;
+
 }
 
 //-- PRIVATE functions
+
+//-- Creates an empty array of nodes
 void Huffman::initializeNodeArray() {
 	for (int i = 0; i < 256; i++) {
 		Node* node = new Node();
@@ -106,6 +150,7 @@ void Huffman::processFile(ifstream& inputFile) {
 		if (inputFile.eof()) {
 			break;
 		}
+		inputFileSize++;
 		nodeArray[(unsigned char)symbol]->weight++;
 	}
 }
@@ -198,6 +243,7 @@ void Huffman::buildEncodingArray(string encodingArray[256], Node* startingNode, 
 	}
 }
 
+//-- Takes the input file and the array of encoded ASCII values and obtains the bits for all of the characters as a string
 string Huffman::getOutputBits(string inFile, string encodingArray[256]) {
 	string outputBits;
 	//loop through each character, getting its encoded value and appending it to the outputBits string
@@ -224,7 +270,9 @@ string Huffman::getOutputBits(string inFile, string encodingArray[256]) {
 	return outputBits;
 }
 
-void Huffman::saveFile(string outputBits, string outFile) {
+//-- Takes a string of outputBits and output filename and saves the file. Returns the size of the output file
+int Huffman::saveFile(string outputBits, string outFile) {
+	int byteCount = 0;
 	// Loop through the ouputBits, grabbing the next 8 at a time and appending it to the output stream.
 	int currentIndex = 0;
 	ofstream outputStream;
@@ -238,11 +286,14 @@ void Huffman::saveFile(string outputBits, string outFile) {
 	}
 	for (unsigned int i = 0; i < outputBits.length(); i += 8) {
 		outputStream.put(getNextByte(outputBits, i));
+		byteCount++;
 	}
 	outputStream.close();
-	cout << "FINISHED ENCODING";
+	return byteCount;
 }
 
+//-- Takes the next 8 bits from outputBits, starting at the index defined as startingIndex. If there are less than 8 bits, the remaining bits,
+//   along with padding bits are returned as its cooresponding unsigned char.
 unsigned char Huffman::getNextByte(string& outputBits, int startingIndex) {
 	int nextBits[8];
 	int arrayIndex = 0;
@@ -287,7 +338,7 @@ unsigned char Huffman::getNextByte(string& outputBits, int startingIndex) {
 	}
 	
 
-	//-- Set the bits in the char to return
+	//-- Set the bits in the char to return by ORing a 0 bit with the bit in the array. (1 | 0 = 1; 0 | 0 = 0)
 	char byte = 0;
 	for (int i = 0; i < 8; i++) {
 		if (nextBits[i]) {
@@ -298,6 +349,7 @@ unsigned char Huffman::getNextByte(string& outputBits, int startingIndex) {
 	return (unsigned char)byte;
 }
 
+//-- Converts an unsigned char into its binary representation, returned as a string pointer
 string* Huffman::getBinaryValueForChar(unsigned char theChar) {
 	string* bitString = new string();
 	unsigned char dividedChar = theChar;
@@ -321,7 +373,8 @@ string* Huffman::getBinaryValueForChar(unsigned char theChar) {
 	}
 }
 
-void Huffman::decodeBitString(ofstream& outputStream, string& bitString) {
+int Huffman::decodeBitString(ofstream& outputStream, string& bitString) {
+	int decodedByteCount = 0;
 	Node* currentNode = root;
 	for (unsigned int i = 0; i < bitString.length(); i++) {
 		//-- Go to this node's left or right child, depending if the number at the current string position is a 0 or 1.
@@ -334,6 +387,8 @@ void Huffman::decodeBitString(ofstream& outputStream, string& bitString) {
 			//-- We hit a leaf node, and subsequently, a character. Output this character to the output stream and go back to the root
 			outputStream.put(currentNode->key);
 			currentNode = root;
+			decodedByteCount++;
 		}
 	}
+	return decodedByteCount;
 }

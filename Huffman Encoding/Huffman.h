@@ -21,8 +21,8 @@ private:
 	bool treeIsBuilt();
 	void buildEncodingArray(string encodingArray[256], Node* startingNode, string encodedValue);
 	string getOutputBits(string inFile, string encodingArray[256]);
-	void saveFile(string outputBits, string outFile);
+	int saveFile(string outputBits, string outFile);
 	unsigned char getNextByte(string& outputBits, int startingIndex);
 	string* getBinaryValueForChar(unsigned char theChar);
-	void decodeBitString(ofstream& outputStream, string& bitString);
+	int decodeBitString(ofstream& outputStream, string& bitString);
 };
