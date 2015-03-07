@@ -1,3 +1,8 @@
+// Huffman Encoding
+// Mike Koch - EECS 2510
+// Huffman.cpp - Implementation of Huffman.h; responsible for everything related to Huffman encoding, including intiailization, encoding,
+//               and decoding.
+
 #include <string>
 #include <ctime>
 #include <iostream>

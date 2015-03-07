@@ -1,3 +1,7 @@
+// Huffman Encoding
+// Mike Koch - EECS 2510
+// Main.cpp - Handles creating the "Huffman" instance, along with properly calling initializeFromFile, encode, and decode. Nothing fancy.
+
 #include <iostream>
 #include "Huffman.h"
 using namespace std;
