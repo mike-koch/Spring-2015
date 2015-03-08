@@ -6,9 +6,7 @@
 #include <string>
 #include <ctime>
 #include <iostream>
-#include <iomanip>
 #include <fstream>
-#include <limits>
 using namespace std;
 #include "Huffman.h"
 
