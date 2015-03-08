@@ -15,8 +15,7 @@ int main() {
 	tree.initializeFromFile(INPUT_FILE);
 	tree.encodeFile(INPUT_FILE, ENCODED_FILE_LOCATION);
 	tree.decodeFile(ENCODED_FILE_LOCATION, DECODED_FILE_LOCATION);
-	cout << "Process complete. You can access the encoded file at " << ENCODED_FILE_LOCATION <<
-		" and can access the decoded file at " << DECODED_FILE_LOCATION << ". Press ENTER to exit.\n";
+	cout << "\nProcess complete. Press ENTER to exit.\n";
 	cin.get(waitChar);
 	return 0;
 }
