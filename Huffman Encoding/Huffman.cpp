@@ -4,9 +4,9 @@
 //               and decoding.
 
 #include <string>
-#include <ctime>
 #include <iostream>
 #include <fstream>
+#include <Windows.h>
 using namespace std;
 #include "Huffman.h"
 
@@ -21,7 +21,7 @@ bool initializeFromFileHasBeenRan = false;
 void Huffman::initializeFromFile(string fileName) {
 	initializeFromFileHasBeenRan = true;
 	//-- Start a timer so we can calculate how long the operation takes
-	time_t startTime = time(NULL);
+	DWORD startTime = GetTickCount();
 	cout << "INITIALIZING FILE" << endl << "------------------------" << endl;
 
 	// Obtain the file from the filepath
@@ -48,8 +48,8 @@ void Huffman::initializeFromFile(string fileName) {
 	buildTree();
 
 	//-- Initialization complete. Print out the elapsed time
-	time_t finishedTime = time(NULL);
-	cout << "File initialization finished. Total time to complete: " << (finishedTime-startTime) << " seconds" << "\n\n";
+	DWORD finishedTime = GetTickCount();
+	cout << "File initialization finished. Total time to complete: " << ((double)finishedTime - startTime) / 1000 << " seconds" << "\n\n";
 }
 
 /*
@@ -65,7 +65,7 @@ void Huffman::encodeFile(string inFile, string outFile) {
 		exit(2);
 	}
 	cout << "ENCODING FILE" << endl << "------------------------" << endl;
-	time_t startTime = time(NULL);
+	DWORD startTime = GetTickCount();
 	//-- First, build an array of ASCII character to encoding string that we can use to encode our file.
 	buildEncodingArray(encodingArray, root, "");
 	
@@ -73,9 +73,9 @@ void Huffman::encodeFile(string inFile, string outFile) {
 	string outputBits = getOutputBits(inFile, encodingArray);
 	// save the file
 	int outputFileSize = saveFile(outputBits, outFile);
-	time_t endTime = time(NULL);
+	DWORD endTime = GetTickCount();
 	cout << "Encoding complete." << endl;
-	cout << "Time elapsed: " << endTime - startTime << " seconds\n";
+	cout << "Time elapsed: " << ((double)endTime - startTime)/1000 << " seconds\n";
 	cout << "Original Filesize: " << inputFileSize << " bytes" << endl;
 	cout << "Encoded Filesize: " << outputFileSize << " bytes" << endl;
 	cout << "Compression Ratio: " << (double)outputFileSize * 100 / inputFileSize << "%\n\n";
@@ -93,7 +93,7 @@ void Huffman::decodeFile(string inFile, string outFile) {
 		exit(2);
 	}
 	cout << "DECODING FILE" << endl << "------------------------" << endl;
-	time_t startTime = time(NULL);
+	DWORD startTime = GetTickCount();
 	ifstream inputStream;
 	inputStream.open(inFile, ios::binary);
 	if (inputStream.fail()) {
@@ -123,11 +123,11 @@ void Huffman::decodeFile(string inFile, string outFile) {
 	outputStream.open(outFile, ios::binary);
 	int decodedByteCount = decodeBitString(outputStream, bitString);
 	outputStream.close();
-	time_t endTime = time(NULL);
+	DWORD endTime = GetTickCount();
 
 	//Output
 	cout << "Decoding complete." << endl;
-	cout << "Time elapsed: " << endTime - startTime << " seconds\n";
+	cout << "Time elapsed: " << ((double)endTime - startTime)/1000 << " seconds\n";
 	cout << "Encoded Filesize: " << encodedByteCount << " bytes" << endl;
 	cout << "Decoded Filesize: " << decodedByteCount << " bytes" << endl;
 
@@ -162,8 +162,8 @@ void Huffman::processFile(ifstream& inputFile) {
 void Huffman::buildTree() {
 	while (!treeIsBuilt()) {
 		//-- Get the smallest two nodes in the array
-		int firstMinIndex = min();
-		int secondMinIndex = min(firstMinIndex);
+		int firstMinIndex = getMin();
+		int secondMinIndex = getMin(firstMinIndex);
 		Node* firstMin = nodeArray[firstMinIndex];
 		Node* secondMin = nodeArray[secondMinIndex];
 
@@ -189,7 +189,7 @@ void Huffman::buildTree() {
 //-- Searches for the node with the smallest weight, excluding the node specified as the exclusion. 
 //   A NULL exclusion means to not exclude a node.
 //   Returns: the array index of the min.
-int Huffman::min(int exclusionIndex) {
+int Huffman::getMin(int exclusionIndex) {
 	//-- Set the minWeight to the max, so the first MUST be smaller than INT_MAX.
 	int minWeight = INT_MAX;
 	int minIndex = -1;

@@ -22,7 +22,7 @@ private:
 	void initializeNodeArray();
 	void processFile(ifstream& inputFile);
 	void buildTree();
-	int min(int exclusionIndex = INT_MAX);
+	int getMin(int exclusionIndex = INT_MAX);
 	bool treeIsBuilt();
 	void buildEncodingArray(string encodingArray[256], Node* startingNode, string encodedValue);
 	string getOutputBits(string inFile, string encodingArray[256]);
