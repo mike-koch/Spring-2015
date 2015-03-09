@@ -104,7 +104,11 @@ void Huffman::decodeFile(string inFile, string outFile) {
 	}
 	// take each byte and build the entire bit string.
 	string bitString;
+	string currentBitString;
 	int encodedByteCount = 0;
+	ofstream outputStream;
+	outputStream.open(outFile, ios::binary);
+	int decodedByteCount = 0;
 	while (true) {
 		char symbol;
 		inputStream.get(symbol);
@@ -112,16 +116,12 @@ void Huffman::decodeFile(string inFile, string outFile) {
 			break;
 		}
 		//convert to binary
-		string* binaryValue = getBinaryValueForChar((unsigned char)symbol);
-		//append to bit string
-		bitString += *binaryValue;
+		string binaryValue = getBinaryValueForChar((unsigned char)symbol);
+		//append to currentBitString and decode what we have if possible
+		currentBitString += binaryValue;
+		decodedByteCount += decodeBits(currentBitString, outputStream);
 		encodedByteCount++;
 	}
-
-	// Now that we have the bit string, go through and find each letter that cooresponds to the bit values. Output to the output stream
-	ofstream outputStream;
-	outputStream.open(outFile, ios::binary);
-	int decodedByteCount = decodeBitString(outputStream, bitString);
 	outputStream.close();
 	DWORD endTime = GetTickCount();
 
@@ -134,6 +134,34 @@ void Huffman::decodeFile(string inFile, string outFile) {
 }
 
 //-- PRIVATE functions
+
+int Huffman::decodeBits(string& currentBitString, ofstream& outputStream) {
+	int decodedByteCount = 0;
+	int currentIndex = 0;
+	Node* currentNode = root;
+	for (unsigned int i = 0; i < currentBitString.length(); i++) {
+		//-- Go to this node's left or right child, depending if the number at the current string position is a 0 or 1.
+		if (currentBitString[i] == '0') {
+			currentNode = currentNode->leftChild;
+			currentIndex++;
+		}
+		else {
+			currentNode = currentNode->rightChild;
+			currentIndex++;
+		}
+		if (currentNode->leftChild == NULL && currentNode->rightChild == NULL) {
+			//-- We hit a leaf node, and subsequently, a character. Output this character to the output stream and go back to the root
+			outputStream.put(currentNode->key);
+			//-- looking at the current index, remove the bits consumed.
+			currentBitString = currentBitString.substr(currentIndex, currentBitString.length());
+			currentIndex = 0;
+			i = -1;
+			currentNode = root;
+			decodedByteCount++;
+		}
+	}
+	return decodedByteCount;
+}
 
 //-- Creates an empty array of nodes
 void Huffman::initializeNodeArray() {
@@ -353,8 +381,8 @@ unsigned char Huffman::getNextByte(string& outputBits, int startingIndex) {
 }
 
 //-- Converts an unsigned char into its binary representation, returned as a string pointer
-string* Huffman::getBinaryValueForChar(unsigned char theChar) {
-	string* bitString = new string();
+string Huffman::getBinaryValueForChar(unsigned char theChar) {
+	string bitString;
 	unsigned char dividedChar = theChar;
 	int values[8];
 	for (int i = 0; i < 8; i++) {
@@ -367,31 +395,11 @@ string* Huffman::getBinaryValueForChar(unsigned char theChar) {
 		if (quotient == 0) {
 			// we're done dividing. loop through the array in reverse to get the string representation of the binary bits.
 			for (int i = 7; i > -1; i--) {
-				bitString->append(to_string(values[i]));
+				bitString.append(to_string(values[i]));
 			}
 			return bitString;
 		}
 		index++;
 		dividedChar = quotient;
 	}
-}
-
-int Huffman::decodeBitString(ofstream& outputStream, string& bitString) {
-	int decodedByteCount = 0;
-	Node* currentNode = root;
-	for (unsigned int i = 0; i < bitString.length(); i++) {
-		//-- Go to this node's left or right child, depending if the number at the current string position is a 0 or 1.
-		if (bitString[i] == '0') {
-			currentNode = currentNode->leftChild;
-		} else {
-			currentNode = currentNode->rightChild;
-		}
-		if (currentNode->leftChild == NULL && currentNode->rightChild == NULL) {
-			//-- We hit a leaf node, and subsequently, a character. Output this character to the output stream and go back to the root
-			outputStream.put(currentNode->key);
-			currentNode = root;
-			decodedByteCount++;
-		}
-	}
-	return decodedByteCount;
 }

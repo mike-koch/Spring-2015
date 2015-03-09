@@ -28,6 +28,6 @@ private:
 	string getOutputBits(string inFile, string encodingArray[256]);
 	int saveFile(string outputBits, string outFile);
 	unsigned char getNextByte(string& outputBits, int startingIndex);
-	string* getBinaryValueForChar(unsigned char theChar);
-	int decodeBitString(ofstream& outputStream, string& bitString);
+	string getBinaryValueForChar(unsigned char theChar);
+	int decodeBits(string& currentBitString, ofstream& outputStream);
 };
