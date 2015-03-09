@@ -8,8 +8,8 @@ using namespace std;
 
 int main() {
 	const string INPUT_FILE = "c:\\Shakespeare.txt";
-	const string ENCODED_FILE_LOCATION = "c:\\Users\\Mike\\Desktop\\Shakespeare.enc";
-	const string DECODED_FILE_LOCATION = "c:\\Users\\Mike\\Desktop\\Shakespeare.dec";
+	const string ENCODED_FILE_LOCATION = "c:\\Shakespeare.enc";
+	const string DECODED_FILE_LOCATION = "c:\\Shakespeare.dec";
 	Huffman tree;
 	char waitChar;
 	tree.initializeFromFile(INPUT_FILE);
