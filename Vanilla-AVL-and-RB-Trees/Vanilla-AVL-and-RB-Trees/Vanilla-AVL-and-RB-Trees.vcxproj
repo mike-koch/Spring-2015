@@ -71,6 +71,7 @@
     <ClInclude Include="BSTree.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="NodeStruct.h" />
+    <ClInclude Include="TraversalType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

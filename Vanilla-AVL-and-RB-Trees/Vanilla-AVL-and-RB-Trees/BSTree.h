@@ -6,14 +6,8 @@
 
 #include <string>
 #include "NodeStruct.h"
+#include "TraversalType.h"
 using namespace std;
-
-enum TraversalType
-{
-	UNIQUE_WORDS,
-	TOTAL_WORDS,
-	HEIGHT
-};
 
 class BSTree
 {
