@@ -18,15 +18,18 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BST.cpp">
+    <ClCompile Include="BSTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractTree.h">
+    <ClInclude Include="NodeStruct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NodeStruct.h">
+    <ClInclude Include="Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BSTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

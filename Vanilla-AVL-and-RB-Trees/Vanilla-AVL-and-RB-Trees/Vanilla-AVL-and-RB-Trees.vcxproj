@@ -64,11 +64,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BST.cpp" />
+    <ClCompile Include="BSTree.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractTree.h" />
+    <ClInclude Include="BSTree.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="NodeStruct.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
