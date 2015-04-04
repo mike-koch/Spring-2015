@@ -66,6 +66,7 @@ void RBTree::outputMetrics()
 	cout << "Height of tree: " << to_string(traverseTree(root, TraversalType::HEIGHT)) << endl;
 	cout << "Number of key comparisons: " << to_string(keyComparisons) << endl;
 	cout << "Number of node pointer changes: " << to_string(nodePointerChanges) << endl;
+	cout << "Number of re-colorings: " << to_string(colorChanges) << endl;
 	cout << "Total number of unique words: " << to_string(traverseTree(root, TraversalType::UNIQUE_WORDS)) << endl;
 	cout << "Total number of words (incl. duplicates): " << to_string(traverseTree(root, TraversalType::TOTAL_WORDS)) << endl;
 }
@@ -124,6 +125,7 @@ void RBTree::fixupTree(Node* startingNode)
 				uncleNode->color = Color::BLACK;
 				startingNode->parent->parent->color = Color::RED;
 				startingNode = startingNode->parent->parent;
+				colorChanges += 3; // There were three re-colorings above
 			}
 			else
 			{
@@ -135,6 +137,7 @@ void RBTree::fixupTree(Node* startingNode)
 				startingNode->parent->color = Color::BLACK; // Case 3 violation
 				startingNode->parent->parent->color = Color::RED;
 				rightRotate(startingNode->parent->parent);
+				colorChanges += 2; // There were two re-colorings above
 			}
 		}
 		else
@@ -146,6 +149,7 @@ void RBTree::fixupTree(Node* startingNode)
 				uncleNode->color = Color::BLACK;
 				startingNode->parent->parent->color = Color::RED;
 				startingNode = startingNode->parent->parent;
+				colorChanges += 3; // There were three re-colorings above
 			}
 			else
 			{
@@ -157,10 +161,18 @@ void RBTree::fixupTree(Node* startingNode)
 				startingNode->parent->color = Color::BLACK; // Case 3 violation
 				startingNode->parent->parent->color = Color::RED;
 				leftRotate(startingNode->parent->parent);
+				colorChanges += 2; // There were two re-colorings above
 			}
 		}
 	}
+	Color oldRootColor = root->color;
 	root->color = Color::BLACK;
+
+	// Increment colorChanges only if the color change above **actually** changed the color of the root node
+	if (oldRootColor != root->color)
+	{
+		colorChanges++;
+	}
 }
 
 void RBTree::leftRotate(Node* startingNode)
