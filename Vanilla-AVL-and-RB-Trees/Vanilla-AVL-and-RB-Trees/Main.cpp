@@ -7,9 +7,11 @@
 #include <iostream>
 #include <fstream>
 #include "BSTree.h"
+#include "AVLTree.h"
 using namespace std;
 
 BSTree bstree;
+AVLTree avlTree;
 
 enum InputMode
 {
@@ -33,7 +35,7 @@ int main()
 	parseFile(INPUT_FILE, InputMode::DRY_RUN);
 	cout << "Starting BST\n";
 	parseFile(INPUT_FILE, InputMode::BST);
-	//parseFile(INPUT_FILE, InputMode::AVL);
+	parseFile(INPUT_FILE, InputMode::AVL);
 	//parseFile(INPUT_FILE, InputMode::RBT);
 	cout << "Finished. Press ENTER to exit.";
 	char throwaway;
@@ -95,9 +97,12 @@ void insertWord(string word, InputMode inputMode)
 {
 	switch (inputMode)
 	{
-	case InputMode::BST:
-		bstree.insertValue(word);
-		break;
+		case InputMode::BST:
+			bstree.insertValue(word);
+			break;
+		case InputMode::AVL:
+			avlTree.insertValue(word);
+			break;
 	}
 }
 
@@ -105,9 +110,12 @@ void outputMetrics(InputMode inputMode)
 {
 	switch (inputMode)
 	{
-	case InputMode::BST:
-		bstree.outputMetrics();
-		break;
+		case InputMode::BST:
+			bstree.outputMetrics();
+			break;
+		case InputMode::AVL:
+			avlTree.outputMetrics();
+			break;
 	}
 }
 

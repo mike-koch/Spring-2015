@@ -13,7 +13,7 @@ void AVLTree::insertValue(string key)
 	// 2. If yes, just increment the counter
 	// 3. Otherwise, create a new node and hang it on the tree.
 	Node *a, *b, *c, *cl, *cr; // Node pointers used for searching and rebalancing
-	Node *f;
+	Node *f = NULL;
 	int displacement; // Used for balance factors
 
 	// If the tree is empty, make the root node
@@ -97,7 +97,9 @@ void AVLTree::insertValue(string key)
 		{
 			a->leftChild = b->rightChild;
 			b->rightChild = a;
+			nodePointerChanges += 2; // We made two node pointer changes here
 			a->balanceFactor = b->balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
+			balanceFactorChanges += 2; // We made two balance factor changes here
 		}
 		else  // LR Rotation: three cases
 		{
@@ -108,6 +110,7 @@ void AVLTree::insertValue(string key)
 			b->rightChild = cl;
 			c->leftChild = b;
 			c->rightChild = a;
+			nodePointerChanges += 4; // We made four node pointer changes here
 			switch (c->balanceFactor)
 			{
 				// Set the new BF’s at A and B, based on the
@@ -124,8 +127,8 @@ void AVLTree::insertValue(string key)
 					a->balanceFactor = 0;
 					break;
 			}
-
-			c->balanceFactor = 0;
+			c->balanceFactor = 0; 
+			balanceFactorChanges += 3; // We made three balance factor changes regardless of C's balance factor
 			b = c;
 		} // end of else (LR Rotation)
 	} // end of “if (d = +1)”
@@ -135,7 +138,9 @@ void AVLTree::insertValue(string key)
 		{
 			a->rightChild = b->leftChild;
 			b->leftChild = a;
+			nodePointerChanges += 2; // We made two node pointer changes here
 			a->balanceFactor = b->balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
+			balanceFactorChanges += 2; // We made two balance factor changes here
 		}
 		else  // LR Rotation: three cases
 		{
@@ -146,6 +151,7 @@ void AVLTree::insertValue(string key)
 			b->leftChild = cr;
 			c->leftChild = a;
 			c->rightChild = b;
+			nodePointerChanges += 4; // We made four node pointer changes here
 			switch (c->balanceFactor)
 			{
 				// Set the new BF’s at A and B, based on the
@@ -164,14 +170,16 @@ void AVLTree::insertValue(string key)
 			}
 
 			c->balanceFactor = 0;
+			balanceFactorChanges += 3; // We made three balance factor changes regardless of C's original balance factor
 			b = c;
 		} // end of else (LR Rotation)
 	}
 
+	nodePointerChanges++; // Regardless of the path chosen below, there will be exactly one node pointer change
 	// did we rebalance the root?
 	if (f == NULL) 
 	{ 
-		root = b; 
+		root = b;
 		return; 
 	}
 
@@ -188,6 +196,15 @@ void AVLTree::insertValue(string key)
 		return; 
 	}
 
+}
+
+void AVLTree::outputMetrics()
+{
+	cout << "Height of tree: " << to_string(traverseTree(root, TraversalType::HEIGHT)) << endl;
+	cout << "Number of key comparisons: " << to_string(keyComparisons) << endl;
+	cout << "Number of node pointer changes: " << to_string(nodePointerChanges) << endl;
+	cout << "Total number of unique words: " << to_string(traverseTree(root, TraversalType::UNIQUE_WORDS)) << endl;
+	cout << "Total number of words (incl. duplicates): " << to_string(traverseTree(root, TraversalType::TOTAL_WORDS)) << endl;
 }
 
 //-- PRIVATE functions
@@ -211,5 +228,34 @@ Node* AVLTree::addNodeToTree(string key, Node* parent)
 	{
 		parent->rightChild = newNode;
 	}
+	nodePointerChanges++; // There was one pointer change to set the new node
 	return newNode;
+}
+
+int AVLTree::traverseTree(Node* startingNode, TraversalType traversalType)
+{
+	// Since this is an in-order traversal (maintains order), three steps are performed:
+	//    1. Call this function on the left child if it's not null. (recursive call)
+	//    2. Append the weight (depending on TraversalType) to the running total
+	//    3. Call this function on the right child if it's not null. (recursive call)
+	if (startingNode == NULL) {
+		// Return early if the tree is empty or if we are at a leaf node to prevent NPEs.
+		return 0;
+	}
+	int leftCount = traverseTree(startingNode->leftChild, traversalType);
+	int nodeCount = traversalType == TraversalType::UNIQUE_WORDS
+		? 1
+		: startingNode->numberOfOccurrences;
+	int rightCount = traverseTree(startingNode->rightChild, traversalType);
+
+	if (traversalType == TraversalType::HEIGHT)
+	{
+		// Return 1 (which must be 1 since we're starting at the root), along with the higher height of the left or right side
+		if (leftCount > rightCount)
+		{
+			return 1 + leftCount;
+		}
+		return 1 + rightCount;
+	}
+	return leftCount + nodeCount + rightCount;
 }
