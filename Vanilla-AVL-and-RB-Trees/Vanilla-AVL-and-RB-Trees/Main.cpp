@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <time.h>
 #include "BSTree.h"
 #include "AVLTree.h"
 #include "RBTree.h"
@@ -24,7 +25,8 @@ enum InputMode
 };
 
 //Function prototypes
-void parseFile(string filePath, InputMode inputMode);
+int processFile(string filePath, InputMode inputMode, int elapsedOverheadTime = 0);
+void parseInput(string filePath, InputMode inputMode);
 void insertWord(string word, InputMode inputMode);
 void outputMetrics(InputMode inputMode);
 bool isDelimiter(char c);
@@ -35,15 +37,18 @@ int main()
 	const string INPUT_FILE = "C:\\Shakespeare.txt";
 
 	outputTitle("Starting dry run");
-	parseFile(INPUT_FILE, InputMode::DRY_RUN);
-	cout << "Done.\n\n";
+	int overheadTime = processFile(INPUT_FILE, InputMode::DRY_RUN);
+
 	outputTitle("Starting Vanilla BST");
-	parseFile(INPUT_FILE, InputMode::BST);
+	processFile(INPUT_FILE, InputMode::BST, overheadTime);
+
 	outputTitle("Starting AVL Tree");
-	parseFile(INPUT_FILE, InputMode::AVL);
+	processFile(INPUT_FILE, InputMode::AVL, overheadTime);
+
 	outputTitle("Starting Red-Black Tree");
-	parseFile(INPUT_FILE, InputMode::RBT);
-	cout << "Finished. Press ENTER to exit.";
+	processFile(INPUT_FILE, InputMode::RBT, overheadTime);
+
+	cout << "\n\nFinished. Press ENTER to exit.";
 	char throwaway;
 	cin.get(throwaway);
 	exit(0);
@@ -55,7 +60,24 @@ void outputTitle(string header)
 	cout << "-----------------------\n";
 }
 
-void parseFile(string filePath, InputMode inputMode)
+// Returns the elapsed time. Only truly helpful for the dry run so we have a benchmark for the other runs.
+int processFile(string filePath, InputMode inputMode, int elapsedOverheadTime)
+{
+	clock_t startTime = clock();
+	parseInput(filePath, inputMode);
+	clock_t endTime = clock();
+	int elapsedTime = endTime - startTime;
+	cout << "Elapsed time: " << elapsedTime << " clock cycles.\n";
+
+	// There is only time without overhead if this isn't the dry run
+	if (inputMode != InputMode::DRY_RUN)
+	{
+		cout << "Excluding overhead, elapsedTime: " << elapsedTime - elapsedOverheadTime << " clock cycles.\n";
+	}
+	return elapsedTime;
+}
+
+void parseInput(string filePath, InputMode inputMode)
 {
 	char c;
 	ifstream inputStream;

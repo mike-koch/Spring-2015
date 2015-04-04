@@ -208,9 +208,9 @@ void AVLTree::outputMetrics()
 	cout << "Height of tree: " << to_string(traverseTree(root, TraversalType::HEIGHT)) << endl;
 	cout << "Number of key comparisons: " << to_string(keyComparisons) << endl;
 	cout << "Number of node pointer changes: " << to_string(nodePointerChanges) << endl;
-	cout << "Number of balance factor changes: " << to_string(balanceFactorChanges) << endl;
 	cout << "Total number of unique words: " << to_string(traverseTree(root, TraversalType::UNIQUE_WORDS)) << endl;
 	cout << "Total number of words (incl. duplicates): " << to_string(traverseTree(root, TraversalType::TOTAL_WORDS)) << endl;
+	cout << "Number of balance factor changes: " << to_string(balanceFactorChanges) << endl;
 }
 
 //-- PRIVATE functions

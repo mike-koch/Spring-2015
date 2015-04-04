@@ -50,6 +50,7 @@ void RBTree::insertValue(string key)
 			keyComparisons++;
 			searchedNode->rightChild = newNode;
 		}
+		nodePointerChanges++; // There was exactly 1 node pointer change in the above conditional, regardless of which path was chosen.
 		fixupTree(newNode); // Fix up the tree if anything has gone awry
 		return;
 	}
@@ -66,9 +67,9 @@ void RBTree::outputMetrics()
 	cout << "Height of tree: " << to_string(traverseTree(root, TraversalType::HEIGHT)) << endl;
 	cout << "Number of key comparisons: " << to_string(keyComparisons) << endl;
 	cout << "Number of node pointer changes: " << to_string(nodePointerChanges) << endl;
-	cout << "Number of re-colorings: " << to_string(colorChanges) << endl;
 	cout << "Total number of unique words: " << to_string(traverseTree(root, TraversalType::UNIQUE_WORDS)) << endl;
 	cout << "Total number of words (incl. duplicates): " << to_string(traverseTree(root, TraversalType::TOTAL_WORDS)) << endl;
+	cout << "Number of re-colorings: " << to_string(colorChanges) << endl;
 }
 
 //-- PRIVATE Functions
@@ -182,6 +183,7 @@ void RBTree::leftRotate(Node* startingNode)
 	if (originalRightChild->leftChild != nil)
 	{
 		originalRightChild->leftChild->parent = startingNode;
+		nodePointerChanges++;
 	}
 	originalRightChild->parent = startingNode->parent;
 	if (startingNode->parent == nil)
@@ -199,6 +201,8 @@ void RBTree::leftRotate(Node* startingNode)
 
 	originalRightChild->leftChild = startingNode;
 	startingNode->parent = originalRightChild;
+	nodePointerChanges += 5; // There will be at least 5 node pointer changes in the above code. Any possible others have been accounted for
+							 // before reaching this point in the function.
 }
 
 void RBTree::rightRotate(Node* startingNode)
@@ -208,6 +212,7 @@ void RBTree::rightRotate(Node* startingNode)
 	if (originalLeftChild->rightChild != nil)
 	{
 		originalLeftChild->rightChild->parent = startingNode;
+		nodePointerChanges++;
 	}
 	originalLeftChild->parent = startingNode->parent;
 	if (startingNode->parent == nil)
@@ -225,6 +230,8 @@ void RBTree::rightRotate(Node* startingNode)
 
 	originalLeftChild->rightChild = startingNode;
 	startingNode->parent = originalLeftChild;
+	nodePointerChanges += 5; // There will be at least 5 node pointer changes in the above code. Any possible others have been accounted for
+							 // before reaching this point in the function.
 }
 
 int RBTree::traverseTree(Node* startingNode, TraversalType traversalType)
