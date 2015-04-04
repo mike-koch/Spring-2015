@@ -28,21 +28,31 @@ void parseFile(string filePath, InputMode inputMode);
 void insertWord(string word, InputMode inputMode);
 void outputMetrics(InputMode inputMode);
 bool isDelimiter(char c);
+void outputTitle(string header);
 
 int main() 
 {
 	const string INPUT_FILE = "C:\\Shakespeare.txt";
 
-	cout << "Starting dry run\n";
+	outputTitle("Starting dry run");
 	parseFile(INPUT_FILE, InputMode::DRY_RUN);
-	cout << "Starting BST\n";
+	cout << "Done.\n\n";
+	outputTitle("Starting Vanilla BST");
 	parseFile(INPUT_FILE, InputMode::BST);
+	outputTitle("Starting AVL Tree");
 	parseFile(INPUT_FILE, InputMode::AVL);
+	outputTitle("Starting Red-Black Tree");
 	parseFile(INPUT_FILE, InputMode::RBT);
 	cout << "Finished. Press ENTER to exit.";
 	char throwaway;
 	cin.get(throwaway);
 	exit(0);
+}
+
+void outputTitle(string header)
+{
+	cout << endl << header << endl;
+	cout << "-----------------------\n";
 }
 
 void parseFile(string filePath, InputMode inputMode)
