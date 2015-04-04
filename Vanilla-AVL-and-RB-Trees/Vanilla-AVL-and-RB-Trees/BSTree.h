@@ -21,7 +21,6 @@ private:
 	Node* search(Node* node, string key);
 	void addNodeToTree(Node* node);
 	int traverseTree(Node* startingNode, TraversalType traversalType);
-	int getHeightOfTree();
 
 	int keyComparisons; // Contains the total number of times a given key was compared to another key in the tree
 	int nodePointerChanges; // Contains the total number of node pointer changes made during insertions
