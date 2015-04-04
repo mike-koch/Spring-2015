@@ -20,6 +20,7 @@ void AVLTree::insertValue(string key)
 	if (root == NULL)
 	{
 		addNodeToTree(key, NULL);
+		return; // There's no need to even check for an imbalance, since we just added our first node
 	}
 
 	Node* q = NULL;
@@ -49,7 +50,6 @@ void AVLTree::insertValue(string key)
 	Node* newNode = addNodeToTree(key, q);
 
 	// Update our balance factors
-	b = p;
 	if (key > a->key)
 	{
 		p = a->rightChild;
@@ -60,6 +60,7 @@ void AVLTree::insertValue(string key)
 		p = a->leftChild;
 		displacement = 1;
 	}
+	b = p;
 	
 	while (p != newNode)
 	{
