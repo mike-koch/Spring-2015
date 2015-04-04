@@ -15,7 +15,7 @@ struct Node
 	Node* leftChild;
 	Node* rightChild;
 	string key;
-	int numberOfOccurrences = 0;
+	int numberOfOccurrences = 1;
 	int balanceFactor = 0; // Used by AVL trees only. Can have the value -2, -1, 0, 1, or 2 (values of +/- 2 will be changed to +/- 1 after rebalancing
 	Color color;       // Used by RB trees only. Can have the value of RED or BLACK
 };
