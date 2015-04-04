@@ -58,10 +58,18 @@ Node* BSTree::search(Node* node, string key)
 	// If the node's key matches the key being searched, return the node.
 	// Else if the key is less than the node's key, search relative to the node's left child, or return the parent of the would-be node if the parent doesn't have a child in the correct direction.
 	// Else search relative to the node's right child, or return the parent of the would-be node if the parent doesn't have a child in the correct direction.
-	if (node == NULL || key == node->key)
+	if (node == NULL)
+	{
+		return NULL;
+	}
+
+	keyComparisons++; 
+	if (key == node->key)
 	{
 		return node;
 	}
+
+	keyComparisons++;
 	if (key < node->key)
 	{
 		if (node->leftChild == NULL)
@@ -92,10 +100,12 @@ void BSTree::addNodeToTree(Node* node, Node* parentNode)
 	}
 	else if (node->key < parentNode->key)
 	{
+		keyComparisons++;
 		parentNode->leftChild = node;
 	}
 	else 
 	{
+		keyComparisons++;
 		parentNode->rightChild = node;
 	}
 }

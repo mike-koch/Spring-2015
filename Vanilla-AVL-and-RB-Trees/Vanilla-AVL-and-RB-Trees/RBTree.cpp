@@ -26,6 +26,7 @@ void RBTree::insertValue(string key)
 	// If nil is found, the tree is empty. If the keys are different, the key isn't in the tree yet
 	if (searchedNode == nil || searchedNode->key != key)
 	{
+		keyComparisons++;
 		//-- We are creating the first node in the tree, or we are simply creating a new node
 		newNode = new Node();
 		newNode->key = key;
@@ -41,10 +42,12 @@ void RBTree::insertValue(string key)
 		}
 		else if (newNode->key < searchedNode->key)
 		{
+			keyComparisons++;
 			searchedNode->leftChild = newNode;
 		}
 		else
 		{
+			keyComparisons++;
 			searchedNode->rightChild = newNode;
 		}
 		fixupTree(newNode); // Fix up the tree if anything has gone awry
@@ -76,10 +79,13 @@ Node* RBTree::search(Node* startingNode, string key)
 	// If the node's key matches the key being searched, return the node.
 	// Else if the key is less than the node's key, search relative to the node's left child, or return the parent of the would-be node if the parent doesn't have a child in the correct direction.
 	// Else search relative to the node's right child, or return the parent of the would-be node if the parent doesn't have a child in the correct direction.
+	keyComparisons++;
 	if (key == startingNode->key)
 	{
 		return startingNode;
 	}
+
+	keyComparisons++;
 	if (key < startingNode->key)
 	{
 		if (startingNode->leftChild == nil)

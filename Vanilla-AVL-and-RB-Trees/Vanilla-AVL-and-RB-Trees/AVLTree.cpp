@@ -29,6 +29,7 @@ void AVLTree::insertValue(string key)
 
 	while (p != NULL) // search tree for insertion point
 	{
+		keyComparisons++;
 		if (key == p->key)
 		{
 			p->numberOfOccurrences++;  // This node is a duplicate, so increment its counter
@@ -44,12 +45,14 @@ void AVLTree::insertValue(string key)
 		p = (key < p->key)
 			? p->leftChild
 			: p->rightChild;
+		keyComparisons++;
 	}
 
 	// We fell off the tree, so we need to make a new node
 	Node* newNode = addNodeToTree(key, q);
 
 	// Update our balance factors
+	keyComparisons++;
 	if (key > a->key)
 	{
 		p = a->rightChild;
@@ -64,6 +67,7 @@ void AVLTree::insertValue(string key)
 	
 	while (p != newNode)
 	{
+		keyComparisons++;
 		if (key > p->key)
 		{
 			p->balanceFactor = -1;
@@ -223,10 +227,12 @@ Node* AVLTree::addNodeToTree(string key, Node* parent)
 	}
 	else if (key < parent->key)
 	{
+		keyComparisons++;
 		parent->leftChild = newNode;
 	}
 	else
 	{
+		keyComparisons++;
 		parent->rightChild = newNode;
 	}
 	nodePointerChanges++; // There was one pointer change to set the new node
