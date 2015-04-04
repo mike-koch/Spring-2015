@@ -14,7 +14,7 @@ void BSTree::insertValue(string key)
 	// 3. Otherwise, create a new node and hang it on the tree.
 	Node* newNode = NULL;
 	Node* existingNode = search(root, key);
-	if (existingNode == NULL) 
+	if (existingNode == NULL || existingNode->key != key) 
 	{
 		//-- Create a new node
 		newNode = new Node();
@@ -24,7 +24,7 @@ void BSTree::insertValue(string key)
 		newNode->numberOfOccurrences = 1;
 
 		// Hang the node on the tree
-		addNodeToTree(newNode);
+		addNodeToTree(newNode, existingNode);
 	}
 	else 
 	{
@@ -50,63 +50,53 @@ void BSTree::outputMetrics()
 }
 
 //-- PRIVATE Functions
+
+// Will return the node with the requested key if found, OR, if no results found, will return the node that will become the parent of 
+//    the new node.
 Node* BSTree::search(Node* node, string key) 
 {
-	// If the node we're looking at is NULL or if the node's key matches the key being searched, return the node.
-	// Else if the key is less than the node's key, search relative to the node's left child.
-	// Else search relative to the node's right child (the key is greater than the node's right child)
-
-	keyComparisons++; // We will always be comparing some key to another key every time this function is called
-	if (node == NULL || key == node->key) 
+	// If the node's key matches the key being searched, return the node.
+	// Else if the key is less than the node's key, search relative to the node's left child, or return the parent of the would-be node if the parent doesn't have a child in the correct direction.
+	// Else search relative to the node's right child, or return the parent of the would-be node if the parent doesn't have a child in the correct direction.
+	if (node == NULL || key == node->key)
 	{
 		return node;
 	}
-	if (key < node->key) 
+	if (key < node->key)
 	{
+		if (node->leftChild == NULL)
+		{
+			return node; // We found the node that should be the parent of the one we're looking for. Our key doesn't exist, but we now
+						 //    now know who the parent should be.
+		}
 		return search(node->leftChild, key);
+	}
+
+	// key must be greater than startingNode->key
+	if (node->rightChild == NULL)
+	{
+		return node; // We found the node that should be the parent of the one we're looking for. Our key doesn't exist, but we now
+					 //    now know who the parent should be.
 	}
 	return search(node->rightChild, key);
 }
 
-void BSTree::addNodeToTree(Node* node) 
+void BSTree::addNodeToTree(Node* node, Node* parentNode) 
 {
-	Node* currentNode = root;
-	Node* previousNode = NULL;
-
-	//-- Keep looping until the currentNode falls off of the tree. Then we found our place to hang our new node
-	while (currentNode != NULL) 
-	{
-		previousNode = currentNode; // Keep track of the last node we visited before moving along, in case we fall off.
-
-		// Should the new node be left or right of the node we're currently looking at? This counts as a key comparison.
-		keyComparisons++;
-		if (node->key < currentNode->key) 
-		{
-			currentNode = currentNode->leftChild;
-		}
-		else 
-		{
-			currentNode = currentNode->rightChild;
-		}
-	}
-
-	// Set the node's parent to the latest node we reached before falling off. This counts as a node pointer change.
-	node->parent = previousNode;
+	// There will be one node pointer change regardless of the scenario (root, left child, or right child)
 	nodePointerChanges++;
-	if (previousNode == NULL) 
+	if (parentNode == NULL)
 	{
 		// There was no previous node; this is now the root.
 		root = node;
 	}
-	else if (node->key < previousNode->key) 
+	else if (node->key < parentNode->key)
 	{
-		keyComparisons++;
-		previousNode->leftChild = node;
+		parentNode->leftChild = node;
 	}
 	else 
 	{
-		keyComparisons++;
-		previousNode->rightChild = node;
+		parentNode->rightChild = node;
 	}
 }
 
