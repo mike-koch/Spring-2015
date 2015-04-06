@@ -72,7 +72,7 @@ int processFile(string filePath, InputMode inputMode, int elapsedOverheadTime)
 	// There is only time without overhead if this isn't the dry run
 	if (inputMode != InputMode::DRY_RUN)
 	{
-		cout << "Excluding overhead, elapsedTime: " << elapsedTime - elapsedOverheadTime << " clock cycles.\n";
+		cout << "Excluding overhead, elapsed time: " << elapsedTime - elapsedOverheadTime << " clock cycles.\n";
 	}
 	return elapsedTime;
 }
@@ -84,7 +84,7 @@ void parseInput(string filePath, InputMode inputMode)
 	char chari[50]; // assuming no word is > 49 characters
 	int iPtr;
 	bool wasDelimiter = false;
-	inputStream.open(filePath);
+	inputStream.open(filePath, ios::binary);
 
 	if (inputStream.fail())
 	{
@@ -102,7 +102,7 @@ void parseInput(string filePath, InputMode inputMode)
 		if (isDelimiter(c) && !wasDelimiter)
 		{
 			string currentWord = "";
-			for (int i = 0; i <= iPtr; i++)
+			for (int i = 0; i < iPtr; i++)
 			{
 				currentWord += chari[i];
 			}
