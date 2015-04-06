@@ -42,7 +42,7 @@ void BSTree::insertValue(string key)
 */
 void BSTree::outputMetrics()
 {
-	cout << "Height of tree: " << to_string(traverseTree(root, TraversalType::HEIGHT)) << endl;
+	cout << "Height of tree: " << to_string(traverseTree(root, TraversalType::HEIGHT) - 1) << endl;
 	cout << "Number of key comparisons: " << to_string(keyComparisons) << endl;
 	cout << "Number of node pointer changes: " << to_string(nodePointerChanges) << endl;
 	cout << "Total number of unique words: " << to_string(traverseTree(root, TraversalType::UNIQUE_WORDS)) << endl;
@@ -114,7 +114,7 @@ void BSTree::addNodeToTree(Node* node, Node* parentNode)
 	Returns one of the following, depending on the TraversalType:
 	    - Number of unique words in document
 		- Total number of words in document
-		- Height of tree
+		- Height of tree + 1 (the height is offset by 1 to return a non-zero value. The caller is responsible for subtracting one off)
 */
 int BSTree::traverseTree(Node* startingNode, TraversalType traversalType)
 {
