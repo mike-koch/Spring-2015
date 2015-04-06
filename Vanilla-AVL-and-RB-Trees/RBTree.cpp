@@ -16,7 +16,7 @@ RBTree::RBTree()
 	root = nil;
 }
 
-void RBTree::insertValue(string key)
+void RBTree::insertValue(string& key)
 {
 	// 1. Search if the key already exists
 	// 2. If yes, just increment the counter
@@ -76,7 +76,7 @@ void RBTree::outputMetrics()
 
 // Will return the node with the requested key if found, OR, if no results found, will return the node that will become the parent of 
 //    the new node.
-Node* RBTree::search(Node* startingNode, string key)
+Node* RBTree::search(Node* startingNode, string& key)
 {
 	// If the node's key matches the key being searched, return the node.
 	// Else if the key is less than the node's key, search relative to the node's left child, or return the parent of the would-be node if the parent doesn't have a child in the correct direction.

@@ -27,7 +27,7 @@ enum InputMode
 //Function prototypes
 int processFile(string filePath, InputMode inputMode, int elapsedOverheadTime = 0);
 void parseInput(string filePath, InputMode inputMode);
-void insertWord(string word, InputMode inputMode);
+void insertWord(string& word, InputMode inputMode);
 void outputMetrics(InputMode inputMode);
 bool isDelimiter(char c);
 void outputTitle(string header);
@@ -124,7 +124,7 @@ void parseInput(string filePath, InputMode inputMode)
 	outputMetrics(inputMode);
 }
 
-void insertWord(string word, InputMode inputMode)
+void insertWord(string& word, InputMode inputMode)
 {
 	switch (inputMode)
 	{

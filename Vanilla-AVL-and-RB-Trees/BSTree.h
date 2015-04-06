@@ -13,12 +13,12 @@ using namespace std;
 class BSTree
 {
 public:
-	void insertValue(string key);
+	void insertValue(string& key);
 	void outputMetrics();
 
 private:	
 	Node* root;
-	Node* search(Node* node, string key);
+	Node* search(Node* node, string& key);
 	void addNodeToTree(Node* node, Node* parent);
 	int traverseTree(Node* startingNode, TraversalType traversalType);
 

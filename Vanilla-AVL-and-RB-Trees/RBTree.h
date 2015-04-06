@@ -14,13 +14,13 @@ class RBTree
 {
 public:
 	RBTree();
-	void insertValue(string key);
+	void insertValue(string& key);
 	void outputMetrics();
 
 private:
 	Node* root;
 	Node* nil;
-	Node* search(Node* startingNode, string key);
+	Node* search(Node* startingNode, string& key);
 	void fixupTree(Node* startingNode);
 	void leftRotate(Node* startingNode);
 	void rightRotate(Node* startingNode);

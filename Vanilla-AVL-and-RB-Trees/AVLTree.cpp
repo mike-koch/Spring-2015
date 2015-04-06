@@ -7,7 +7,7 @@
 #include <iostream>
 
 //-- PUBLIC functions
-void AVLTree::insertValue(string key)
+void AVLTree::insertValue(string& key)
 {
 	// 1. Search if the key already exists
 	// 2. If yes, just increment the counter
@@ -214,7 +214,7 @@ void AVLTree::outputMetrics()
 }
 
 //-- PRIVATE functions
-Node* AVLTree::addNodeToTree(string key, Node* parent)
+Node* AVLTree::addNodeToTree(string& key, Node* parent)
 {
 	Node* newNode = new Node();
 	newNode->key = key;

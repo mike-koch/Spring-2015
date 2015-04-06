@@ -12,12 +12,12 @@ using namespace std;
 class AVLTree
 {
 public:
-	void insertValue(string key);
+	void insertValue(string& key);
 	void outputMetrics();
 
 private:
 	Node* root;
-	Node* addNodeToTree(string key, Node* parent);
+	Node* addNodeToTree(string& key, Node* parent);
 	int traverseTree(Node* startingNode, TraversalType traversalType);
 
 	int keyComparisons; // Contains the total number of times a given key was compared to another key in the tree
