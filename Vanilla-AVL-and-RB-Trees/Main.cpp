@@ -32,6 +32,7 @@ void outputMetrics(InputMode inputMode);
 bool isDelimiter(char c);
 void outputTitle(string header);
 
+// Process the file four times: first as a dry run (to calculate overhead), and then once each through the vanilla tree, AVL, and Red-black trees
 int main() 
 {
 	const string INPUT_FILE = "C:\\Shakespeare.txt";
@@ -60,7 +61,7 @@ void outputTitle(string header)
 	cout << "-----------------------\n";
 }
 
-// Returns the elapsed time. Only truly helpful for the dry run so we have a benchmark for the other runs.
+// Process the file, and then returns the elapsed time. Only truly helpful for the dry run so we have a benchmark for the other runs.
 int processFile(string filePath, InputMode inputMode, int elapsedOverheadTime)
 {
 	clock_t startTime = clock();
@@ -77,6 +78,7 @@ int processFile(string filePath, InputMode inputMode, int elapsedOverheadTime)
 	return elapsedTime;
 }
 
+// Taking the file path, open an input stream and parse each word from the file by looking for delimiters (such as !, ., etc)
 void parseInput(string filePath, InputMode inputMode)
 {
 	char c;
@@ -113,7 +115,7 @@ void parseInput(string filePath, InputMode inputMode)
 		}
 		else if (!isDelimiter(c))
 		{
-			//-- We're not at a delimeter; just keep going
+			//-- We're not at a delimiter; just keep going
 			chari[iPtr] = c;
 			iPtr++;
 		}
@@ -124,6 +126,7 @@ void parseInput(string filePath, InputMode inputMode)
 	outputMetrics(inputMode);
 }
 
+// Inserts a word into the respective tree, based on the current InputMode
 void insertWord(string& word, InputMode inputMode)
 {
 	switch (inputMode)
@@ -140,6 +143,7 @@ void insertWord(string& word, InputMode inputMode)
 	}
 }
 
+// Outputs relevant metrics, such as height, number of words, etc.
 void outputMetrics(InputMode inputMode)
 {
 	switch (inputMode)
@@ -156,6 +160,7 @@ void outputMetrics(InputMode inputMode)
 	}
 }
 
+// Checks to see if a specific character is classified as a delimiter
 bool isDelimiter(char c)
 {
 	return  (c == 32 || c == 10 || c == 13 || c == 9 ||

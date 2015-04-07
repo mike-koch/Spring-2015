@@ -203,6 +203,14 @@ void AVLTree::insertValue(string& key)
 
 }
 
+/* Outputs key information about the tree, including:
+	- Height of tree
+	- Number of key comparisons
+	- Number of node pointer changes
+	- Number of unique words
+	- Number of words including duplicates
+	- Number of balance factor changes
+*/
 void AVLTree::outputMetrics()
 {
 	cout << "Height of tree: " << to_string(traverseTree(root, TraversalType::HEIGHT) - 1) << endl;

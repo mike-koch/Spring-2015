@@ -89,6 +89,7 @@ Node* BSTree::search(Node* node, string& key)
 	return search(node->rightChild, key);
 }
 
+// Add the node to the tree by finding if the new node should be to the left or to the right of the parent
 void BSTree::addNodeToTree(Node* node, Node* parentNode) 
 {
 	// There will be one node pointer change regardless of the scenario (root, left child, or right child)
