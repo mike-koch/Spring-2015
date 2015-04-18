@@ -13,8 +13,10 @@ struct Node
 	Node* parent;
 	Node* leftChild;
 	Node* rightChild;
-	string key;
+	string keys[2*T - 1]; // Establish an array of keys. For AVL, there will only ever be one key in this array. For BTrees, there will be 
+						  //     between T - 1 and 2T - 1 keys.
 	int numberOfOccurrences = 1;
 	int balanceFactor = 0; // Used by AVL trees only. Can have the value -2, -1, 0, 1, or 2 (values of +/- 2 will be changed to +/- 1 after rebalancing)
+	bool isLeaf;
 };
 #endif
