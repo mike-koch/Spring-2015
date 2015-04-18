@@ -64,6 +64,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AVLTree.h" />
+    <ClInclude Include="NodeStruct.h" />
+    <ClInclude Include="TraversalType.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AVLTree.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
