@@ -66,10 +66,14 @@
   <ItemGroup>
     <ClInclude Include="AVLTree.h" />
     <ClInclude Include="NodeStruct.h" />
+    <ClInclude Include="BTree.h" />
+    <ClInclude Include="DiskIO.h" />
     <ClInclude Include="TraversalType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AVLTree.cpp" />
+    <ClCompile Include="BTree.cpp" />
+    <ClCompile Include="DiskIO.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

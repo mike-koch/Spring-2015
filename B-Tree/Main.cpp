@@ -13,7 +13,7 @@ using namespace std;
 const unsigned int T = 2; // Value for T. Used by BTree only.
 
 AVLTree avlTree;
-BTree bTree(T);
+//BTree bTree(T);
 
 enum InputMode
 {
@@ -130,7 +130,7 @@ void insertWord(string& word, InputMode inputMode)
 		avlTree.insertValue(word);
 		break;
 	case InputMode::B_TREE:
-		bTree.insertValue(word);
+		//bTree.insertValue(word);
 		break;
 	}
 }
@@ -144,7 +144,7 @@ void outputMetrics(InputMode inputMode)
 		avlTree.outputMetrics();
 		break;
 	case InputMode::B_TREE:
-		bTree.outputMetrics();
+		//bTree.outputMetrics();
 		break;
 	}
 }
