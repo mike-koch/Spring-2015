@@ -12,16 +12,20 @@ using namespace std;
 class BTree
 {
 public:
+	BTree(unsigned int t); // Constructor for defining value of T.
 	void insertValue(string& key);
 	void outputMetrics();
 
 private:
-	const unsigned int T = 2; // t value for the B-Tree. Determines how many keys can fit in one node
+	unsigned int t; // t value for the B-Tree. Determines how many keys can fit in one node
 	Node* root; 
 	Node* addNodeToTree(string& key, Node* parent);
 	int traverseTree(Node* startingNode, TraversalType traversalType);
+	int search(Node* startingNode, string& key);
 
 	int keyComparisons; // Contains the total number of times a given key was compared to another key in the tree
 	int nodePointerChanges; // Contains the total number of node pointer changes made during insertions
+	int numberOfReads; // Contains the total number of times a record was pulled from the hard drive
+	int numberOfWrites; // Contains the total number of times a record was written to the hard drive
 };
 #endif

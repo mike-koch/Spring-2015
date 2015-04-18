@@ -10,9 +10,10 @@
 #include "AVLTree.h"
 #include "BTree.h"
 using namespace std;
+const unsigned int T = 2; // Value for T. Used by BTree only.
 
 AVLTree avlTree;
-BTree bTree;
+BTree bTree(T);
 
 enum InputMode
 {
