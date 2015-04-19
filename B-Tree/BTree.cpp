@@ -18,20 +18,20 @@ void BTree::outputMetrics()
 }
 
 //-- PRIVATE functions
-Node* BTree::addNodeToTree(string& key, Node* parent)
+BTreeNode* BTree::addNodeToTree(string& key, BTreeNode* parent)
 {
 	//TODO
 	return NULL;
 }
 
 
-int BTree::traverseTree(Node* startingNode, TraversalType traversalType)
+int BTree::traverseTree(BTreeNode* startingNode, TraversalType traversalType)
 {
 	//TODO
 	return 0;
 }
 
-int BTree::search(Node* startingNode, string& key)
+int BTree::search(BTreeNode* startingNode, string& key)
 {
 	//TODO
 	return 0;

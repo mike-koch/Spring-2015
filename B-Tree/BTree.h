@@ -5,7 +5,7 @@
 #ifndef BTREE
 #define BTREE
 #include <string>
-#include "NodeStruct.h"
+#include "BTreeNode.h"
 #include "TraversalType.h"
 using namespace std;
 
@@ -18,10 +18,10 @@ public:
 
 private:
 	unsigned int t; // t value for the B-Tree. Determines how many keys can fit in one node
-	Node* root; 
-	Node* addNodeToTree(string& key, Node* parent);
-	int traverseTree(Node* startingNode, TraversalType traversalType);
-	int search(Node* startingNode, string& key);
+	BTreeNode* root;
+	BTreeNode* addNodeToTree(string& key, BTreeNode* parent);
+	int traverseTree(BTreeNode* startingNode, TraversalType traversalType);
+	int search(BTreeNode* startingNode, string& key);
 
 	int keyComparisons; // Contains the total number of times a given key was compared to another key in the tree
 	int nodePointerChanges; // Contains the total number of node pointer changes made during insertions

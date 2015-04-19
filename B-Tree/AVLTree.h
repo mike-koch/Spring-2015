@@ -5,7 +5,7 @@
 #ifndef AVLTREE_H
 #define AVLTREE_H
 #include <string>
-#include "NodeStruct.h"
+#include "AVLNode.h"
 #include "TraversalType.h"
 using namespace std;
 
@@ -16,9 +16,9 @@ public:
 	void outputMetrics();
 
 private:
-	Node* root;
-	Node* addNodeToTree(string& key, Node* parent);
-	int traverseTree(Node* startingNode, TraversalType traversalType);
+	AVLNode* root;
+	AVLNode* addNodeToTree(string& key, AVLNode* parent);
+	int traverseTree(AVLNode* startingNode, TraversalType traversalType);
 
 	int keyComparisons; // Contains the total number of times a given key was compared to another key in the tree
 	int nodePointerChanges; // Contains the total number of node pointer changes made during insertions

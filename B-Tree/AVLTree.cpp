@@ -12,8 +12,8 @@ void AVLTree::insertValue(string& key)
 	// 1. Search if the key already exists
 	// 2. If yes, just increment the counter
 	// 3. Otherwise, create a new node and hang it on the tree.
-	Node *a, *b, *c, *cl, *cr; // Node pointers used for searching and rebalancing
-	Node *f = NULL;
+	AVLNode *a, *b, *c, *cl, *cr; // Node pointers used for searching and rebalancing
+	AVLNode *f = NULL;
 	int displacement; // Used for balance factors
 
 	// If the tree is empty, make the root node
@@ -23,9 +23,9 @@ void AVLTree::insertValue(string& key)
 		return; // There's no need to even check for an imbalance, since we just added our first node
 	}
 
-	Node* q = NULL;
+	AVLNode* q = NULL;
 	a = root;
-	Node* p = root;
+	AVLNode* p = root;
 
 	while (p != NULL) // search tree for insertion point
 	{
@@ -49,7 +49,7 @@ void AVLTree::insertValue(string& key)
 	}
 
 	// We fell off the tree, so we need to make a new node
-	Node* newNode = addNodeToTree(key, q);
+	AVLNode* newNode = addNodeToTree(key, q);
 
 	// Update our balance factors
 	keyComparisons++;
@@ -222,9 +222,9 @@ void AVLTree::outputMetrics()
 }
 
 //-- PRIVATE functions
-Node* AVLTree::addNodeToTree(string& key, Node* parent)
+AVLNode* AVLTree::addNodeToTree(string& key, AVLNode* parent)
 {
-	Node* newNode = new Node();
+	AVLNode* newNode = new AVLNode();
 	newNode->key = key;
 	newNode->leftChild = newNode->rightChild = NULL;
 	newNode->balanceFactor = 0;
@@ -254,7 +254,7 @@ Returns one of the following, depending on the TraversalType:
 - Total number of words in document
 - Height of tree + 1 (the height is offset by 1 to return a non-zero value. The caller is responsible for subtracting one off)
 */
-int AVLTree::traverseTree(Node* startingNode, TraversalType traversalType)
+int AVLTree::traverseTree(AVLNode* startingNode, TraversalType traversalType)
 {
 	// Since this is an in-order traversal (maintains order), three steps are performed:
 	//    1. Call this function on the left child if it's not null. (recursive call)
