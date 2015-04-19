@@ -25,9 +25,9 @@ void DiskIO::saveAVLNode(AVLNode& avlNode)
 		outputFailure(AVL_FILE_LOCATION);
 	}
 
-	//-- Move the seek pointer to the proper place in the file, based on the node's unique ID. 1 is added to the end to make everything "1-based".
+	//-- Move the seek pointer to the proper place in the file, based on the node's unique ID.
 	//   The caller is responsible for keeping track of the next node number for new nodes, so we don't have to worry about it here.
-	outputStream.seekp(SIZE_OF_AVL_NODE * avlNode.id + 1);
+	outputStream.seekp(SIZE_OF_AVL_NODE * avlNode.id);
 
 	//-- Append the new bytes to the file
 	outputStream.write((char*)&avlNode, SIZE_OF_AVL_NODE);
@@ -38,9 +38,26 @@ void DiskIO::saveAVLNode(AVLNode& avlNode)
 
 AVLNode DiskIO::loadAVLNode(int nodeNumber)
 {
-	//TODO
-	AVLNode nodeToReturn;
-	return nodeToReturn;
+	ifstream inputStream;
+	inputStream.open(AVL_FILE_LOCATION, ios::binary);
+
+	//-- Make sure we can actually save the node
+	if (inputStream.fail())
+	{
+		outputFailure(AVL_FILE_LOCATION);
+	}
+
+	//-- Move the seek pointer to the proper place in the file, based on the node number passed in.
+	inputStream.seekg(SIZE_OF_AVL_NODE * nodeNumber);
+
+	//-- Grab the next number of bytes and stuff it into an AVLNode
+	AVLNode nodeToRetrieve;
+	inputStream.read((char*)&nodeToRetrieve, SIZE_OF_AVL_NODE);
+
+	//-- Close the input stream
+	inputStream.close();
+
+	return nodeToRetrieve;
 }
 
 void DiskIO::saveBTreeNode(BTreeNode& bTreeNode)
