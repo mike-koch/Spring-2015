@@ -11,13 +11,13 @@ using namespace std;
 struct DiskIO
 {
 public:
-	int saveAVLNode(AVLNode& avlNode); // Returns the node number for this new node
+	void saveAVLNode(AVLNode& avlNode); // Saves the requested node
 	AVLNode loadAVLNode(int nodeNumber); // Returns the node for the node number requested
 
-	int saveBTreeNode(BTreeNode& bTreeNode); // Same as saveAVLNode, but for a BTreeNode
+	void saveBTreeNode(BTreeNode& bTreeNode); // Saves the requested node
 	BTreeNode loadBTreeNode(int nodeNumber); // Same as loadAVLNode, but for a BTreeNode
 private:
-	//not sure yet...
+	void outputFailure(string fileName);
 };
 
 #endif

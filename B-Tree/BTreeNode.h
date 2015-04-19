@@ -10,6 +10,7 @@ using namespace std;
 
 struct BTreeNode
 {
+	int id; // Unique identifier that dictates the position in the file
 	BTreeNode* parent;
 	BTreeNode* leftChild;
 	BTreeNode* rightChild;
