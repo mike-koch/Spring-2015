@@ -41,8 +41,9 @@ int main()
 	outputTitle("Starting AVL Tree");
 	processFile(INPUT_FILE, InputMode::AVL, overheadTime);
 
-	outputTitle("Starting BTree");
-	processFile(INPUT_FILE, InputMode::B_TREE, overheadTime);
+	//TODO Enable this to test AVL
+	//outputTitle("Starting BTree");
+	//processFile(INPUT_FILE, InputMode::B_TREE, overheadTime);
 
 	cout << "\n\nFinished. Press ENTER to exit.";
 	char throwaway;

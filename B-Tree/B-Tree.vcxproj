@@ -65,8 +65,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AVLTree.h" />
-    <ClInclude Include="NodeStruct.h" />
+    <ClInclude Include="AVLNode.h" />
     <ClInclude Include="BTree.h" />
+    <ClInclude Include="BTreeNode.h" />
     <ClInclude Include="DiskIO.h" />
     <ClInclude Include="TraversalType.h" />
   </ItemGroup>

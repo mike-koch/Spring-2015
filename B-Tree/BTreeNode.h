@@ -10,7 +10,6 @@ using namespace std;
 
 struct BTreeNode
 {
-	const int numberOfKeys;
 	BTreeNode* parent;
 	BTreeNode* leftChild;
 	BTreeNode* rightChild;
