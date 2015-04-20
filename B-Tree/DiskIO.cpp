@@ -7,8 +7,8 @@
 #include <iostream>
 #include <fstream>
 
-static ofstream outputStream;
 static ifstream inputStream;
+static ofstream outputStream;
 
 const int SIZE_OF_AVL_NODE = sizeof(AVLNode);
 const int SIZE_OF_BTREE_NODE = sizeof(BTreeNode);
@@ -18,7 +18,7 @@ void DiskIO::openOutputStream(string fileName)
 {
 	if (!outputStream.is_open())
 	{
-		outputStream.open(fileName);
+		outputStream.open(fileName, ios::binary);
 	}
 }
 
@@ -38,7 +38,7 @@ void DiskIO::openInputStream(string fileName)
 {
 	if (!inputStream.is_open())
 	{
-		inputStream.open(fileName);
+		inputStream.open(fileName, ios::binary);
 	}
 }
 
@@ -91,7 +91,6 @@ void DiskIO::saveBTreeNode(BTreeNode bTreeNode)
 
 	//-- Close the output stream
 	outputStream.flush();
-	outputStream.close();
 }
 
 BTreeNode DiskIO::loadBTreeNode(int nodeNumber)

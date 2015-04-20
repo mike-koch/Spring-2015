@@ -7,16 +7,26 @@
 #include "DiskIO.h"
 #include <iostream>
 #include <fstream>
+//#define DEBUG
 
 const unsigned int NULL_NODE_ID = 0;
 const string FILE_NAME = "AVLNodes.nodes";
 unsigned int nextNewNodeNumber = 1;
+int iteration = 0;
 //-- PUBLIC functions
 void AVLTree::insertValue(string& key)
 {
+#ifdef DEBUG
+	cout << "CURRENTLY AT ITERATION: " << ++iteration << endl;
+	cout << "Root is currently has id #" << root << " and getNode(root) returned a node with id: " << getId(getNode(root)) << endl;
+#endif
 	// 1. Search if the key already exists
 	// 2. If yes, just increment the counter
 	// 3. Otherwise, create a new node and hang it on the tree.
+	AVLNode *a, *b, *c; // Node pointers used for searching and rebalancing
+	int cl, cr;
+	AVLNode *f = NULL;
+	int displacement; // Used for balance factors
 
 	// If the tree is empty, make the root node
 	if (root == NULL_NODE_ID)
@@ -25,18 +35,9 @@ void AVLTree::insertValue(string& key)
 		return; // There's no need to even check for an imbalance, since we just added our first node
 	}
 
-	AVLNode *q = NULL; // Set q to be a "null" node
-	AVLNode *p;
-	if (root == NULL_NODE_ID)
-	{
-		p = NULL;
-	}
-	else
-	{
-		p = getNode(root);
-	}
-	AVLNode *a = getNode(root);
-	AVLNode *f = NULL;
+	AVLNode* q = NULL;
+	a = getNode(root);
+	AVLNode* p = getNode(root);
 
 	while (p != NULL) // search tree for insertion point
 	{
@@ -63,9 +64,12 @@ void AVLTree::insertValue(string& key)
 	// We fell off the tree, so we need to make a new node
 	AVLNode* newNode = addNodeToTree(key, q);
 
+	// a and/or f may have been updated. grab the latest versions of them.
+	a = getNode(getId(a));
+	f = getNode(getId(f));
+
 	// Update our balance factors
 	keyComparisons++;
-	int displacement; // Used for balance factors
 	if (key > a->key)
 	{
 		p = getNode(a->rightChildId);
@@ -76,24 +80,21 @@ void AVLTree::insertValue(string& key)
 		p = getNode(a->leftChildId);
 		displacement = 1;
 	}
-
-	AVLNode *b, *c;
-	b = c = NULL;
 	b = p;
 
-	while (p != newNode)
+	while (getId(p) != getId(newNode))
 	{
 		keyComparisons++;
 		if (key > p->key)
 		{
 			p->balanceFactor = -1;
-			saveNode(p); // Save the updated balance factor before grabbing a node from the HDD
+			saveNode(p);
 			p = getNode(p->rightChildId);
 		}
 		else
 		{
 			p->balanceFactor = 1;
-			saveNode(p); // Save the updated balance factor before grabbing a node from the HDD
+			saveNode(p);
 			p = getNode(p->leftChildId);
 		}
 	}
@@ -104,29 +105,29 @@ void AVLTree::insertValue(string& key)
 
 	if (a->balanceFactor == 0)				// Tree WAS completely balanced.  The
 	{										// insert pushed it to slight imbalance
-		a->balanceFactor = displacement;    // set the BF to +/- 1 and save.
-		saveNode(a);                        // Save the node.
-		return;								// This is close enough to live with, so exit now
+		a->balanceFactor = displacement;    // set the BF to +/- 1.  This is close
+		saveNode(a);
+		return;								// enough to live with, so exit now
 	}
 
 	if (a->balanceFactor == -displacement) // If the tree had a slight imbalance
 	{									   // the OTHER way, did the insertion
 		a->balanceFactor = 0;			   // throw the tree INTO balance?
-		saveNode(a);					   // If so, set the BF to zero & return
-		return;							   
+		saveNode(a);
+		return;							   // If so, set the BF to zero & return
 	}
 
-
-	int cl, cr; // Node ids used for searching and rebalancing. They are currently the children of node C
 	if (displacement == +1) // left imbalance.  LL or LR?
 	{
 		if (b->balanceFactor == +1) // LL rotation
 		{
 			a->leftChildId = b->rightChildId;
-			b->rightChildId = a->id;
+			b->rightChildId = getId(a);
 			nodePointerChanges += 2; // We made two node pointer changes here
 			a->balanceFactor = b->balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
 			balanceFactorChanges += 2; // We made two balance factor changes here
+			saveNode(a);
+			saveNode(b);
 		}
 		else  // LR Rotation: three cases
 		{
@@ -135,8 +136,8 @@ void AVLTree::insertValue(string& key)
 			cr = c->rightChildId; //    and right children
 			a->leftChildId = cr;
 			b->rightChildId = cl;
-			c->leftChildId = b->id;
-			c->rightChildId = a->id;
+			c->leftChildId = getId(b);
+			c->rightChildId = getId(a);
 			nodePointerChanges += 4; // We made four node pointer changes here
 			switch (c->balanceFactor)
 			{
@@ -156,28 +157,33 @@ void AVLTree::insertValue(string& key)
 			}
 			c->balanceFactor = 0;
 			balanceFactorChanges += 3; // We made three balance factor changes regardless of C's balance factor
-			b = c;
+			saveNode(a);
+			saveNode(b);
+			saveNode(c);
+			b->id = getId(c);
 		} // end of else (LR Rotation)
-	} // end of “if (d = +1)”
+	} // end of "if (d = +1)"
 	else // d=-1.  This is a right imbalance
 	{
 		if (b->balanceFactor == -1) // RR rotation
 		{
 			a->rightChildId = b->leftChildId;
-			b->leftChildId = a->id;
+			b->leftChildId = getId(a);
 			nodePointerChanges += 2; // We made two node pointer changes here
 			a->balanceFactor = b->balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
 			balanceFactorChanges += 2; // We made two balance factor changes here
+			saveNode(a);
+			saveNode(b);
 		}
-		else  // LR Rotation: three cases
+		else  // RL Rotation: three cases
 		{
 			c = getNode(b->leftChildId); // C is B's left child
 			cl = c->leftChildId; // CL and CR are C's left
 			cr = c->rightChildId; //    and right children
 			a->rightChildId = cl;
 			b->leftChildId = cr;
-			c->leftChildId = a->id;
-			c->rightChildId = b->id;
+			c->leftChildId = getId(a);
+			c->rightChildId = getId(b);
 			nodePointerChanges += 4; // We made four node pointer changes here
 			switch (c->balanceFactor)
 			{
@@ -198,37 +204,38 @@ void AVLTree::insertValue(string& key)
 
 			c->balanceFactor = 0;
 			balanceFactorChanges += 3; // We made three balance factor changes regardless of C's original balance factor
-			b = c;
+			saveNode(a);
+			saveNode(b);
+			saveNode(c);
+			b->id = getId(c);
 		} // end of else (LR Rotation)
 	}
 
-
-	// save nodes, a, b, and c
-	saveNode(a);
-	saveNode(b);
-	saveNode(c);
 	nodePointerChanges++; // Regardless of the path chosen below, there will be exactly one node pointer change
 	// did we rebalance the root?
 	if (f == NULL || f->id == NULL_NODE_ID)
 	{
-		root = b->id;
-		return;
-	}
-	// otherwise, we rebalanced whatever was the
-	// child (left or right) of F.
-	if (a->id == getNode(f->leftChildId)->id)
-	{
-		f->leftChildId = b->id;
-		saveNode(f);
-		return;
-	}
-	if (a->id == getNode(f->rightChildId)->id)
-	{
-		f->rightChildId = b->id;
-		saveNode(f);
+		root = getId(b);
+#ifdef DEBUG
+		cout << "216: Root is now pointing at id: " << root << "with getNode() returning as the ID: " << getId(getNode(root)) << endl;
+#endif
 		return;
 	}
 
+	// otherwise, we rebalanced whatever was the
+	// child (left or right) of F.
+	if (a->id == f->leftChildId)
+	{
+		f->leftChildId = getId(b);
+		saveNode(f);
+		return;
+	}
+	if (a->id == f->rightChildId)
+	{
+		f->rightChildId = getId(b);
+		saveNode(f);
+		return;
+	}
 }
 
 /* Outputs key information about the tree, including:
@@ -264,10 +271,11 @@ AVLNode* AVLTree::addNodeToTree(string& key, AVLNode* parent)
 	newNode->leftChildId = newNode->rightChildId = NULL_NODE_ID;
 	newNode->balanceFactor = 0;
 
-	if (parent == NULL)
+	if (parent == NULL || parent->id == NULL_NODE_ID)
 	{
 		// We're at the root of the tree, so just assign the root to this new node
-		root = newNode->id;
+		root = getId(newNode);
+		
 	}
 	else if (key < parent->key)
 	{
@@ -280,7 +288,6 @@ AVLNode* AVLTree::addNodeToTree(string& key, AVLNode* parent)
 		parent->rightChildId = newNode->id;
 	}
 	nodePointerChanges++; // There was one pointer change to set the new node
-	// Save the parent and the new node, only if the parent is not the null node
 	saveNode(parent);
 	saveNode(newNode);
 	return newNode;
@@ -321,6 +328,14 @@ int AVLTree::traverseTree(int startingNodeNumber, TraversalType traversalType)
 	return leftCount + nodeCount + rightCount;
 }
 
+// Return the node's id, or NULL_NODE_ID if the node passed in is actually NULL
+unsigned int AVLTree::getId(AVLNode* node)
+{
+	return node != NULL 
+		? node->id 
+		: NULL_NODE_ID;
+}
+
 AVLNode* AVLTree::getNode(int nodeNumber)
 {
 	DiskIO::openInputStream(FILE_NAME);
@@ -336,8 +351,27 @@ void AVLTree::saveNode(AVLNode* node)
 	DiskIO::openOutputStream(FILE_NAME); // If this is already open, nothing will happen
 	if (node == NULL || node->id == 0)
 	{
+#ifdef DEBUG
+		if (node == NULL)
+		{
+			cout << "Skipped saving NULL node";
+		}
+		else
+		{
+			cout << "Skipped saving node with id = 0. It's key was " << node->key << endl;
+		}
+#endif
 		return;
 	}
-	ofstream outputStream;
+#ifdef DEBUG
+	cout << "Saving a node with ID: " << getId(node) << endl;
+	cout << "   |-- ID: " << getId(node) << endl;
+	cout << "   |-- RC: " << node->rightChildId << endl;
+	cout << "   |-- LC: " << node->leftChildId << endl;
+	cout << "   |-- BF: " << node->balanceFactor << endl;
+	cout << "   |--KEY: " << node->key << endl;
+	cout << "   |-SIZE: " << sizeof(*node) << endl;
+	cout << "   ----\n";
+#endif
 	DiskIO::saveAVLNode(node);
 }
