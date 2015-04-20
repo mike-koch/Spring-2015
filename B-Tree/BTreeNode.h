@@ -14,11 +14,11 @@ struct BTreeNode
 	{
 		// Initialize keys and childIds array sizes. There will always be one more child id than the number of keys
 		maxNumberOfKeys = 2 * T - 1;
-		keys = new string[maxNumberOfKeys];
+		keys = new char[maxNumberOfKeys][50];
 		childIds = new unsigned int[2*T];
 	}
 	unsigned int id; // Unique identifier that dictates the position in the file
-	string* keys; // All of the keys in this node
+	char (*keys)[50]; // All of the keys in this node
 	unsigned int numberOfKeys; // Number of keys in this node. Between t-1 and 2t-1
 	unsigned int maxNumberOfKeys; // The max number of keys that this node can contain.
 	unsigned int* childIds; // array of child IDs
