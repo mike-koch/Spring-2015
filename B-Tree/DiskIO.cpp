@@ -7,50 +7,30 @@
 #include <iostream>
 #include <fstream>
 
-static ifstream inputStream;
-static ofstream outputStream;
+static fstream fileStream;
 
 const int SIZE_OF_AVL_NODE = sizeof(AVLNode);
 const int SIZE_OF_BTREE_NODE = sizeof(BTreeNode);
 
 //-- PUBLIC functions
-void DiskIO::openOutputStream(string fileName)
+void DiskIO::openFileStream(string fileName)
 {
-	if (!outputStream.is_open())
+	if (!fileStream.is_open())
 	{
-		outputStream.open(fileName, ios::binary);
+		// Allow input, output, write in binary (not text), and truncate the file if there's anything in it
+		fileStream.open(fileName, ios::in | ios::out | ios::binary | ios::trunc);
 	}
 }
 
-void DiskIO::closeOutputStream()
+void DiskIO::closeFileStream()
 {
-	if (outputStream.is_open())
+	if (fileStream.is_open())
 	{
-		outputStream.close();
+		fileStream.close();
 	}
 	else
 	{
 		cout << "WARNING: Output stream was not open, yet closeOutputStream() was called!\n";
-	}
-}
-
-void DiskIO::openInputStream(string fileName)
-{
-	if (!inputStream.is_open())
-	{
-		inputStream.open(fileName, ios::binary);
-	}
-}
-
-void DiskIO::closeInputStream()
-{
-	if (inputStream.is_open())
-	{
-		inputStream.close();
-	}
-	else
-	{
-		cout << "WARNING: Input stream was not open, yet closeInputStream() was called!\n";
 	}
 }
 
@@ -59,23 +39,23 @@ void DiskIO::saveAVLNode(AVLNode* avlNode)
 	//-- Open the output stream if it isn't already
 	//-- Move the seek pointer to the proper place in the file, based on the node's unique ID.
 	//   The caller is responsible for keeping track of the next node number for new nodes, so we don't have to worry about it here.
-	outputStream.seekp(SIZE_OF_AVL_NODE * avlNode->id);
+	fileStream.seekp(SIZE_OF_AVL_NODE * avlNode->id);
 
 	//-- Append the new bytes to the file
-	outputStream.write((char*)avlNode, SIZE_OF_AVL_NODE);
+	fileStream.write((char*)avlNode, SIZE_OF_AVL_NODE);
 
 	//-- Flush the output stream
-	outputStream.flush();
+	fileStream.flush();
 }
 
 AVLNode* DiskIO::loadAVLNode(int nodeNumber)
 {
 	//-- Move the seek pointer to the proper place in the file, based on the node number passed in.
-	inputStream.seekg(SIZE_OF_AVL_NODE * nodeNumber);
+	fileStream.seekg(SIZE_OF_AVL_NODE * nodeNumber);
 
 	//-- Grab the next number of bytes and stuff it into an AVLNode
 	AVLNode* nodeToRetrieve = new AVLNode();
-	inputStream.read((char*)nodeToRetrieve, SIZE_OF_AVL_NODE);
+	fileStream.read((char*)nodeToRetrieve, SIZE_OF_AVL_NODE);
 
 	return nodeToRetrieve;
 }
@@ -84,13 +64,13 @@ void DiskIO::saveBTreeNode(BTreeNode bTreeNode)
 {
 	//-- Move the seek pointer to the proper place in the file, based on the node's unique ID. 1 is added to the end to make everything "1-based".
 	//   The caller is responsible for keeping track of the next node number for new nodes, so we don't have to worry about it here.
-	outputStream.seekp(SIZE_OF_BTREE_NODE * bTreeNode.id);
+	fileStream.seekp(SIZE_OF_BTREE_NODE * bTreeNode.id);
 
 	//-- Append the new bytes to the file
-	outputStream.write((char*)&bTreeNode, SIZE_OF_BTREE_NODE);
+	fileStream.write((char*)&bTreeNode, SIZE_OF_BTREE_NODE);
 
 	//-- Close the output stream
-	outputStream.flush();
+	fileStream.flush();
 }
 
 BTreeNode DiskIO::loadBTreeNode(int nodeNumber)

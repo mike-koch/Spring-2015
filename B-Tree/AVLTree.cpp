@@ -10,7 +10,6 @@
 //#define DEBUG
 
 const unsigned int NULL_NODE_ID = 0;
-const string FILE_NAME = "AVLNodes.nodes";
 unsigned int nextNewNodeNumber = 1;
 int iteration = 0;
 //-- PUBLIC functions
@@ -256,12 +255,6 @@ void AVLTree::outputMetrics()
 	cout << "Number of balance factor changes: " << to_string(balanceFactorChanges) << endl;
 }
 
-void AVLTree::closeStreams()
-{
-	DiskIO::closeInputStream();
-	DiskIO::closeOutputStream();
-}
-
 //-- PRIVATE functions
 AVLNode* AVLTree::addNodeToTree(string& key, AVLNode* parent)
 {
@@ -338,7 +331,6 @@ unsigned int AVLTree::getId(AVLNode* node)
 
 AVLNode* AVLTree::getNode(int nodeNumber)
 {
-	DiskIO::openInputStream(FILE_NAME);
 	if (nodeNumber == 0)
 	{
 		return NULL;
@@ -348,7 +340,6 @@ AVLNode* AVLTree::getNode(int nodeNumber)
 
 void AVLTree::saveNode(AVLNode* node)
 {
-	DiskIO::openOutputStream(FILE_NAME); // If this is already open, nothing will happen
 	if (node == NULL || node->id == 0)
 	{
 #ifdef DEBUG

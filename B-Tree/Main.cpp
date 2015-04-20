@@ -9,7 +9,11 @@
 #include <time.h>
 #include "AVLTree.h"
 #include "BTree.h"
+#include "DiskIO.h"
 using namespace std;
+
+static const string AVL_FILE_NAME = "AVLNodes.nodes";
+static const string BTREE_FILE_NAME = "BTreeNodes.nodes";
 
 AVLTree avlTree;
 //BTree bTree(T);
@@ -39,8 +43,9 @@ int main()
 	int overheadTime = processFile(INPUT_FILE, InputMode::DRY_RUN);
 
 	outputTitle("Starting AVL Tree");
+	DiskIO::openFileStream(AVL_FILE_NAME);
 	processFile(INPUT_FILE, InputMode::AVL, overheadTime);
-	cleanup(InputMode::AVL);
+	DiskIO::closeFileStream();
 
 	//TODO Enable this to test AVL
 	//outputTitle("Starting BTree");
@@ -73,17 +78,6 @@ int processFile(string filePath, InputMode inputMode, int elapsedOverheadTime)
 		cout << "Excluding overhead, elapsed time: " << elapsedTime - elapsedOverheadTime << " clock cycles.\n";
 	}
 	return elapsedTime;
-}
-
-void cleanup(InputMode inputMode)
-{
-	switch (inputMode)
-	{
-	case InputMode::AVL:
-		avlTree.closeStreams();
-		break;
-
-	}
 }
 
 // Taking the file path, open an input stream and parse each word from the file by looking for delimiters (such as !, ., etc)

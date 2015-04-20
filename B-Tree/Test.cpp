@@ -13,13 +13,11 @@ const string AVL_FILE_LOCATION = "AVLNodes.nodes";
 const string BTREE_FILE_LOCATION = "BTreeNodes.nodes";
 int main2()
 {
-	DiskIO::openOutputStream(AVL_FILE_LOCATION);
+	DiskIO::openFileStream(AVL_FILE_LOCATION);
 	populateNodes(8);
-	DiskIO::closeOutputStream();
 
-	DiskIO::openInputStream(AVL_FILE_LOCATION);
 	AVLNode* node = DiskIO::loadAVLNode(8);
-	DiskIO::closeInputStream();
+	DiskIO::closeFileStream();
 	char throwaway = 0;
 
 	return 0;

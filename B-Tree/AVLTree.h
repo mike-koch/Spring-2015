@@ -14,7 +14,6 @@ class AVLTree
 public:
 	void insertValue(string& key);
 	void outputMetrics();
-	void closeStreams();
 
 private:
 	AVLNode* addNodeToTree(string& key, AVLNode* parent);
