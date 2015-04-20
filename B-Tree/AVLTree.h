@@ -14,11 +14,14 @@ class AVLTree
 public:
 	void insertValue(string& key);
 	void outputMetrics();
+	void closeStreams();
 
 private:
-	AVLNode* root;
 	AVLNode* addNodeToTree(string& key, AVLNode* parent);
-	int traverseTree(AVLNode* startingNode, TraversalType traversalType);
+	int root = 0;
+	int traverseTree(int startingNodeNumber, TraversalType traversalType);
+	AVLNode* getNode(int nodeNumber);
+	void saveNode(AVLNode* node);
 
 	int keyComparisons; // Contains the total number of times a given key was compared to another key in the tree
 	int nodePointerChanges; // Contains the total number of node pointer changes made during insertions

@@ -4,28 +4,39 @@
 // AVL Tree source file. Responsible for insert, search, and traversal.
 
 #include "AVLTree.h"
+#include "DiskIO.h"
 #include <iostream>
+#include <fstream>
 
+const int NULL_NODE_ID = 0;
+const string FILE_NAME = "AVLNodes.nodes";
+int nextNewNodeNumber = 1;
 //-- PUBLIC functions
 void AVLTree::insertValue(string& key)
 {
 	// 1. Search if the key already exists
 	// 2. If yes, just increment the counter
 	// 3. Otherwise, create a new node and hang it on the tree.
-	AVLNode *a, *b, *c, *cl, *cr; // Node pointers used for searching and rebalancing
-	AVLNode *f = NULL;
-	int displacement; // Used for balance factors
 
 	// If the tree is empty, make the root node
-	if (root == NULL)
+	if (root == NULL_NODE_ID)
 	{
 		addNodeToTree(key, NULL);
 		return; // There's no need to even check for an imbalance, since we just added our first node
 	}
 
-	AVLNode* q = NULL;
-	a = root;
-	AVLNode* p = root;
+	AVLNode *q = NULL; // Set q to be a "null" node
+	AVLNode *p;
+	if (root == NULL_NODE_ID)
+	{
+		p = NULL;
+	}
+	else
+	{
+		p = getNode(root);
+	}
+	AVLNode *a = getNode(root);
+	AVLNode *f = NULL;
 
 	while (p != NULL) // search tree for insertion point
 	{
@@ -33,6 +44,7 @@ void AVLTree::insertValue(string& key)
 		if (key == p->key)
 		{
 			p->numberOfOccurrences++;  // This node is a duplicate, so increment its counter
+			saveNode(p); // Save the node
 			return; // No need to check or adjust balance factors, so return.
 		}
 		if (p->balanceFactor != 0)   // remember the last place we saw
@@ -43,8 +55,8 @@ void AVLTree::insertValue(string& key)
 		}
 		q = p;
 		p = (key < p->key)
-			? p->leftChild
-			: p->rightChild;
+			? getNode(p->leftChildId)
+			: getNode(p->rightChildId);
 		keyComparisons++;
 	}
 
@@ -53,16 +65,20 @@ void AVLTree::insertValue(string& key)
 
 	// Update our balance factors
 	keyComparisons++;
+	int displacement; // Used for balance factors
 	if (key > a->key)
 	{
-		p = a->rightChild;
+		p = getNode(a->rightChildId);
 		displacement = -1;
 	}
 	else
 	{
-		p = a->leftChild;
+		p = getNode(a->leftChildId);
 		displacement = 1;
 	}
+
+	AVLNode *b, *c;
+	b = c = NULL;
 	b = p;
 
 	while (p != newNode)
@@ -71,12 +87,14 @@ void AVLTree::insertValue(string& key)
 		if (key > p->key)
 		{
 			p->balanceFactor = -1;
-			p = p->rightChild;
+			saveNode(p); // Save the updated balance factor before grabbing a node from the HDD
+			p = getNode(p->rightChildId);
 		}
 		else
 		{
 			p->balanceFactor = 1;
-			p = p->leftChild;
+			saveNode(p); // Save the updated balance factor before grabbing a node from the HDD
+			p = getNode(p->leftChildId);
 		}
 	}
 
@@ -86,35 +104,39 @@ void AVLTree::insertValue(string& key)
 
 	if (a->balanceFactor == 0)				// Tree WAS completely balanced.  The
 	{										// insert pushed it to slight imbalance
-		a->balanceFactor = displacement;    // set the BF to +/- 1.  This is close
-		return;								// enough to live with, so exit now
+		a->balanceFactor = displacement;    // set the BF to +/- 1 and save.
+		saveNode(a);                        // Save the node.
+		return;								// This is close enough to live with, so exit now
 	}
 
 	if (a->balanceFactor == -displacement) // If the tree had a slight imbalance
 	{									   // the OTHER way, did the insertion
 		a->balanceFactor = 0;			   // throw the tree INTO balance?
-		return;							   // If so, set the BF to zero & return
+		saveNode(a);					   // If so, set the BF to zero & return
+		return;							   
 	}
 
+
+	int cl, cr; // Node ids used for searching and rebalancing. They are currently the children of node C
 	if (displacement == +1) // left imbalance.  LL or LR?
 	{
 		if (b->balanceFactor == +1) // LL rotation
 		{
-			a->leftChild = b->rightChild;
-			b->rightChild = a;
+			a->leftChildId = b->rightChildId;
+			b->rightChildId = a->id;
 			nodePointerChanges += 2; // We made two node pointer changes here
 			a->balanceFactor = b->balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
 			balanceFactorChanges += 2; // We made two balance factor changes here
 		}
 		else  // LR Rotation: three cases
 		{
-			c = b->rightChild; // C is B's right child
-			cl = c->leftChild; // CL and CR are C's left
-			cr = c->rightChild; //    and right children
-			a->leftChild = cr;
-			b->rightChild = cl;
-			c->leftChild = b;
-			c->rightChild = a;
+			c = getNode(b->rightChildId); // C is B's right child
+			cl = c->leftChildId; // CL and CR are C's left
+			cr = c->rightChildId; //    and right children
+			a->leftChildId = cr;
+			b->rightChildId = cl;
+			c->leftChildId = b->id;
+			c->rightChildId = a->id;
 			nodePointerChanges += 4; // We made four node pointer changes here
 			switch (c->balanceFactor)
 			{
@@ -141,21 +163,21 @@ void AVLTree::insertValue(string& key)
 	{
 		if (b->balanceFactor == -1) // RR rotation
 		{
-			a->rightChild = b->leftChild;
-			b->leftChild = a;
+			a->rightChildId = b->leftChildId;
+			b->leftChildId = a->id;
 			nodePointerChanges += 2; // We made two node pointer changes here
 			a->balanceFactor = b->balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
 			balanceFactorChanges += 2; // We made two balance factor changes here
 		}
 		else  // LR Rotation: three cases
 		{
-			c = b->leftChild; // C is B's left child
-			cl = c->leftChild; // CL and CR are C's left
-			cr = c->rightChild; //    and right children
-			a->rightChild = cl;
-			b->leftChild = cr;
-			c->leftChild = a;
-			c->rightChild = b;
+			c = getNode(b->leftChildId); // C is B's left child
+			cl = c->leftChildId; // CL and CR are C's left
+			cr = c->rightChildId; //    and right children
+			a->rightChildId = cl;
+			b->leftChildId = cr;
+			c->leftChildId = a->id;
+			c->rightChildId = b->id;
 			nodePointerChanges += 4; // We made four node pointer changes here
 			switch (c->balanceFactor)
 			{
@@ -180,24 +202,30 @@ void AVLTree::insertValue(string& key)
 		} // end of else (LR Rotation)
 	}
 
+
+	// save nodes, a, b, and c
+	saveNode(a);
+	saveNode(b);
+	saveNode(c);
 	nodePointerChanges++; // Regardless of the path chosen below, there will be exactly one node pointer change
 	// did we rebalance the root?
-	if (f == NULL)
+	if (f == NULL || f->id == NULL_NODE_ID)
 	{
-		root = b;
+		root = b->id;
 		return;
 	}
-
 	// otherwise, we rebalanced whatever was the
 	// child (left or right) of F.
-	if (a == f->leftChild)
+	if (a->id == getNode(f->leftChildId)->id)
 	{
-		f->leftChild = b;
+		f->leftChildId = b->id;
+		saveNode(f);
 		return;
 	}
-	if (a == f->rightChild)
+	if (a->id == getNode(f->rightChildId)->id)
 	{
-		f->rightChild = b;
+		f->rightChildId = b->id;
+		saveNode(f);
 		return;
 	}
 
@@ -221,30 +249,40 @@ void AVLTree::outputMetrics()
 	cout << "Number of balance factor changes: " << to_string(balanceFactorChanges) << endl;
 }
 
+void AVLTree::closeStreams()
+{
+	DiskIO::closeInputStream();
+	DiskIO::closeOutputStream();
+}
+
 //-- PRIVATE functions
 AVLNode* AVLTree::addNodeToTree(string& key, AVLNode* parent)
 {
 	AVLNode* newNode = new AVLNode();
+	newNode->id = nextNewNodeNumber++;
 	newNode->key = key;
-	newNode->leftChild = newNode->rightChild = NULL;
+	newNode->leftChildId = newNode->rightChildId = NULL_NODE_ID;
 	newNode->balanceFactor = 0;
 
 	if (parent == NULL)
 	{
 		// We're at the root of the tree, so just assign the root to this new node
-		root = newNode;
+		root = newNode->id;
 	}
 	else if (key < parent->key)
 	{
 		keyComparisons++;
-		parent->leftChild = newNode;
+		parent->leftChildId = newNode->id;
 	}
 	else
 	{
 		keyComparisons++;
-		parent->rightChild = newNode;
+		parent->rightChildId = newNode->id;
 	}
 	nodePointerChanges++; // There was one pointer change to set the new node
+	// Save the parent and the new node, only if the parent is not the null node
+	saveNode(parent);
+	saveNode(newNode);
 	return newNode;
 }
 
@@ -254,21 +292,22 @@ Returns one of the following, depending on the TraversalType:
 - Total number of words in document
 - Height of tree + 1 (the height is offset by 1 to return a non-zero value. The caller is responsible for subtracting one off)
 */
-int AVLTree::traverseTree(AVLNode* startingNode, TraversalType traversalType)
+int AVLTree::traverseTree(int startingNodeNumber, TraversalType traversalType)
 {
 	// Since this is an in-order traversal (maintains order), three steps are performed:
 	//    1. Call this function on the left child if it's not null. (recursive call)
 	//    2. Append the weight (depending on TraversalType) to the running total
 	//    3. Call this function on the right child if it's not null. (recursive call)
-	if (startingNode == NULL) {
+	if (startingNodeNumber == NULL_NODE_ID) {
 		// Return early if the tree is empty or if we are at a leaf node to prevent NPEs.
 		return 0;
 	}
-	int leftCount = traverseTree(startingNode->leftChild, traversalType);
+	AVLNode* startingNode = getNode(startingNodeNumber);
+	int leftCount = traverseTree(startingNode->leftChildId, traversalType);
 	int nodeCount = traversalType == TraversalType::UNIQUE_WORDS
 		? 1
 		: startingNode->numberOfOccurrences;
-	int rightCount = traverseTree(startingNode->rightChild, traversalType);
+	int rightCount = traverseTree(startingNode->rightChildId, traversalType);
 
 	if (traversalType == TraversalType::HEIGHT)
 	{
@@ -280,4 +319,25 @@ int AVLTree::traverseTree(AVLNode* startingNode, TraversalType traversalType)
 		return 1 + rightCount;
 	}
 	return leftCount + nodeCount + rightCount;
+}
+
+AVLNode* AVLTree::getNode(int nodeNumber)
+{
+	DiskIO::openInputStream(FILE_NAME);
+	if (nodeNumber == 0)
+	{
+		return NULL;
+	}
+	return DiskIO::loadAVLNode(nodeNumber);
+}
+
+void AVLTree::saveNode(AVLNode* node)
+{
+	DiskIO::openOutputStream(FILE_NAME); // If this is already open, nothing will happen
+	if (node == NULL || node->id == 0)
+	{
+		return;
+	}
+	ofstream outputStream;
+	DiskIO::saveAVLNode(node);
 }

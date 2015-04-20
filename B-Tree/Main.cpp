@@ -10,7 +10,6 @@
 #include "AVLTree.h"
 #include "BTree.h"
 using namespace std;
-const unsigned int T = 2; // Value for T. Used by BTree only.
 
 AVLTree avlTree;
 //BTree bTree(T);
@@ -24,6 +23,7 @@ enum InputMode
 
 //Function prototypes
 int processFile(string filePath, InputMode inputMode, int elapsedOverheadTime = 0);
+void cleanup(InputMode inputMode);
 void parseInput(string filePath, InputMode inputMode);
 void insertWord(string& word, InputMode inputMode);
 void outputMetrics(InputMode inputMode);
@@ -40,6 +40,7 @@ int main()
 
 	outputTitle("Starting AVL Tree");
 	processFile(INPUT_FILE, InputMode::AVL, overheadTime);
+	cleanup(InputMode::AVL);
 
 	//TODO Enable this to test AVL
 	//outputTitle("Starting BTree");
@@ -72,6 +73,17 @@ int processFile(string filePath, InputMode inputMode, int elapsedOverheadTime)
 		cout << "Excluding overhead, elapsed time: " << elapsedTime - elapsedOverheadTime << " clock cycles.\n";
 	}
 	return elapsedTime;
+}
+
+void cleanup(InputMode inputMode)
+{
+	switch (inputMode)
+	{
+	case InputMode::AVL:
+		avlTree.closeStreams();
+		break;
+
+	}
 }
 
 // Taking the file path, open an input stream and parse each word from the file by looking for delimiters (such as !, ., etc)

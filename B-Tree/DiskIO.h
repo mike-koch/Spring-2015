@@ -11,11 +11,16 @@ using namespace std;
 struct DiskIO
 {
 public:
-	static void saveAVLNode(AVLNode& avlNode); // Saves the requested node
-	static AVLNode loadAVLNode(int nodeNumber); // Returns the node for the node number requested
+	static void openOutputStream(string fileName); // Opens the outputstream for the given file name if it isn't open already
+	static void openInputStream(string fileName); // Opens the inputstraem for the given file name if it isn't open already
 
-	static void saveBTreeNode(BTreeNode& bTreeNode); // Saves the requested node
+	static void saveAVLNode(AVLNode* avlNode); // Saves the requested node
+	static AVLNode* loadAVLNode(int nodeNumber); // Returns the node for the node number requested
+
+	static void saveBTreeNode(BTreeNode bTreeNode); // Saves the requested node
 	static BTreeNode loadBTreeNode(int nodeNumber); // Same as loadAVLNode, but for a BTreeNode
+	static void closeOutputStream(); // Closes the outputstream
+	static void closeInputStream(); // Closes the inputstream
 private:
 	static void outputFailure(string fileName);
 };
