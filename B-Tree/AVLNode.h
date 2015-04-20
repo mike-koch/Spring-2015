@@ -10,13 +10,12 @@ using namespace std;
 
 struct AVLNode
 {
-	int id; // Unique identifier that dictates the position in the file
-	int parentId;
-	int leftChildId;
-	int rightChildId;
+	int id = 0; // Unique identifier that dictates the position in the file
+	int parentId = 0;
+	int leftChildId = 0;
+	int rightChildId = 0;
 	string key;
 	int numberOfOccurrences = 1;
-	int balanceFactor = 0; // Used by AVL trees only. Can have the value -2, -1, 0, 1, or 2 (values of +/- 2 will be changed to +/- 1 after rebalancing)
-	bool isLeaf;
+	int balanceFactor = 0; // Can have the value -2, -1, 0, 1, or 2 (values of +/- 2 will be changed to +/- 1 after rebalancing)
 };
 #endif
