@@ -8,9 +8,9 @@
 #include <iostream>
 #include <fstream>
 
-const int NULL_NODE_ID = 0;
+const unsigned int NULL_NODE_ID = 0;
 const string FILE_NAME = "AVLNodes.nodes";
-int nextNewNodeNumber = 1;
+unsigned int nextNewNodeNumber = 1;
 //-- PUBLIC functions
 void AVLTree::insertValue(string& key)
 {

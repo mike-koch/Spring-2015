@@ -8,32 +8,34 @@
 #include <fstream>
 
 // Function prototypes
-AVLNode* testCreatingAVLNode(int latestId);
+void populateNodes(unsigned int num);
 const string AVL_FILE_LOCATION = "AVLNodes.nodes";
 const string BTREE_FILE_LOCATION = "BTreeNodes.nodes";
 int main2()
 {
-
-	AVLNode* node = new AVLNode();
-	node->id = 1;
-	node->key = "FIRST 1KEY1";
 	DiskIO::openOutputStream(AVL_FILE_LOCATION);
-	DiskIO::saveAVLNode(node);
-	AVLNode* anothernode = new AVLNode();
-	anothernode->id = 2;
-	anothernode->key = "SECOND 2KEY2";
-	DiskIO::saveAVLNode(anothernode);
-	AVLNode* thirdnode = new AVLNode();
-	thirdnode->id = 3;
-	thirdnode->key = "THIRD 3KEY3";
-	DiskIO::saveAVLNode(thirdnode);
-	DiskIO::openInputStream(AVL_FILE_LOCATION);
-	AVLNode* returnedNode = DiskIO::loadAVLNode(1);
-	AVLNode* anotherReturnedNode = DiskIO::loadAVLNode(2);
-	AVLNode* thirdReturnedNode = DiskIO::loadAVLNode(3);
-	DiskIO::closeInputStream();
+	populateNodes(8);
 	DiskIO::closeOutputStream();
+
+	DiskIO::openInputStream(AVL_FILE_LOCATION);
+	AVLNode* node = DiskIO::loadAVLNode(8);
+	DiskIO::closeInputStream();
 	char throwaway = 0;
 
 	return 0;
+}
+
+void populateNodes(unsigned int num)
+{
+	for (unsigned int i = 1; i <= num; i++)
+	{
+		AVLNode* node = new AVLNode();
+		node->id = i;
+		node->key = to_string(i) + "KEY" + to_string(i);
+		node->leftChildId = 0;
+		node->rightChildId = 0;
+		node->numberOfOccurrences = 0;
+		node->balanceFactor = 0;
+		DiskIO::saveAVLNode(node);
+	}
 }

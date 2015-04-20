@@ -23,6 +23,8 @@ private:
 	AVLNode* getNode(int nodeNumber);
 	void saveNode(AVLNode* node);
 
+	unsigned int getId(AVLNode* node);
+
 	int keyComparisons; // Contains the total number of times a given key was compared to another key in the tree
 	int nodePointerChanges; // Contains the total number of node pointer changes made during insertions
 	int balanceFactorChanges; // Contains the total number of balance factor changes made
