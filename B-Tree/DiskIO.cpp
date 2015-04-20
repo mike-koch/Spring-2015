@@ -96,7 +96,7 @@ void DiskIO::saveBTreeNode(BTreeNode bTreeNode)
 BTreeNode DiskIO::loadBTreeNode(int nodeNumber)
 {
 	//TODO
-	BTreeNode nodeToReturn;
+	BTreeNode nodeToReturn(2);
 	return nodeToReturn;
 }
 

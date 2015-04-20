@@ -10,11 +10,20 @@ using namespace std;
 
 struct BTreeNode
 {
-	int id; // Unique identifier that dictates the position in the file
-	BTreeNode* parent;
-	BTreeNode* leftChild;
-	BTreeNode* rightChild;
-	int numberOfOccurrences = 1;
-	bool isLeaf;
+	BTreeNode(unsigned const int T)
+	{
+		// Initialize keys and childIds array sizes. There will always be one more child id than the number of keys
+		maxNumberOfKeys = 2 * T - 1;
+		keys = new string[maxNumberOfKeys];
+		childIds = new unsigned int[2*T];
+	}
+	unsigned int id; // Unique identifier that dictates the position in the file
+	string* keys; // All of the keys in this node
+	unsigned int numberOfKeys; // Number of keys in this node. Between t-1 and 2t-1
+	unsigned int maxNumberOfKeys; // The max number of keys that this node can contain.
+	unsigned int* childIds; // array of child IDs
+	unsigned int parentId = 0;
+	unsigned int numberOfOccurrences = 1;
+	bool isLeaf(); // Function to determine if this node is a leaf node
 };
 #endif
