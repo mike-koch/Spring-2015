@@ -35,7 +35,7 @@ bool isDelimiter(char c);
 void outputTitle(string header);
 
 // Process the file three times: first as a dry run (to calculate overhead), and then once each through the AVL and BTree.
-int main2()
+int main()
 {
 	const string INPUT_FILE = "C:\\Shakespeare.txt";
 

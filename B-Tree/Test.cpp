@@ -13,7 +13,7 @@
 void populateAVLNodes(unsigned int num);
 const string AVL_FILE_LOCATION = "AVLNodes.nodes";
 const string BTREE_FILE_LOCATION = "BTreeNodes.nodes";
-int main()
+int main2()
 {
 	DiskIO::openFileStream(BTREE_FILE_LOCATION);
 	BTree tree;
@@ -62,7 +62,7 @@ int main()
 	tree.insertValue(value);
 	char throwaway = 0;
 	DiskIO::closeFileStream();
-
+	return 0;
 }
 
 void populateAVLNodes(unsigned int num)

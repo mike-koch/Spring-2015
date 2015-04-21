@@ -13,7 +13,7 @@ unsigned int nextNodeId = 1;
 void BTree::insertValue(string& key)
 {
 #ifdef DEBUG
-	cout << "KEY: " << key << endl;
+	//cout << "KEY: " << key << endl;
 #endif
 	BTreeNode* rootNode = getNode(root);
 	// Search if a node with this key already exists.
@@ -34,8 +34,8 @@ void BTree::insertValue(string& key)
 		root = s->id;
 		s->isLeaf = false;
 		s->numberOfKeys = 0;
-		s->childIds[0] = tempRoot;
-		splitChild(s, 0);
+		s->childIds[1] = tempRoot;
+		splitChild(s, 1);
 		insertNotFull(s, key);
 	}
 	else
@@ -62,7 +62,7 @@ void BTree::initializeTree()
 
 BTreeSearchResult* BTree::search(BTreeNode* startingNode, string& key)
 {
-	unsigned int i = 0;
+	unsigned int i = 1;
 	while (i < startingNode->numberOfKeys && key > startingNode->keys[i])
 	{
 		i++;
@@ -110,7 +110,11 @@ void BTree::saveNode(BTreeNode* node)
 		return;
 	}
 #ifdef DEBUG
-	cout << "Saving a node with ID: " << node->id << endl;
+	if (node->id % 1000 == 0)
+	{
+		cout << node->id << endl;
+	}
+	//cout << "Saving a node with ID: " << node->id << endl;
 #endif
 	DiskIO::saveBTreeNode(node);
 	return;
@@ -123,25 +127,25 @@ void BTree::splitChild(BTreeNode* node, unsigned int index)
 	BTreeNode* y = getNode(node->childIds[index]);
 	z->isLeaf = y->isLeaf;
 	z->numberOfKeys = T - 1;
-	for (unsigned int j = 0; j < T - 1; j++)
+	for (unsigned int j = 1; j <= T - 1; j++)
 	{
 		strcpy(z->keys[j], y->keys[j + T]);
 		z->numberOfOccurrences[j] = y->numberOfOccurrences[j + T];
 	}
 	if (!y->isLeaf)
 	{
-		for (unsigned int j = 0; j < T; j++)
+		for (unsigned int j = 1; j <= T; j++)
 		{
 			z->childIds[j] = y->childIds[j + T];
 		}
 	}
 	y->numberOfKeys = T - 1;
-	for (unsigned int j = node->numberOfKeys; j > index + 1; j--)
+	for (unsigned int j = node->numberOfKeys + 1; j >= index + 1; j--)
 	{
 		node->childIds[j + 1] = node->childIds[j];
 	}
 	node->childIds[index + 1] = z->id;
-	for (unsigned int j = node->numberOfKeys; j > index; j--)
+	for (unsigned int j = node->numberOfKeys; j >= index; j--)
 	{
 		strcpy(node->keys[j + 1], node->keys[j]);
 		node->numberOfOccurrences[j + 1] = node->numberOfOccurrences[j];
@@ -159,34 +163,33 @@ void BTree::insertNotFull(BTreeNode* node, string& key)
 	unsigned int i = node->numberOfKeys;
 	if (node->isLeaf)
 	{
-		bool isLessThan = key < node->keys[i];
-		while (i >= 0 && key < node->keys[i])
+		while (i >= 1 && key < node->keys[i])
 		{
 			strcpy(node->keys[i + 1], node->keys[i]);
 			node->numberOfOccurrences[i + 1] = node->numberOfOccurrences[i];
 			i--;
 		}
-		strcpy(node->keys[i], key.c_str());
+		strcpy(node->keys[i + 1], key.c_str());
 		node->numberOfOccurrences[i] = 1;
 		node->numberOfKeys++;
 		saveNode(node);
 	}
 	else
 	{
-		while (i >= 0 && key < node->keys[i])
+		while (i >= 1 && key < node->keys[i])
 		{
 			i--;
 		}
 		i++;
-		BTreeNode* someNode = getNode(node->childIds[i-1]);
-		if (someNode->numberOfKeys == someNode->maxNumberOfKeys)
+		BTreeNode* childNode = getNode(node->childIds[i]);
+		if (childNode->numberOfKeys == childNode->maxNumberOfKeys)
 		{
 			splitChild(node, i);
 			if (key > node->keys[i])
 			{
 				i++;
 			}
-			insertNotFull(getNode(node->childIds[i]), key);
 		}
+		insertNotFull(getNode(node->childIds[i]), key);
 	}
 }

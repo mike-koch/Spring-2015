@@ -18,10 +18,10 @@ public:
 	}
 	unsigned int maxNumberOfKeys = 2 * T - 1; // The max number of keys that this node can contain.
 	unsigned int id; // Unique identifier that dictates the position in the file
-	char (*keys)[50] = new char[maxNumberOfKeys][50]; // All of the keys in this node
+	char (*keys)[50] = new char[maxNumberOfKeys+1][50]; // All of the keys in this node. Adding 1 to allow for 1-based indicies.
 	unsigned int numberOfKeys = 0; // Number of keys in this node. Between t-1 and 2t-1
-	unsigned int *childIds = new unsigned int[2*T]; // array of child IDs
-	unsigned int *numberOfOccurrences = new unsigned int[maxNumberOfKeys];
+	unsigned int *childIds = new unsigned int[2*T+1]; // array of child IDs. Adding 1 to allow for 1-based indicies
+	unsigned int *numberOfOccurrences = new unsigned int[maxNumberOfKeys+1]; //Paired with keys. Adding 1 to allow for 1-based indicies
 	bool isLeaf;
 private:
 	void initializeArrays();

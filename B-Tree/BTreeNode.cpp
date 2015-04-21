@@ -2,7 +2,7 @@
 
 void BTreeNode::initializeArrays()
 {
-	int i = 0;
+	unsigned int i = 0;
 	for (i = 0; i < maxNumberOfKeys; i++)
 	{
 		for (int j = 0; j < 50; j++)
