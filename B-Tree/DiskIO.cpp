@@ -60,24 +60,29 @@ AVLNode* DiskIO::loadAVLNode(int nodeNumber)
 	return nodeToRetrieve;
 }
 
-void DiskIO::saveBTreeNode(BTreeNode bTreeNode)
+void DiskIO::saveBTreeNode(BTreeNode* bTreeNode)
 {
 	//-- Move the seek pointer to the proper place in the file, based on the node's unique ID. 1 is added to the end to make everything "1-based".
 	//   The caller is responsible for keeping track of the next node number for new nodes, so we don't have to worry about it here.
-	fileStream.seekp(SIZE_OF_BTREE_NODE * bTreeNode.id);
+	fileStream.seekp(SIZE_OF_BTREE_NODE * bTreeNode->id);
 
 	//-- Append the new bytes to the file
-	fileStream.write((char*)&bTreeNode, SIZE_OF_BTREE_NODE);
+	fileStream.write((char*)bTreeNode, SIZE_OF_BTREE_NODE);
 
 	//-- Close the output stream
 	fileStream.flush();
 }
 
-BTreeNode DiskIO::loadBTreeNode(int nodeNumber)
+BTreeNode* DiskIO::loadBTreeNode(int nodeNumber)
 {
-	//TODO
-	BTreeNode nodeToReturn(2);
-	return nodeToReturn;
+	//-- Move the seek pointer to the proper place in the file, based on the node number passed in.
+	fileStream.seekg(SIZE_OF_BTREE_NODE * nodeNumber);
+
+	//-- Grab the next number of bytes and stuff it into a BTreeNode
+	BTreeNode* node = new BTreeNode();
+	fileStream.read((char*)node, SIZE_OF_BTREE_NODE);
+
+	return node;
 }
 
 //-- PRIVATE functions

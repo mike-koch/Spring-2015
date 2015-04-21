@@ -5,25 +5,67 @@
 
 #include "AVLNode.h"
 #include "DiskIO.h"
+#include "BTreeNode.h"
+#include "BTree.h"
 #include <fstream>
 
 // Function prototypes
-void populateNodes(unsigned int num);
+void populateAVLNodes(unsigned int num);
 const string AVL_FILE_LOCATION = "AVLNodes.nodes";
 const string BTREE_FILE_LOCATION = "BTreeNodes.nodes";
-int main2()
+int main()
 {
-	DiskIO::openFileStream(AVL_FILE_LOCATION);
-	populateNodes(8);
-
-	AVLNode* node = DiskIO::loadAVLNode(8);
-	DiskIO::closeFileStream();
+	DiskIO::openFileStream(BTREE_FILE_LOCATION);
+	BTree tree;
+	tree.initializeTree();
+	string value = "F";
+	tree.insertValue(value);
+	value = "S";
+	tree.insertValue(value);
+	value = "Q";
+	tree.insertValue(value);
+	value = "K";
+	tree.insertValue(value);
+	value = "C";
+	tree.insertValue(value);
+	value = "L";
+	tree.insertValue(value);
+	value = "H";
+	tree.insertValue(value);
+	value = "T";
+	tree.insertValue(value);
+	value = "V";
+	tree.insertValue(value);
+	value = "W";
+	tree.insertValue(value);
+	value = "M";
+	tree.insertValue(value);
+	value = "R";
+	tree.insertValue(value);
+	value = "N";
+	tree.insertValue(value);
+	value = "P";
+	tree.insertValue(value);
+	value = "A";
+	tree.insertValue(value);
+	value = "B";
+	tree.insertValue(value);
+	value = "X";
+	tree.insertValue(value);
+	value = "Y";
+	tree.insertValue(value);
+	value = "D";
+	tree.insertValue(value);
+	value = "Z";
+	tree.insertValue(value);
+	value = "E";
+	tree.insertValue(value);
 	char throwaway = 0;
+	DiskIO::closeFileStream();
 
-	return 0;
 }
 
-void populateNodes(unsigned int num)
+void populateAVLNodes(unsigned int num)
 {
 	for (unsigned int i = 1; i <= num; i++)
 	{

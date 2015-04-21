@@ -9,7 +9,7 @@
 
 struct BTreeSearchResult
 {
-	BTreeNode node;
+	BTreeNode* node;
 	unsigned int keyPosition;
 };
 #endif

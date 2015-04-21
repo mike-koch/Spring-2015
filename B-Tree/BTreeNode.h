@@ -8,25 +8,20 @@
 #include <string>
 using namespace std;
 
+const int T = 2;
 struct BTreeNode
 {
 public:
-	BTreeNode(unsigned const int T = 2) // Using a default value so search results don't need to create a random T value just to compile
+	BTreeNode() // Using a default value so search results don't need to create a random T value just to compile
 	{
-		// Initialize keys and childIds array sizes. There will always be one more child id than the number of keys
-		maxNumberOfKeys = 2 * T - 1;
-		numberOfKeys = 0;
-		keys = new char[maxNumberOfKeys][50];
-		childIds = new unsigned int[2*T];
-		numberOfOccurrences = new unsigned int[maxNumberOfKeys];
 		initializeArrays();
 	}
-	int id; // Unique identifier that dictates the position in the file
-	char (*keys)[50]; // All of the keys in this node
-	unsigned int numberOfKeys; // Number of keys in this node. Between t-1 and 2t-1
-	unsigned int maxNumberOfKeys; // The max number of keys that this node can contain.
-	unsigned int *childIds; // array of child IDs
-	unsigned int *numberOfOccurrences;
+	unsigned int maxNumberOfKeys = 2 * T - 1; // The max number of keys that this node can contain.
+	unsigned int id; // Unique identifier that dictates the position in the file
+	char (*keys)[50] = new char[maxNumberOfKeys][50]; // All of the keys in this node
+	unsigned int numberOfKeys = 0; // Number of keys in this node. Between t-1 and 2t-1
+	unsigned int *childIds = new unsigned int[2*T]; // array of child IDs
+	unsigned int *numberOfOccurrences = new unsigned int[maxNumberOfKeys];
 	bool isLeaf;
 private:
 	void initializeArrays();

@@ -74,7 +74,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AVLTree.cpp" />
-    <ClCompile Include="BTree.cpp" />
+    <ClCompile Include="BTree.cpp">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
     <ClCompile Include="BTreeNode.cpp" />
     <ClCompile Include="DiskIO.cpp" />
     <ClCompile Include="Main.cpp" />

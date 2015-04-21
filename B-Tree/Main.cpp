@@ -14,10 +14,9 @@ using namespace std;
 
 static const string AVL_FILE_NAME = "AVLNodes.nodes";
 static const string BTREE_FILE_NAME = "BTreeNodes.nodes";
-static const unsigned int BTREE_T = 2; // Constant value for T, used for the B-Tree
 
 AVLTree avlTree;
-BTree bTree(BTREE_T);
+BTree bTree;
 
 enum InputMode
 {
@@ -36,12 +35,13 @@ bool isDelimiter(char c);
 void outputTitle(string header);
 
 // Process the file three times: first as a dry run (to calculate overhead), and then once each through the AVL and BTree.
-int main()
+int main2()
 {
 	const string INPUT_FILE = "C:\\Shakespeare.txt";
 
-	outputTitle("Starting dry run");
-	int overheadTime = processFile(INPUT_FILE, InputMode::DRY_RUN);
+	//outputTitle("Starting dry run");
+	//int overheadTime = processFile(INPUT_FILE, InputMode::DRY_RUN);
+	int overheadTime = 0;
 
 	//outputTitle("Starting AVL Tree");
 	//DiskIO::openFileStream(AVL_FILE_NAME);
@@ -50,6 +50,7 @@ int main()
 
 	outputTitle("Starting BTree");
 	DiskIO::openFileStream(BTREE_FILE_NAME);
+	bTree.initializeTree();
 	processFile(INPUT_FILE, InputMode::B_TREE, overheadTime);
 	DiskIO::closeFileStream();
 

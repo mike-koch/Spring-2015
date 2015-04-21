@@ -5,7 +5,10 @@ void BTreeNode::initializeArrays()
 	int i = 0;
 	for (i = 0; i < maxNumberOfKeys; i++)
 	{
-		*keys[i] = '\0';
+		for (int j = 0; j < 50; j++)
+		{
+			keys[i][j] = '\0';
+		}
 		numberOfOccurrences[i] = 0;
 		childIds[i] = 0;
 	}
