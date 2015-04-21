@@ -10,20 +10,25 @@ using namespace std;
 
 struct BTreeNode
 {
-	BTreeNode(unsigned const int T)
+public:
+	BTreeNode(unsigned const int T = 2) // Using a default value so search results don't need to create a random T value just to compile
 	{
 		// Initialize keys and childIds array sizes. There will always be one more child id than the number of keys
 		maxNumberOfKeys = 2 * T - 1;
+		numberOfKeys = 0;
 		keys = new char[maxNumberOfKeys][50];
 		childIds = new unsigned int[2*T];
+		numberOfOccurrences = new unsigned int[maxNumberOfKeys];
+		initializeArrays();
 	}
-	unsigned int id; // Unique identifier that dictates the position in the file
+	int id; // Unique identifier that dictates the position in the file
 	char (*keys)[50]; // All of the keys in this node
 	unsigned int numberOfKeys; // Number of keys in this node. Between t-1 and 2t-1
 	unsigned int maxNumberOfKeys; // The max number of keys that this node can contain.
-	unsigned int* childIds; // array of child IDs
-	unsigned int parentId = 0;
-	unsigned int numberOfOccurrences = 1;
-	bool isLeaf(); // Function to determine if this node is a leaf node
+	unsigned int *childIds; // array of child IDs
+	unsigned int *numberOfOccurrences;
+	bool isLeaf;
+private:
+	void initializeArrays();
 };
 #endif

@@ -68,12 +68,14 @@
     <ClInclude Include="AVLNode.h" />
     <ClInclude Include="BTree.h" />
     <ClInclude Include="BTreeNode.h" />
+    <ClInclude Include="BTreeSearchResult.h" />
     <ClInclude Include="DiskIO.h" />
     <ClInclude Include="TraversalType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AVLTree.cpp" />
     <ClCompile Include="BTree.cpp" />
+    <ClCompile Include="BTreeNode.cpp" />
     <ClCompile Include="DiskIO.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Test.cpp" />

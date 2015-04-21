@@ -14,9 +14,10 @@ using namespace std;
 
 static const string AVL_FILE_NAME = "AVLNodes.nodes";
 static const string BTREE_FILE_NAME = "BTreeNodes.nodes";
+static const unsigned int BTREE_T = 2; // Constant value for T, used for the B-Tree
 
 AVLTree avlTree;
-//BTree bTree(T);
+BTree bTree(BTREE_T);
 
 enum InputMode
 {
@@ -42,14 +43,15 @@ int main()
 	outputTitle("Starting dry run");
 	int overheadTime = processFile(INPUT_FILE, InputMode::DRY_RUN);
 
-	outputTitle("Starting AVL Tree");
-	DiskIO::openFileStream(AVL_FILE_NAME);
-	processFile(INPUT_FILE, InputMode::AVL, overheadTime);
-	DiskIO::closeFileStream();
+	//outputTitle("Starting AVL Tree");
+	//DiskIO::openFileStream(AVL_FILE_NAME);
+	//processFile(INPUT_FILE, InputMode::AVL, overheadTime);
+	//DiskIO::closeFileStream();
 
-	//TODO Enable this to test AVL
-	//outputTitle("Starting BTree");
-	//processFile(INPUT_FILE, InputMode::B_TREE, overheadTime);
+	outputTitle("Starting BTree");
+	DiskIO::openFileStream(BTREE_FILE_NAME);
+	processFile(INPUT_FILE, InputMode::B_TREE, overheadTime);
+	DiskIO::closeFileStream();
 
 	cout << "\n\nFinished. Press ENTER to exit.";
 	char throwaway;
@@ -137,7 +139,7 @@ void insertWord(string& word, InputMode inputMode)
 		avlTree.insertValue(word);
 		break;
 	case InputMode::B_TREE:
-		//bTree.insertValue(word);
+		bTree.insertValue(word);
 		break;
 	}
 }
@@ -151,7 +153,7 @@ void outputMetrics(InputMode inputMode)
 		avlTree.outputMetrics();
 		break;
 	case InputMode::B_TREE:
-		//bTree.outputMetrics();
+		bTree.outputMetrics();
 		break;
 	}
 }
