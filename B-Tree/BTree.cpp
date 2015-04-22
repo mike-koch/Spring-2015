@@ -6,12 +6,17 @@
 #include "BTree.h"
 #include "DiskIO.h"
 #include <iostream>
-#define DEBUG
+//#define DEBUG
 
 unsigned int nextNodeId = 1;
+unsigned int iterationCount = 0;
 //-- PUBLIC functions
 void BTree::insertValue(string& key)
 {
+	if (++iterationCount % 1000 == 0)
+	{
+		cout << iterationCount << endl;
+	}
 #ifdef DEBUG
 	//cout << "KEY: " << key << endl;
 #endif
