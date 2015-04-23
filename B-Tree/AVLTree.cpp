@@ -253,6 +253,8 @@ void AVLTree::outputMetrics()
 	cout << "Total number of unique words: " << to_string(traverseTree(root, TraversalType::UNIQUE_WORDS)) << endl;
 	cout << "Total number of words (incl. duplicates): " << to_string(traverseTree(root, TraversalType::TOTAL_WORDS)) << endl;
 	cout << "Number of balance factor changes: " << to_string(balanceFactorChanges) << endl;
+	cout << "Total number of disk reads: " << to_string(numberOfReads) << endl;
+	cout << "Total number of disk writes: " << to_string(numberOfWrites) << endl;
 }
 
 //-- PRIVATE functions
@@ -335,6 +337,7 @@ AVLNode* AVLTree::getNode(int nodeNumber)
 	{
 		return NULL;
 	}
+	numberOfReads++;
 	return DiskIO::loadAVLNode(nodeNumber);
 }
 
@@ -364,5 +367,6 @@ void AVLTree::saveNode(AVLNode* node)
 	cout << "   |-SIZE: " << sizeof(*node) << endl;
 	cout << "   ----\n";
 #endif
+	numberOfWrites++;
 	DiskIO::saveAVLNode(node);
 }

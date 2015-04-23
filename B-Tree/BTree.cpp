@@ -62,6 +62,8 @@ void BTree::outputMetrics()
 {
 	//TODO
 	cout << "Number of nodes: " << --nextNodeId << endl;
+	cout << "Total number of disk reads: " << to_string(numberOfReads) << endl;
+	cout << "Total number of disk writes: " << to_string(numberOfWrites) << endl;
 }
 
 void BTree::initializeTree()
@@ -111,7 +113,7 @@ void BTree::getNode(BTreeNode* node, int nodeId)
 #endif
 		return;
 	}
-
+	numberOfReads++;
 	DiskIO::loadBTreeNode(node, nodeId);
 }
 
@@ -127,6 +129,7 @@ void BTree::saveNode(BTreeNode* node)
 #ifdef DEBUG
 	//cout << "Saving a node with ID: " << node->id << endl;
 #endif
+	numberOfWrites++;
 	DiskIO::saveBTreeNode(node);
 	return;
 }
