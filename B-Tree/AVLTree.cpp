@@ -35,8 +35,9 @@ void AVLTree::insertValue(string& key)
 		return; // There's no need to even check for an imbalance, since we just added our first node
 	}
 
-	AVLNode a, f, q, p;
-	getNode(&a, root);
+	int aId = 0, fId = 0;
+	AVLNode q, p;
+	aId = root;
 	getNode(&p, root);
 
 	while (p.id != 0) // search tree for insertion point
@@ -50,8 +51,8 @@ void AVLTree::insertValue(string& key)
 		if (p.balanceFactor != 0)   // remember the last place we saw
 		{
 			// Keep track of the deepest node that has a balance factor != 0 and its parent
-			a = p;
-			f = q;
+			aId = p.id;
+			fId = q.id;
 		}
 		q = p;
 		if (key < p.key)
@@ -68,9 +69,10 @@ void AVLTree::insertValue(string& key)
 	AVLNode newNode;
 	addNodeToTree(&newNode, key, &q);
 
-	// a and/or f may have been updated. grab the latest versions of them.
-	getNode(&a, a.id);
-	getNode(&f, f.id);
+	// Grab nodes A and F for rebalancing
+	AVLNode a, f;
+	getNode(&a, aId);
+	getNode(&f, fId);
 
 	// Update our balance factors
 	if (key > a.key)
@@ -83,7 +85,9 @@ void AVLTree::insertValue(string& key)
 		getNode(&p, a.leftChildId);
 		displacement = 1;
 	}
-	AVLNode b = p;
+
+	// Get p's current position so we can get node B when we need to rebalance
+	int bId = p.id;
 
 	while (p.id != newNode.id)
 	{
@@ -101,8 +105,9 @@ void AVLTree::insertValue(string& key)
 		}
 	}
 
-	// Re-load b, as the above loop may have changed it
-	getNode(&b, b.id);
+	// Grab b for rebalancing
+	AVLNode b;
+	getNode(&b, bId);
 
 	// Now we check the BF at A and see if we just 
 	// BALANCED the tree, IMBALANCED the tree, or if 
