@@ -10,7 +10,7 @@
 //#define DEBUG
 
 const unsigned int NULL_NODE_ID = 0;
-unsigned int nextNewNodeNumber = 1;
+static unsigned int nextNewNodeNumber = 1;
 int iteration = 0;
 //-- PUBLIC functions
 void AVLTree::insertValue(string& key)

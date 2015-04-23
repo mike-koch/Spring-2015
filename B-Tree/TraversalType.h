@@ -8,6 +8,7 @@ enum TraversalType
 {
 	UNIQUE_WORDS,
 	TOTAL_WORDS,
-	HEIGHT
+	HEIGHT,
+	NONE
 };
 #endif

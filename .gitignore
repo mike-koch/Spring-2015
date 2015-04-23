@@ -195,3 +195,4 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 B-Tree/AVLNodes.nodes
+B-Tree/BTreeNodes.nodes

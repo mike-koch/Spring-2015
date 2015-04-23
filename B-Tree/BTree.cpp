@@ -8,101 +8,111 @@
 #include <iostream>
 //#define DEBUG
 
-unsigned int nextNodeId = 1;
+static unsigned int nextNodeId = 1;
 unsigned int iterationCount = 0;
 //-- PUBLIC functions
 void BTree::insertValue(string& key)
 {
-	if (++iterationCount % 1000 == 0)
-	{
-		cout << iterationCount << endl;
-	}
 #ifdef DEBUG
-	//cout << "KEY: " << key << endl;
+	cout << endl << "Inserting Key: " << key << endl;
+	cout << "-----------------" << endl;
 #endif
-	BTreeNode* rootNode = getNode(root);
+	BTreeNode rootNode;
+	getNode(&rootNode, root);
 	// Search if a node with this key already exists.
-	BTreeSearchResult* searchResult = search(rootNode, key);
-	if (searchResult->node != NULL)
+	BTreeSearchResult searchResult;
+	search(&searchResult, &rootNode, key);
+	if (searchResult.node.id != 0)
 	{
 		//-- We found a hit for our word. Increment the occurrences counter and return
-		searchResult->node->numberOfOccurrences[searchResult->keyPosition]++;
+		searchResult.node.numberOfOccurrences[searchResult.keyPosition]++;
+		saveNode(&searchResult.node);
+#ifdef DEBUG
+		// Print the current status of the tree if DEBUG is defined
+		printTree(root);
+#endif
 		return;
 	}
 
 	int tempRoot = root;
-	if (rootNode->numberOfKeys == rootNode->maxNumberOfKeys)
+	if (rootNode.numberOfKeys == rootNode.maxNumberOfKeys)
 	{
-		BTreeNode* s = new BTreeNode();
-		s->id = nextNodeId++;
+		BTreeNode s;
+		s.id = nextNodeId++;
 		rootNode = s;
-		root = s->id;
-		s->isLeaf = false;
-		s->numberOfKeys = 0;
-		s->childIds[1] = tempRoot;
-		splitChild(s, 1);
-		insertNotFull(s, key);
+		root = s.id;
+		s.isLeaf = false;
+		s.numberOfKeys = 0;
+		s.childIds[1] = tempRoot;
+		s.numberOfChildren++;
+		splitChild(&s, 1);
+		insertNotFull(&s, key);
 	}
 	else
 	{
-		insertNotFull(rootNode, key);
+		insertNotFull(&rootNode, key);
 	}
+#ifdef DEBUG
+	// Print the current status of the tree if DEBUG is defined
+	printTree(root);
+#endif
 }
 
 void BTree::outputMetrics()
 {
-	cout << "This works." << endl;
 	//TODO
+	cout << "Number of nodes: " << --nextNodeId << endl;
 }
 
 void BTree::initializeTree()
 {
-	BTreeNode* x = new BTreeNode();
-	x->id = nextNodeId++;
-	x->isLeaf = true;
-	x->numberOfKeys = 0;
-	root = x->id;
-	saveNode(x);
+	BTreeNode x;
+	x.id = nextNodeId++;
+	x.isLeaf = true;
+	x.numberOfKeys = 0;
+	root = x.id;
+	saveNode(&x);
 }
 
-BTreeSearchResult* BTree::search(BTreeNode* startingNode, string& key)
+void BTree::search(BTreeSearchResult* searchResult, BTreeNode* startingNode, string& key)
 {
 	unsigned int i = 1;
-	while (i < startingNode->numberOfKeys && key > startingNode->keys[i])
+	while (i <= startingNode->numberOfKeys && key > startingNode->keys[i])
 	{
 		i++;
 	}
 	if (i <= startingNode->numberOfKeys && key == startingNode->keys[i])
 	{
-		BTreeSearchResult* result = new BTreeSearchResult();
-		result->keyPosition = i;
-		result->node = startingNode;
-		return result;
+		searchResult->keyPosition = i;
+		searchResult->node = *startingNode;
+		if (searchResult->node.id > 1000)
+		{
+			char throwaway = 0;
+		}
+		return;
 	}
 	if (startingNode->isLeaf)
 	{
-		BTreeSearchResult* nullResult = new BTreeSearchResult();
-		nullResult->keyPosition = 0;
-		nullResult->node = NULL;
-		return nullResult;
+		searchResult->keyPosition = 0;
+		searchResult->node.id = 0;
+		return;
 	}
-	
-	BTreeNode* nextNode = getNode(startingNode->childIds[i]);
-	return search(nextNode, key);
+	BTreeNode nextNode;
+	getNode(&nextNode, startingNode->childIds[i]);
+	return search(searchResult, &nextNode, key);
 }
 
-BTreeNode* BTree::getNode(int nodeId)
+void BTree::getNode(BTreeNode* node, int nodeId)
 {
 	if (nodeId == 0)
 	{
 #ifdef DEBUG
 		cout << "BTree requested the null node." << endl;
 #endif
-		return NULL;
+		return;
 	}
 
-	BTreeNode* node = DiskIO::loadBTreeNode(nodeId);
-	return node;
+	DiskIO::loadBTreeNode(node, nodeId);
 }
 
 void BTree::saveNode(BTreeNode* node)
@@ -115,10 +125,6 @@ void BTree::saveNode(BTreeNode* node)
 		return;
 	}
 #ifdef DEBUG
-	if (node->id % 1000 == 0)
-	{
-		cout << node->id << endl;
-	}
 	//cout << "Saving a node with ID: " << node->id << endl;
 #endif
 	DiskIO::saveBTreeNode(node);
@@ -127,39 +133,42 @@ void BTree::saveNode(BTreeNode* node)
 
 void BTree::splitChild(BTreeNode* node, unsigned int index)
 {
-	BTreeNode* z = new BTreeNode();
-	z->id = nextNodeId++;
-	BTreeNode* y = getNode(node->childIds[index]);
-	z->isLeaf = y->isLeaf;
-	z->numberOfKeys = T - 1;
+	BTreeNode z, y;
+	z.id = nextNodeId++;
+	getNode(&y, node->childIds[index]);
+	z.isLeaf = y.isLeaf;
+	z.numberOfKeys = T - 1;
 	for (unsigned int j = 1; j <= T - 1; j++)
 	{
-		strcpy(z->keys[j], y->keys[j + T]);
-		z->numberOfOccurrences[j] = y->numberOfOccurrences[j + T];
+		strcpy(z.keys[j], y.keys[j + T]);
+		z.numberOfOccurrences[j] = y.numberOfOccurrences[j + T];
 	}
-	if (!y->isLeaf)
+	if (!y.isLeaf)
 	{
 		for (unsigned int j = 1; j <= T; j++)
 		{
-			z->childIds[j] = y->childIds[j + T];
+			z.childIds[j] = y.childIds[j + T];
+			z.numberOfChildren++;
+			y.numberOfChildren--;
 		}
 	}
-	y->numberOfKeys = T - 1;
+	y.numberOfKeys = T - 1;
 	for (unsigned int j = node->numberOfKeys + 1; j >= index + 1; j--)
 	{
 		node->childIds[j + 1] = node->childIds[j];
 	}
-	node->childIds[index + 1] = z->id;
+	node->childIds[index + 1] = z.id;
+	node->numberOfChildren++;
 	for (unsigned int j = node->numberOfKeys; j >= index; j--)
 	{
 		strcpy(node->keys[j + 1], node->keys[j]);
 		node->numberOfOccurrences[j + 1] = node->numberOfOccurrences[j];
 	}
-	strcpy(node->keys[index], y->keys[T]);
-	node->numberOfOccurrences[index] = y->numberOfOccurrences[T];
+	strcpy(node->keys[index], y.keys[T]);
+	node->numberOfOccurrences[index] = y.numberOfOccurrences[T];
 	node->numberOfKeys = node->numberOfKeys + 1;
-	saveNode(y);
-	saveNode(z);
+	saveNode(&y);
+	saveNode(&z);
 	saveNode(node);
 }
 
@@ -186,15 +195,88 @@ void BTree::insertNotFull(BTreeNode* node, string& key)
 			i--;
 		}
 		i++;
-		BTreeNode* childNode = getNode(node->childIds[i]);
-		if (childNode->numberOfKeys == childNode->maxNumberOfKeys)
+		BTreeNode childNode;
+		getNode(&childNode, node->childIds[i]);
+		if (childNode.numberOfKeys == childNode.maxNumberOfKeys)
 		{
 			splitChild(node, i);
 			if (key > node->keys[i])
 			{
 				i++;
 			}
+			getNode(&childNode, node->childIds[i]);
 		}
-		insertNotFull(getNode(node->childIds[i]), key);
+		
+		insertNotFull(&childNode, key);
 	}
+}
+
+// Prints out the current contents of the tree. Simply a wrapper function to traverse, but with a cin at the end to require user input.
+// If DEBUG is disabled, this is a no-op
+void BTree::printTree(int startingNodeNumber)
+{
+#ifdef DEBUG
+	traverse(startingNodeNumber, TraversalType::NONE);
+	char throwaway;
+	cin.get(throwaway);
+#endif
+}
+
+int BTree::traverse(int startingNodeNumber, TraversalType traversalType, int printSpaces)
+{
+	// Since this is an in-order traversal (maintains order), three steps are performed:
+	//    1. Call this function on the left child if it's not null. (recursive call)
+	//    2. Append the weight (depending on TraversalType) to the running total
+	//    3. Call this function on the right child if it's not null. (recursive call)
+	if (startingNodeNumber == 0) {
+		// Return early if the tree is empty or if we are at a leaf node to prevent NPEs.
+		return 0;
+	}
+	BTreeNode node;
+	getNode(&node, startingNodeNumber);
+	int childCount = 0;
+#ifdef DEBUG
+	//Print out info for this node
+	string keys;
+	string spaces = "";
+	for (int i = 0; i < printSpaces; i++)
+	{
+		spaces += " ";
+	}
+	bool first = true;
+	for (unsigned int i = 1; i <= node.numberOfKeys; i++)
+	{
+		if (!first)
+		{
+			keys += ", ";
+		}
+		first = false;
+		keys += node.keys[i];
+		keys += " (" + to_string(node.numberOfOccurrences[i]) + ")";
+	}
+	cout << spaces << "Node #" << node.id << ", keys: " << keys << endl;
+#endif
+	for (unsigned int i = 1; i <= node.numberOfChildren; i++)
+	{
+		//-- There will be at most numberOfKeys + 1 children, and at least 0. The 0 check will prevent accesses to invalid children
+		childCount += traverse(node.childIds[i], traversalType, printSpaces+2);
+	}
+
+	/*int leftCount = traverseTree(node.leftChildId, traversalType);
+	int nodeCount = traversalType == TraversalType::UNIQUE_WORDS
+		? 1
+		: startingNode->numberOfOccurrences;
+	int rightCount = traverseTree(startingNode->rightChildId, traversalType);
+
+	if (traversalType == TraversalType::HEIGHT)
+	{
+		// Return 1 (which must be 1 since we're starting at the root), along with the higher height of the left or right side
+		if (leftCount > rightCount)
+		{
+			return 1 + leftCount;
+		}
+		return 1 + rightCount;
+	}
+	return leftCount + nodeCount + rightCount;*/
+	return 0;
 }

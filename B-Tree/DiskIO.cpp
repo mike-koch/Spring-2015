@@ -73,16 +73,13 @@ void DiskIO::saveBTreeNode(BTreeNode* bTreeNode)
 	fileStream.flush();
 }
 
-BTreeNode* DiskIO::loadBTreeNode(int nodeNumber)
+void DiskIO::loadBTreeNode(BTreeNode* node, int nodeNumber)
 {
 	//-- Move the seek pointer to the proper place in the file, based on the node number passed in.
 	fileStream.seekg(SIZE_OF_BTREE_NODE * nodeNumber);
 
 	//-- Grab the next number of bytes and stuff it into a BTreeNode
-	BTreeNode* node = new BTreeNode();
 	fileStream.read((char*)node, SIZE_OF_BTREE_NODE);
-
-	return node;
 }
 
 //-- PRIVATE functions

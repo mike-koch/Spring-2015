@@ -19,12 +19,14 @@ public:
 
 private:
 	unsigned int root;
-	BTreeSearchResult* search(BTreeNode* startingNode, string& key);
-	BTreeNode* getNode(int nodeId);
+	void search(BTreeSearchResult* searchResult, BTreeNode* startingNode, string& key);
+	void getNode(BTreeNode* node, int nodeId);
 	void saveNode(BTreeNode* node);
 	void splitChild(BTreeNode* node, unsigned int index);
 	void insert(string& key);
 	void insertNotFull(BTreeNode* node, string& key);
+	int traverse(int startingNodeNumber, TraversalType traversalType, int printSpaces = 0);
+	void printTree(int startingNodeNumber);
 
 	int keyComparisons; // Contains the total number of times a given key was compared to another key in the tree
 	int nodePointerChanges; // Contains the total number of node pointer changes made during insertions
