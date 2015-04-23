@@ -11,6 +11,10 @@
 static unsigned int nextNodeId = 1;
 unsigned int iterationCount = 0;
 //-- PUBLIC functions
+
+// 1. Searches for the key to see if it already exists in the tree
+// 2. If it does, simply increment its counter
+// 3. Otherwise, create a new BTreeNode and insert it into the tree
 void BTree::insertValue(string& key)
 {
 #ifdef DEBUG
@@ -37,6 +41,7 @@ void BTree::insertValue(string& key)
 	int tempRoot = root;
 	if (rootNode.numberOfKeys == rootNode.maxNumberOfKeys)
 	{
+		// Create a new node, call splitChild on it, and insert it into the tree
 		BTreeNode s;
 		s.id = nextNodeId++;
 		rootNode = s;
@@ -58,6 +63,17 @@ void BTree::insertValue(string& key)
 #endif
 }
 
+/* Outputs key information about the tree, including:
+   - Height
+   - # of nodes
+   - # of available keys
+   - # of used keys
+   - Ratio of used to available keys
+   - Distinct words
+   - Total words
+   - Disk reads/writes
+   - File size
+*/
 void BTree::outputMetrics()
 {
 	cout << "Height of tree: " << to_string(getHeight(root, 0)) << endl;
@@ -76,6 +92,7 @@ void BTree::outputMetrics()
 	cout << "File size: " << to_string(DiskIO::getFileSize()) << " bytes" << endl;
 }
 
+// Creates an empty tree and adds one node with no keys
 void BTree::initializeTree()
 {
 	BTreeNode x;
@@ -86,6 +103,8 @@ void BTree::initializeTree()
 	saveNode(&x);
 }
 
+// Searches for a given node by finding the key position that the key WOULD be in, and then by checking that position and all children that
+//   are descendants of that key. If the key exists, the node and key value are returned. Otherwise a null node result (ID = 0) is returned.
 void BTree::search(BTreeSearchResult* searchResult, BTreeNode* startingNode, string& key)
 {
 	unsigned int i = 1;
@@ -97,10 +116,6 @@ void BTree::search(BTreeSearchResult* searchResult, BTreeNode* startingNode, str
 	{
 		searchResult->keyPosition = i;
 		searchResult->node = *startingNode;
-		if (searchResult->node.id > 1000)
-		{
-			char throwaway = 0;
-		}
 		return;
 	}
 	if (startingNode->isLeaf)
@@ -114,6 +129,7 @@ void BTree::search(BTreeSearchResult* searchResult, BTreeNode* startingNode, str
 	return search(searchResult, &nextNode, key);
 }
 
+// Returns a given node from the hard disk based on its id, and increments the total number of reads. See DiskIO::loadBTreeNode() for more info.
 void BTree::getNode(BTreeNode* node, int nodeId)
 {
 	if (nodeId == 0)
@@ -127,6 +143,7 @@ void BTree::getNode(BTreeNode* node, int nodeId)
 	DiskIO::loadBTreeNode(node, nodeId);
 }
 
+// Saves a given node to the hard disk, and increments the total number of writes. See DiskIO::saveBTreeNode() for more info.
 void BTree::saveNode(BTreeNode* node)
 {
 	if (node->id == 0)
@@ -144,6 +161,8 @@ void BTree::saveNode(BTreeNode* node)
 	return;
 }
 
+// Splits a given node (if necessary) into three nodes, node, z, and y. Z takes half of Y's children, and node takes the median of the values,
+//  and node will be the parent of both z and y.
 void BTree::splitChild(BTreeNode* node, unsigned int index)
 {
 	BTreeNode z, y;
@@ -153,6 +172,7 @@ void BTree::splitChild(BTreeNode* node, unsigned int index)
 	z.numberOfKeys = T - 1;
 	for (unsigned int j = 1; j <= T - 1; j++)
 	{
+		// Move half of y's keys to z, and reset the # of occurrences in y since the key was moved.
 		strcpy(z.keys[j], y.keys[j + T]);
 		z.numberOfOccurrences[j] = y.numberOfOccurrences[j + T];
 		y.numberOfOccurrences[j + T] = 1;
@@ -188,9 +208,11 @@ void BTree::splitChild(BTreeNode* node, unsigned int index)
 	saveNode(node);
 }
 
+// Inserts the given key into the tree, starting at the node provided. 
 void BTree::insertNotFull(BTreeNode* node, string& key)
 {
 	unsigned int i = node->numberOfKeys;
+	// If the node provided is a leaf, and there is a spot for the key, simply add the key in and save the node.
 	if (node->isLeaf)
 	{
 		while (i >= 1 && key < node->keys[i])
@@ -207,6 +229,8 @@ void BTree::insertNotFull(BTreeNode* node, string& key)
 	}
 	else
 	{
+		// Otherwise, find where the key should go, relative to the given node's children, split the child if necessary, and then save the node.
+		// This call may be recursive as the key finds its position down the tree.
 		while (i >= 1 && key < node->keys[i])
 		{
 			i--;
