@@ -61,7 +61,9 @@ void BTree::insertValue(string& key)
 void BTree::outputMetrics()
 {
 	//TODO
-	cout << "Number of nodes: " << --nextNodeId << endl;
+	cout << "Total number of nodes: " << to_string(traverse(root, TraversalType::NUMBER_OF_NODES)) << endl;
+	cout << "Number of distinct words: " << to_string(traverse(root, TraversalType::UNIQUE_WORDS)) << endl;
+	cout << "Total number of words (incl. duplicates): " << to_string(traverse(root, TraversalType::TOTAL_WORDS)) << endl;
 	cout << "Total number of disk reads: " << to_string(numberOfReads) << endl;
 	cout << "Total number of disk writes: " << to_string(numberOfWrites) << endl;
 }
@@ -227,10 +229,6 @@ void BTree::printTree(int startingNodeNumber)
 
 int BTree::traverse(int startingNodeNumber, TraversalType traversalType, int printSpaces)
 {
-	// Since this is an in-order traversal (maintains order), three steps are performed:
-	//    1. Call this function on the left child if it's not null. (recursive call)
-	//    2. Append the weight (depending on TraversalType) to the running total
-	//    3. Call this function on the right child if it's not null. (recursive call)
 	if (startingNodeNumber == 0) {
 		// Return early if the tree is empty or if we are at a leaf node to prevent NPEs.
 		return 0;
@@ -263,7 +261,20 @@ int BTree::traverse(int startingNodeNumber, TraversalType traversalType, int pri
 	{
 		//-- There will be at most numberOfKeys + 1 children, and at least 0. The 0 check will prevent accesses to invalid children
 		childCount += traverse(node.childIds[i], traversalType, printSpaces+2);
+	// Set nodeCount to 1, unless the TraversalType is not NUMBER_OF_NODES
+	int nodeCount = 1;
+	if (traversalType != TraversalType::NUMBER_OF_NODES)
+	{
+		nodeCount = 0;
+		for (unsigned int i = 1; i <= node.numberOfKeys; i++)
+		{
+			nodeCount += traversalType == TraversalType::UNIQUE_WORDS
+				? 1
+				: node.numberOfOccurrences[i];
+		}
 	}
+	return childCount + nodeCount;
+	
 
 	/*int leftCount = traverseTree(node.leftChildId, traversalType);
 	int nodeCount = traversalType == TraversalType::UNIQUE_WORDS

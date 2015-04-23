@@ -248,9 +248,12 @@ void AVLTree::insertValue(string& key)
 void AVLTree::outputMetrics()
 {
 	cout << "Height of tree: " << to_string(traverseTree(root, TraversalType::HEIGHT) - 1) << endl;
-	cout << "Number of key comparisons: " << to_string(keyComparisons) << endl;
-	cout << "Number of node pointer changes: " << to_string(nodePointerChanges) << endl;
-	cout << "Total number of unique words: " << to_string(traverseTree(root, TraversalType::UNIQUE_WORDS)) << endl;
+
+	// AVL Trees have one key per node, so the # of nodes and # of unique words are the same
+	int numberOfUniqueWords = traverseTree(root, TraversalType::UNIQUE_WORDS);
+	cout << "Total number of nodes: " << to_string(numberOfUniqueWords) << endl;
+	cout << "Total number of unique words: " << to_string(numberOfUniqueWords) << endl;
+
 	cout << "Total number of words (incl. duplicates): " << to_string(traverseTree(root, TraversalType::TOTAL_WORDS)) << endl;
 	cout << "Number of balance factor changes: " << to_string(balanceFactorChanges) << endl;
 	cout << "Total number of disk reads: " << to_string(numberOfReads) << endl;
