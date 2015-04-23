@@ -9,11 +9,11 @@
 #include <fstream>
 //#define DEBUG  // Uncomment this line to enable DEBUG statements
 
-const unsigned int NULL_NODE_ID = 0;
+static const int NULL_NODE_ID = 0;
 static unsigned int nextNewNodeNumber = 1;
-int iteration = 0;
-//-- PUBLIC functions
+static int iteration = 0;
 
+//-- PUBLIC functions
 // Inserts a value by doing the following:
 // 1. Search if the key already exists
 // 2. If yes, just increment the counter
@@ -24,18 +24,18 @@ void AVLTree::insertValue(string& key)
 	cout << "CURRENTLY AT ITERATION: " << ++iteration << endl;
 	cout << "Root is currently has id #" << root << " and getNode(root) returned a node with id: " << getId(getNode(root)) << endl;
 #endif
-	AVLNode a, b, c, f; // Nodes used for searching and rebalancing
 	int cl, cr;
 	int displacement; // Used for balance factors
 
 	// If the tree is empty, make the root node
 	if (root == NULL_NODE_ID)
 	{
-		addNodeToTree(key, NULL);
+		AVLNode newNode;
+		addNodeToTree(&newNode, key, NULL);
 		return; // There's no need to even check for an imbalance, since we just added our first node
 	}
 
-	AVLNode q, p;
+	AVLNode a, f, q, p;
 	getNode(&a, root);
 	getNode(&p, root);
 
@@ -65,7 +65,8 @@ void AVLTree::insertValue(string& key)
 	}
 
 	// We fell off the tree, so we need to make a new node
-	AVLNode newNode = *addNodeToTree(key, &q);
+	AVLNode newNode;
+	addNodeToTree(&newNode, key, &q);
 
 	// a and/or f may have been updated. grab the latest versions of them.
 	getNode(&a, a.id);
@@ -82,7 +83,7 @@ void AVLTree::insertValue(string& key)
 		getNode(&p, a.leftChildId);
 		displacement = 1;
 	}
-	b = p;
+	AVLNode b = p;
 
 	while (p.id != newNode.id)
 	{
@@ -130,6 +131,7 @@ void AVLTree::insertValue(string& key)
 		}
 		else  // LR Rotation: three cases
 		{
+			AVLNode c;
 			getNode(&c, b.rightChildId); // C is B's right child
 			cl = c.leftChildId; // CL and CR are C's left
 			cr = c.rightChildId; //    and right children
@@ -172,6 +174,7 @@ void AVLTree::insertValue(string& key)
 		}
 		else  // RL Rotation: three cases
 		{
+			AVLNode c;
 			getNode(&c, b.leftChildId); // C is B's left child
 			cl = c.leftChildId; // CL and CR are C's left
 			cr = c.rightChildId; //    and right children
@@ -250,31 +253,29 @@ void AVLTree::outputMetrics()
 }
 
 //-- PRIVATE functions
-AVLNode* AVLTree::addNodeToTree(string& key, AVLNode* parent)
+void AVLTree::addNodeToTree(AVLNode* newNode, string& key, AVLNode* parent)
 {
-	AVLNode newNode;
-	newNode.id = nextNewNodeNumber++;
-	newNode.key = key;
-	newNode.leftChildId = newNode.rightChildId = NULL_NODE_ID;
-	newNode.balanceFactor = 0;
+	newNode->id = nextNewNodeNumber++;
+	newNode->key = key;
+	newNode->leftChildId = newNode->rightChildId = NULL_NODE_ID;
+	newNode->balanceFactor = 0;
 
 	if (parent == NULL || parent->id == NULL_NODE_ID)
 	{
 		// We're at the root of the tree, so just assign the root to this new node
-		root = newNode.id;
+		root = newNode->id;
 		
 	}
 	else if (key < parent->key)
 	{
-		parent->leftChildId = newNode.id;
+		parent->leftChildId = newNode->id;
 	}
 	else
 	{
-		parent->rightChildId = newNode.id;
+		parent->rightChildId = newNode->id;
 	}
 	saveNode(parent);
-	saveNode(&newNode);
-	return &newNode;
+	saveNode(newNode);
 }
 
 /*
@@ -317,6 +318,7 @@ void AVLTree::getNode(AVLNode* node, int nodeNumber)
 {
 	if (nodeNumber == 0)
 	{
+		node->id = NULL_NODE_ID;
 		return;
 	}
 	numberOfReads++;

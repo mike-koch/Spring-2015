@@ -16,13 +16,11 @@ public:
 	void outputMetrics();
 
 private:
-	AVLNode* addNodeToTree(string& key, AVLNode* parent);
+	void addNodeToTree(AVLNode* newNode, string& key, AVLNode* parent);
 	int root = 0;
 	int traverseTree(int startingNodeNumber, TraversalType traversalType);
 	void getNode(AVLNode* node, int nodeNumber);
 	void saveNode(AVLNode* node);
-
-	unsigned int getId(AVLNode* node);
 
 	int numberOfReads; // Contains the total number of times a record was pulled from the hard drive
 	int numberOfWrites; // Contains the total number of times a record was written to the hard drive
