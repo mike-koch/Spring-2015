@@ -29,8 +29,6 @@ private:
 	int getHeight(int startingNodeNumber, int currentHeight);
 	void printTree(int startingNodeNumber);
 
-	int keyComparisons; // Contains the total number of times a given key was compared to another key in the tree
-	int nodePointerChanges; // Contains the total number of node pointer changes made during insertions
 	int numberOfReads; // Contains the total number of times a record was pulled from the hard drive
 	int numberOfWrites; // Contains the total number of times a record was written to the hard drive
 	int height; // Contains the height of the tree. Only calculated during traversal.

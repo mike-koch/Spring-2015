@@ -40,7 +40,6 @@ void AVLTree::insertValue(string& key)
 
 	while (p != NULL) // search tree for insertion point
 	{
-		keyComparisons++;
 		if (key == p->key)
 		{
 			p->numberOfOccurrences++;  // This node is a duplicate, so increment its counter
@@ -57,7 +56,6 @@ void AVLTree::insertValue(string& key)
 		p = (key < p->key)
 			? getNode(p->leftChildId)
 			: getNode(p->rightChildId);
-		keyComparisons++;
 	}
 
 	// We fell off the tree, so we need to make a new node
@@ -68,7 +66,6 @@ void AVLTree::insertValue(string& key)
 	f = getNode(getId(f));
 
 	// Update our balance factors
-	keyComparisons++;
 	if (key > a->key)
 	{
 		p = getNode(a->rightChildId);
@@ -83,7 +80,6 @@ void AVLTree::insertValue(string& key)
 
 	while (getId(p) != getId(newNode))
 	{
-		keyComparisons++;
 		if (key > p->key)
 		{
 			p->balanceFactor = -1;
@@ -122,9 +118,7 @@ void AVLTree::insertValue(string& key)
 		{
 			a->leftChildId = b->rightChildId;
 			b->rightChildId = getId(a);
-			nodePointerChanges += 2; // We made two node pointer changes here
 			a->balanceFactor = b->balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
-			balanceFactorChanges += 2; // We made two balance factor changes here
 			saveNode(a);
 			saveNode(b);
 		}
@@ -137,7 +131,6 @@ void AVLTree::insertValue(string& key)
 			b->rightChildId = cl;
 			c->leftChildId = getId(b);
 			c->rightChildId = getId(a);
-			nodePointerChanges += 4; // We made four node pointer changes here
 			switch (c->balanceFactor)
 			{
 				// Set the new BF’s at A and B, based on the
@@ -155,7 +148,6 @@ void AVLTree::insertValue(string& key)
 				break;
 			}
 			c->balanceFactor = 0;
-			balanceFactorChanges += 3; // We made three balance factor changes regardless of C's balance factor
 			saveNode(a);
 			saveNode(b);
 			saveNode(c);
@@ -168,9 +160,7 @@ void AVLTree::insertValue(string& key)
 		{
 			a->rightChildId = b->leftChildId;
 			b->leftChildId = getId(a);
-			nodePointerChanges += 2; // We made two node pointer changes here
 			a->balanceFactor = b->balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
-			balanceFactorChanges += 2; // We made two balance factor changes here
 			saveNode(a);
 			saveNode(b);
 		}
@@ -183,7 +173,6 @@ void AVLTree::insertValue(string& key)
 			b->leftChildId = cr;
 			c->leftChildId = getId(a);
 			c->rightChildId = getId(b);
-			nodePointerChanges += 4; // We made four node pointer changes here
 			switch (c->balanceFactor)
 			{
 				// Set the new BF’s at A and B, based on the
@@ -202,7 +191,6 @@ void AVLTree::insertValue(string& key)
 			}
 
 			c->balanceFactor = 0;
-			balanceFactorChanges += 3; // We made three balance factor changes regardless of C's original balance factor
 			saveNode(a);
 			saveNode(b);
 			saveNode(c);
@@ -210,7 +198,6 @@ void AVLTree::insertValue(string& key)
 		} // end of else (LR Rotation)
 	}
 
-	nodePointerChanges++; // Regardless of the path chosen below, there will be exactly one node pointer change
 	// did we rebalance the root?
 	if (f == NULL || f->id == NULL_NODE_ID)
 	{
@@ -278,15 +265,12 @@ AVLNode* AVLTree::addNodeToTree(string& key, AVLNode* parent)
 	}
 	else if (key < parent->key)
 	{
-		keyComparisons++;
 		parent->leftChildId = newNode->id;
 	}
 	else
 	{
-		keyComparisons++;
 		parent->rightChildId = newNode->id;
 	}
-	nodePointerChanges++; // There was one pointer change to set the new node
 	saveNode(parent);
 	saveNode(newNode);
 	return newNode;
