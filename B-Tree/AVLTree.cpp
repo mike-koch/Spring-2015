@@ -7,21 +7,23 @@
 #include "DiskIO.h"
 #include <iostream>
 #include <fstream>
-//#define DEBUG
+//#define DEBUG  // Uncomment this line to enable DEBUG statements
 
 const unsigned int NULL_NODE_ID = 0;
 static unsigned int nextNewNodeNumber = 1;
 int iteration = 0;
 //-- PUBLIC functions
+
+// Inserts a value by doing the following:
+// 1. Search if the key already exists
+// 2. If yes, just increment the counter
+// 3. Otherwise, create a new node and hang it on the tree
 void AVLTree::insertValue(string& key)
 {
 #ifdef DEBUG
 	cout << "CURRENTLY AT ITERATION: " << ++iteration << endl;
 	cout << "Root is currently has id #" << root << " and getNode(root) returned a node with id: " << getId(getNode(root)) << endl;
 #endif
-	// 1. Search if the key already exists
-	// 2. If yes, just increment the counter
-	// 3. Otherwise, create a new node and hang it on the tree.
 	AVLNode *a, *b, *c; // Node pointers used for searching and rebalancing
 	int cl, cr;
 	AVLNode *f = NULL;
@@ -226,11 +228,10 @@ void AVLTree::insertValue(string& key)
 
 /* Outputs key information about the tree, including:
 - Height of tree
-- Number of key comparisons
-- Number of node pointer changes
 - Number of unique words
 - Number of words including duplicates
-- Number of balance factor changes
+- Number of disk reads/writes
+- Total file size
 */
 void AVLTree::outputMetrics()
 {
@@ -242,7 +243,6 @@ void AVLTree::outputMetrics()
 	cout << "Total number of unique words: " << to_string(numberOfUniqueWords) << endl;
 
 	cout << "Total number of words (incl. duplicates): " << to_string(traverseTree(root, TraversalType::TOTAL_WORDS)) << endl;
-	cout << "Number of balance factor changes: " << to_string(balanceFactorChanges) << endl;
 	cout << "Total number of disk reads: " << to_string(numberOfReads) << endl;
 	cout << "Total number of disk writes: " << to_string(numberOfWrites) << endl;
 	cout << "File size: " << to_string(DiskIO::getFileSize()) << " bytes" << endl;
