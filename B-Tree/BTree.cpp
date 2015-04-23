@@ -63,7 +63,14 @@ void BTree::outputMetrics()
 	//TODO
 	cout << "Height of tree: " << to_string(getHeight(root, 0)) << endl;
 	cout << "Total number of nodes: " << to_string(traverse(root, TraversalType::NUMBER_OF_NODES)) << endl;
-	cout << "Number of distinct words: " << to_string(traverse(root, TraversalType::UNIQUE_WORDS)) << endl;
+	int numberOfKeys = traverse(root, TraversalType::NUMBER_OF_KEYS);
+	cout << "Total number of \"available\" keys: " << to_string(numberOfKeys) << endl;
+
+	// Both # of used keys and distinct words will be the same, as each distinct word is a key.
+	int distinctNumberOfWords = traverse(root, TraversalType::UNIQUE_WORDS);
+	cout << "Total number of used keys: " << to_string(distinctNumberOfWords) << endl;
+	cout << "Load factor (used keys / available keys): " << to_string(distinctNumberOfWords/(double)numberOfKeys * 100) << "%" << endl;
+	cout << "Number of distinct words: " << to_string(distinctNumberOfWords) << endl;
 	cout << "Total number of words (incl. duplicates): " << to_string(traverse(root, TraversalType::TOTAL_WORDS)) << endl;
 	cout << "Total number of disk reads: " << to_string(numberOfReads) << endl;
 	cout << "Total number of disk writes: " << to_string(numberOfWrites) << endl;
@@ -274,11 +281,18 @@ int BTree::traverse(int startingNodeNumber, TraversalType traversalType, int pri
 	if (traversalType != TraversalType::NUMBER_OF_NODES)
 	{
 		nodeCount = 0;
-		for (unsigned int i = 1; i <= node.numberOfKeys; i++)
+		if (traversalType == TraversalType::NUMBER_OF_KEYS)
 		{
-			nodeCount += traversalType == TraversalType::UNIQUE_WORDS
-				? 1
-				: node.numberOfOccurrences[i];
+			nodeCount = node.maxNumberOfKeys;
+		}
+		else
+		{
+			for (unsigned int i = 1; i <= node.numberOfKeys; i++)
+			{
+				nodeCount += traversalType == TraversalType::UNIQUE_WORDS
+					? 1
+					: node.numberOfOccurrences[i];
+			}
 		}
 	}
 	return childCount + nodeCount;
