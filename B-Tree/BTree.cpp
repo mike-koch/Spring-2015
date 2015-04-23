@@ -147,6 +147,7 @@ void BTree::splitChild(BTreeNode* node, unsigned int index)
 	{
 		strcpy(z.keys[j], y.keys[j + T]);
 		z.numberOfOccurrences[j] = y.numberOfOccurrences[j + T];
+		y.numberOfOccurrences[j + T] = 1;
 	}
 	if (!y.isLeaf)
 	{
@@ -168,9 +169,11 @@ void BTree::splitChild(BTreeNode* node, unsigned int index)
 	{
 		strcpy(node->keys[j + 1], node->keys[j]);
 		node->numberOfOccurrences[j + 1] = node->numberOfOccurrences[j];
+		node->numberOfOccurrences[j] = 1;
 	}
 	strcpy(node->keys[index], y.keys[T]);
 	node->numberOfOccurrences[index] = y.numberOfOccurrences[T];
+	y.numberOfOccurrences[T] = 1;
 	node->numberOfKeys = node->numberOfKeys + 1;
 	saveNode(&y);
 	saveNode(&z);
@@ -186,10 +189,11 @@ void BTree::insertNotFull(BTreeNode* node, string& key)
 		{
 			strcpy(node->keys[i + 1], node->keys[i]);
 			node->numberOfOccurrences[i + 1] = node->numberOfOccurrences[i];
+			node->numberOfOccurrences[i] = 1;
 			i--;
 		}
 		strcpy(node->keys[i + 1], key.c_str());
-		node->numberOfOccurrences[i] = 1;
+		node->numberOfOccurrences[i + 1] = 1;
 		node->numberOfKeys++;
 		saveNode(node);
 	}

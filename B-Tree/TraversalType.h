@@ -9,6 +9,7 @@ enum TraversalType
 	UNIQUE_WORDS,
 	TOTAL_WORDS,
 	HEIGHT,
+	NUMBER_OF_NODES,
 	NONE
 };
 #endif
