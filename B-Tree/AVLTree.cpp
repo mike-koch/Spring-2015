@@ -258,6 +258,7 @@ void AVLTree::outputMetrics()
 	cout << "Number of balance factor changes: " << to_string(balanceFactorChanges) << endl;
 	cout << "Total number of disk reads: " << to_string(numberOfReads) << endl;
 	cout << "Total number of disk writes: " << to_string(numberOfWrites) << endl;
+	cout << "File size: " << to_string(DiskIO::getFileSize()) << " bytes" << endl;
 }
 
 //-- PRIVATE functions

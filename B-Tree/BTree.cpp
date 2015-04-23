@@ -60,7 +60,6 @@ void BTree::insertValue(string& key)
 
 void BTree::outputMetrics()
 {
-	//TODO
 	cout << "Height of tree: " << to_string(getHeight(root, 0)) << endl;
 	cout << "Total number of nodes: " << to_string(traverse(root, TraversalType::NUMBER_OF_NODES)) << endl;
 	int numberOfKeys = traverse(root, TraversalType::NUMBER_OF_KEYS);
@@ -74,6 +73,7 @@ void BTree::outputMetrics()
 	cout << "Total number of words (incl. duplicates): " << to_string(traverse(root, TraversalType::TOTAL_WORDS)) << endl;
 	cout << "Total number of disk reads: " << to_string(numberOfReads) << endl;
 	cout << "Total number of disk writes: " << to_string(numberOfWrites) << endl;
+	cout << "File size: " << to_string(DiskIO::getFileSize()) << " bytes" << endl;
 }
 
 void BTree::initializeTree()

@@ -82,6 +82,29 @@ void DiskIO::loadBTreeNode(BTreeNode* node, int nodeNumber)
 	fileStream.read((char*)node, SIZE_OF_BTREE_NODE);
 }
 
+unsigned long long DiskIO::getFileSize()
+{
+	//-- If the file stream isn't open, open it, and seek to the beginning of the file
+	if (!fileStream.is_open())
+	{
+		cout << "WARNING: The file stream is not open. Open the file stream first and try again.";
+		return 0;
+	}
+
+	//-- Seek to the beginning of the file. Then, after reading each byte, return the total number of iterations
+	fileStream.seekg(0, ios::beg);
+	char throwaway = 0;
+	fileStream.get(throwaway);
+	unsigned long long fileSize = 0;
+	while (!fileStream.eof())
+	{
+		fileSize++;
+		fileStream.get(throwaway);
+	}
+
+	return fileSize;
+}
+
 //-- PRIVATE functions
 void DiskIO::outputFailure(string fileName)
 {

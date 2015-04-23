@@ -39,9 +39,8 @@ int main()
 {
 	const string INPUT_FILE = "C:\\Shakespeare.txt";
 
-	//outputTitle("Starting dry run");
-	//int overheadTime = processFile(INPUT_FILE, InputMode::DRY_RUN);
-	int overheadTime = 0;
+	outputTitle("Starting dry run");
+	int overheadTime = processFile(INPUT_FILE, InputMode::DRY_RUN);
 
 	outputTitle("Starting AVL Tree");
 	DiskIO::openFileStream(AVL_FILE_NAME);

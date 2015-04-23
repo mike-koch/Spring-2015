@@ -18,6 +18,7 @@ public:
 
 	static void saveBTreeNode(BTreeNode* bTreeNode); // Saves the requested node
 	static void loadBTreeNode(BTreeNode* node, int nodeNumber); // Same as loadAVLNode, but for a BTreeNode
+	static unsigned long long getFileSize();
 	static void closeFileStream(); // Closes the filestream
 private:
 	static void outputFailure(string fileName);
