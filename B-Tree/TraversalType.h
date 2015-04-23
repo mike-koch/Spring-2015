@@ -10,6 +10,6 @@ enum TraversalType
 	TOTAL_WORDS,
 	HEIGHT,
 	NUMBER_OF_NODES,
-	NONE
+	DEBUG_MODE
 };
 #endif

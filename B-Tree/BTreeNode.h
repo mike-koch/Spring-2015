@@ -8,7 +8,7 @@
 #include <string>
 using namespace std;
 
-const int T = 14;
+const int T = 2;
 struct BTreeNode
 {
 public:

@@ -61,6 +61,7 @@ void BTree::insertValue(string& key)
 void BTree::outputMetrics()
 {
 	//TODO
+	cout << "Height of tree: " << to_string(getHeight(root, 0)) << endl;
 	cout << "Total number of nodes: " << to_string(traverse(root, TraversalType::NUMBER_OF_NODES)) << endl;
 	cout << "Number of distinct words: " << to_string(traverse(root, TraversalType::UNIQUE_WORDS)) << endl;
 	cout << "Total number of words (incl. duplicates): " << to_string(traverse(root, TraversalType::TOTAL_WORDS)) << endl;
@@ -225,7 +226,7 @@ void BTree::insertNotFull(BTreeNode* node, string& key)
 void BTree::printTree(int startingNodeNumber)
 {
 #ifdef DEBUG
-	traverse(startingNodeNumber, TraversalType::NONE);
+	traverse(startingNodeNumber, TraversalType::DEBUG_MODE);
 	char throwaway;
 	cin.get(throwaway);
 #endif
@@ -240,31 +241,34 @@ int BTree::traverse(int startingNodeNumber, TraversalType traversalType, int pri
 	BTreeNode node;
 	getNode(&node, startingNodeNumber);
 	int childCount = 0;
-#ifdef DEBUG
-	//Print out info for this node
-	string keys;
-	string spaces = "";
-	for (int i = 0; i < printSpaces; i++)
+	if (traversalType == TraversalType::DEBUG_MODE)
 	{
-		spaces += " ";
-	}
-	bool first = true;
-	for (unsigned int i = 1; i <= node.numberOfKeys; i++)
-	{
-		if (!first)
+		//Print out info for this node
+		string keys;
+		string spaces = "";
+		for (int i = 0; i < printSpaces; i++)
 		{
-			keys += ", ";
+			spaces += " ";
 		}
-		first = false;
-		keys += node.keys[i];
-		keys += " (" + to_string(node.numberOfOccurrences[i]) + ")";
+		bool first = true;
+		for (unsigned int i = 1; i <= node.numberOfKeys; i++)
+		{
+			if (!first)
+			{
+				keys += ", ";
+			}
+			first = false;
+			keys += node.keys[i];
+			keys += " (" + to_string(node.numberOfOccurrences[i]) + ")";
+		}
+		cout << spaces << "Node #" << node.id << ", keys: " << keys << endl;
 	}
-	cout << spaces << "Node #" << node.id << ", keys: " << keys << endl;
-#endif
 	for (unsigned int i = 1; i <= node.numberOfChildren; i++)
 	{
-		//-- There will be at most numberOfKeys + 1 children, and at least 0. The 0 check will prevent accesses to invalid children
+		//-- Call traverse on each child. "printSpaces+2" is only used when printing out the tree, pushing the output 2 characters to the right.
 		childCount += traverse(node.childIds[i], traversalType, printSpaces+2);
+	}
+
 	// Set nodeCount to 1, unless the TraversalType is not NUMBER_OF_NODES
 	int nodeCount = 1;
 	if (traversalType != TraversalType::NUMBER_OF_NODES)
@@ -278,23 +282,26 @@ int BTree::traverse(int startingNodeNumber, TraversalType traversalType, int pri
 		}
 	}
 	return childCount + nodeCount;
-	
+}
 
-	/*int leftCount = traverseTree(node.leftChildId, traversalType);
-	int nodeCount = traversalType == TraversalType::UNIQUE_WORDS
-		? 1
-		: startingNode->numberOfOccurrences;
-	int rightCount = traverseTree(startingNode->rightChildId, traversalType);
-
-	if (traversalType == TraversalType::HEIGHT)
+int BTree::getHeight(int startingNodeNumber, int currentHeight)
+{
+	BTreeNode node;
+	getNode(&node, startingNodeNumber);
+	if (node.isLeaf)
 	{
-		// Return 1 (which must be 1 since we're starting at the root), along with the higher height of the left or right side
-		if (leftCount > rightCount)
-		{
-			return 1 + leftCount;
-		}
-		return 1 + rightCount;
+		//-- We've hit the end of the line. Return the current height that was passed in.
+		return currentHeight;
 	}
-	return leftCount + nodeCount + rightCount;*/
-	return 0;
+	for (unsigned int i = 1; i <= node.numberOfChildren; i++)
+	{
+		int childHeight = getHeight(node.childIds[i], currentHeight+1);
+		if (childHeight > height)
+		{
+			height = childHeight;
+		}
+	}
+
+	//-- Check to see if this height is larger than the height found.
+	return height;
 }

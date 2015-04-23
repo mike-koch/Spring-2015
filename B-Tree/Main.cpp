@@ -43,10 +43,10 @@ int main()
 	//int overheadTime = processFile(INPUT_FILE, InputMode::DRY_RUN);
 	int overheadTime = 0;
 
-	//outputTitle("Starting AVL Tree");
-	//DiskIO::openFileStream(AVL_FILE_NAME);
-	//processFile(INPUT_FILE, InputMode::AVL, overheadTime);
-	//DiskIO::closeFileStream();
+	outputTitle("Starting AVL Tree");
+	DiskIO::openFileStream(AVL_FILE_NAME);
+	processFile(INPUT_FILE, InputMode::AVL, overheadTime);
+	DiskIO::closeFileStream();
 
 	outputTitle("Starting BTree");
 	DiskIO::openFileStream(BTREE_FILE_NAME);
