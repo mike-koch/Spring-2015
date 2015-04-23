@@ -48,16 +48,15 @@ void DiskIO::saveAVLNode(AVLNode* avlNode)
 	fileStream.flush();
 }
 
-AVLNode* DiskIO::loadAVLNode(int nodeNumber)
+void DiskIO::loadAVLNode(AVLNode* node, int nodeNumber)
 {
 	//-- Move the seek pointer to the proper place in the file, based on the node number passed in.
 	fileStream.seekg(SIZE_OF_AVL_NODE * nodeNumber);
 
 	//-- Grab the next number of bytes and stuff it into an AVLNode
-	AVLNode* nodeToRetrieve = new AVLNode();
-	fileStream.read((char*)nodeToRetrieve, SIZE_OF_AVL_NODE);
+	fileStream.read((char*)node, SIZE_OF_AVL_NODE);
 
-	return nodeToRetrieve;
+	return;
 }
 
 void DiskIO::saveBTreeNode(BTreeNode* bTreeNode)

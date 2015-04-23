@@ -19,7 +19,7 @@ private:
 	AVLNode* addNodeToTree(string& key, AVLNode* parent);
 	int root = 0;
 	int traverseTree(int startingNodeNumber, TraversalType traversalType);
-	AVLNode* getNode(int nodeNumber);
+	void getNode(AVLNode* node, int nodeNumber);
 	void saveNode(AVLNode* node);
 
 	unsigned int getId(AVLNode* node);

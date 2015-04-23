@@ -24,9 +24,8 @@ void AVLTree::insertValue(string& key)
 	cout << "CURRENTLY AT ITERATION: " << ++iteration << endl;
 	cout << "Root is currently has id #" << root << " and getNode(root) returned a node with id: " << getId(getNode(root)) << endl;
 #endif
-	AVLNode *a, *b, *c; // Node pointers used for searching and rebalancing
+	AVLNode a, b, c, f; // Nodes used for searching and rebalancing
 	int cl, cr;
-	AVLNode *f = NULL;
 	int displacement; // Used for balance factors
 
 	// If the tree is empty, make the root node
@@ -36,63 +35,68 @@ void AVLTree::insertValue(string& key)
 		return; // There's no need to even check for an imbalance, since we just added our first node
 	}
 
-	AVLNode* q = NULL;
-	a = getNode(root);
-	AVLNode* p = getNode(root);
+	AVLNode q, p;
+	getNode(&a, root);
+	getNode(&p, root);
 
-	while (p != NULL) // search tree for insertion point
+	while (p.id != 0) // search tree for insertion point
 	{
-		if (key == p->key)
+		if (key == p.key)
 		{
-			p->numberOfOccurrences++;  // This node is a duplicate, so increment its counter
-			saveNode(p); // Save the node
+			p.numberOfOccurrences++;  // This node is a duplicate, so increment its counter
+			saveNode(&p); // Save the node
 			return; // No need to check or adjust balance factors, so return.
 		}
-		if (p->balanceFactor != 0)   // remember the last place we saw
+		if (p.balanceFactor != 0)   // remember the last place we saw
 		{
 			// Keep track of the deepest node that has a balance factor != 0 and its parent
 			a = p;
 			f = q;
 		}
 		q = p;
-		p = (key < p->key)
-			? getNode(p->leftChildId)
-			: getNode(p->rightChildId);
+		if (key < p.key)
+		{
+			getNode(&p, p.leftChildId);
+		}
+		else
+		{
+			getNode(&p, p.rightChildId);
+		}
 	}
 
 	// We fell off the tree, so we need to make a new node
-	AVLNode* newNode = addNodeToTree(key, q);
+	AVLNode newNode = *addNodeToTree(key, &q);
 
 	// a and/or f may have been updated. grab the latest versions of them.
-	a = getNode(getId(a));
-	f = getNode(getId(f));
+	getNode(&a, a.id);
+	getNode(&f, f.id);
 
 	// Update our balance factors
-	if (key > a->key)
+	if (key > a.key)
 	{
-		p = getNode(a->rightChildId);
+		getNode(&p, a.rightChildId);
 		displacement = -1;
 	}
 	else
 	{
-		p = getNode(a->leftChildId);
+		getNode(&p, a.leftChildId);
 		displacement = 1;
 	}
 	b = p;
 
-	while (getId(p) != getId(newNode))
+	while (p.id != newNode.id)
 	{
-		if (key > p->key)
+		if (key > p.key)
 		{
-			p->balanceFactor = -1;
-			saveNode(p);
-			p = getNode(p->rightChildId);
+			p.balanceFactor = -1;
+			saveNode(&p);
+			getNode(&p, p.rightChildId);
 		}
 		else
 		{
-			p->balanceFactor = 1;
-			saveNode(p);
-			p = getNode(p->leftChildId);
+			p.balanceFactor = 1;
+			saveNode(&p);
+			getNode(&p, p.leftChildId);
 		}
 	}
 
@@ -100,128 +104,125 @@ void AVLTree::insertValue(string& key)
 	// BALANCED the tree, IMBALANCED the tree, or if 
 	// it is still BALANCED ENOUGH.
 
-	if (a->balanceFactor == 0)				// Tree WAS completely balanced.  The
+	if (a.balanceFactor == 0)				// Tree WAS completely balanced.  The
 	{										// insert pushed it to slight imbalance
-		a->balanceFactor = displacement;    // set the BF to +/- 1.  This is close
-		saveNode(a);
+		a.balanceFactor = displacement;    // set the BF to +/- 1.  This is close
+		saveNode(&a);
 		return;								// enough to live with, so exit now
 	}
 
-	if (a->balanceFactor == -displacement) // If the tree had a slight imbalance
+	if (a.balanceFactor == -displacement) // If the tree had a slight imbalance
 	{									   // the OTHER way, did the insertion
-		a->balanceFactor = 0;			   // throw the tree INTO balance?
-		saveNode(a);
+		a.balanceFactor = 0;			   // throw the tree INTO balance?
+		saveNode(&a);
 		return;							   // If so, set the BF to zero & return
 	}
 
 	if (displacement == +1) // left imbalance.  LL or LR?
 	{
-		if (b->balanceFactor == +1) // LL rotation
+		if (b.balanceFactor == +1) // LL rotation
 		{
-			a->leftChildId = b->rightChildId;
-			b->rightChildId = getId(a);
-			a->balanceFactor = b->balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
-			saveNode(a);
-			saveNode(b);
+			a.leftChildId = b.rightChildId;
+			b.rightChildId = a.id;
+			a.balanceFactor = b.balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
+			saveNode(&a);
+			saveNode(&b);
 		}
 		else  // LR Rotation: three cases
 		{
-			c = getNode(b->rightChildId); // C is B's right child
-			cl = c->leftChildId; // CL and CR are C's left
-			cr = c->rightChildId; //    and right children
-			a->leftChildId = cr;
-			b->rightChildId = cl;
-			c->leftChildId = getId(b);
-			c->rightChildId = getId(a);
-			switch (c->balanceFactor)
+			getNode(&c, b.rightChildId); // C is B's right child
+			cl = c.leftChildId; // CL and CR are C's left
+			cr = c.rightChildId; //    and right children
+			a.leftChildId = cr;
+			b.rightChildId = cl;
+			c.leftChildId = b.id;
+			c.rightChildId = a.id;
+			switch (c.balanceFactor)
 			{
 				// Set the new BF’s at A and B, based on the
 				// BF at C. Note: There are 3 sub-cases
 			case 0:
-				b->balanceFactor = a->balanceFactor = 0;
+				b.balanceFactor = a.balanceFactor = 0;
 				break;
 			case 1:
-				b->balanceFactor = 0;
-				a->balanceFactor = -1;
+				b.balanceFactor = 0;
+				a.balanceFactor = -1;
 				break;
 			case -1:
-				b->balanceFactor = 1;
-				a->balanceFactor = 0;
+				b.balanceFactor = 1;
+				a.balanceFactor = 0;
 				break;
 			}
-			c->balanceFactor = 0;
-			saveNode(a);
-			saveNode(b);
-			saveNode(c);
-			b->id = getId(c);
+			c.balanceFactor = 0;
+			saveNode(&a);
+			saveNode(&b);
+			saveNode(&c);
+			b.id = c.id;
 		} // end of else (LR Rotation)
 	} // end of "if (d = +1)"
 	else // d=-1.  This is a right imbalance
 	{
-		if (b->balanceFactor == -1) // RR rotation
+		if (b.balanceFactor == -1) // RR rotation
 		{
-			a->rightChildId = b->leftChildId;
-			b->leftChildId = getId(a);
-			a->balanceFactor = b->balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
-			saveNode(a);
-			saveNode(b);
+			a.rightChildId = b.leftChildId;
+			b.leftChildId = a.id;
+			a.balanceFactor = b.balanceFactor = 0; // Tree is balanced. Put balance factors back at 0
+			saveNode(&a);
+			saveNode(&b);
 		}
 		else  // RL Rotation: three cases
 		{
-			c = getNode(b->leftChildId); // C is B's left child
-			cl = c->leftChildId; // CL and CR are C's left
-			cr = c->rightChildId; //    and right children
-			a->rightChildId = cl;
-			b->leftChildId = cr;
-			c->leftChildId = getId(a);
-			c->rightChildId = getId(b);
-			switch (c->balanceFactor)
+			getNode(&c, b.leftChildId); // C is B's left child
+			cl = c.leftChildId; // CL and CR are C's left
+			cr = c.rightChildId; //    and right children
+			a.rightChildId = cl;
+			b.leftChildId = cr;
+			c.leftChildId = a.id;
+			c.rightChildId = a.id;
+			switch (c.balanceFactor)
 			{
 				// Set the new BF’s at A and B, based on the
 				// BF at C. Note: There are 3 sub-cases
 			case 0:
-				b->balanceFactor = a->balanceFactor = 0;
+				b.balanceFactor = a.balanceFactor = 0;
 				break;
 			case 1:
-				a->balanceFactor = 0;
-				b->balanceFactor = -1;
+				a.balanceFactor = 0;
+				b.balanceFactor = -1;
 				break;
 			case -1:
-				a->balanceFactor = 1;
-				b->balanceFactor = 0;
+				a.balanceFactor = 1;
+				b.balanceFactor = 0;
 				break;
 			}
 
-			c->balanceFactor = 0;
-			saveNode(a);
-			saveNode(b);
-			saveNode(c);
-			b->id = getId(c);
+			c.balanceFactor = 0;
+			saveNode(&a);
+			saveNode(&b);
+			saveNode(&c);
+			b.id = c.id;
 		} // end of else (LR Rotation)
 	}
 
 	// did we rebalance the root?
-	if (f == NULL || f->id == NULL_NODE_ID)
+	if (f.id == NULL_NODE_ID)
 	{
-		root = getId(b);
-#ifdef DEBUG
-		cout << "216: Root is now pointing at id: " << root << "with getNode() returning as the ID: " << getId(getNode(root)) << endl;
-#endif
+		root = b.id;
 		return;
 	}
 
 	// otherwise, we rebalanced whatever was the
 	// child (left or right) of F.
-	if (a->id == f->leftChildId)
+	if (a.id == f.leftChildId)
 	{
-		f->leftChildId = getId(b);
-		saveNode(f);
+		f.leftChildId = b.id;
+		saveNode(&f);
 		return;
 	}
-	if (a->id == f->rightChildId)
+	if (a.id == f.rightChildId)
 	{
-		f->rightChildId = getId(b);
-		saveNode(f);
+		f.rightChildId = b.id;
+		saveNode(&f);
 		return;
 	}
 }
@@ -251,29 +252,29 @@ void AVLTree::outputMetrics()
 //-- PRIVATE functions
 AVLNode* AVLTree::addNodeToTree(string& key, AVLNode* parent)
 {
-	AVLNode* newNode = new AVLNode();
-	newNode->id = nextNewNodeNumber++;
-	newNode->key = key;
-	newNode->leftChildId = newNode->rightChildId = NULL_NODE_ID;
-	newNode->balanceFactor = 0;
+	AVLNode newNode;
+	newNode.id = nextNewNodeNumber++;
+	newNode.key = key;
+	newNode.leftChildId = newNode.rightChildId = NULL_NODE_ID;
+	newNode.balanceFactor = 0;
 
 	if (parent == NULL || parent->id == NULL_NODE_ID)
 	{
 		// We're at the root of the tree, so just assign the root to this new node
-		root = getId(newNode);
+		root = newNode.id;
 		
 	}
 	else if (key < parent->key)
 	{
-		parent->leftChildId = newNode->id;
+		parent->leftChildId = newNode.id;
 	}
 	else
 	{
-		parent->rightChildId = newNode->id;
+		parent->rightChildId = newNode.id;
 	}
 	saveNode(parent);
-	saveNode(newNode);
-	return newNode;
+	saveNode(&newNode);
+	return &newNode;
 }
 
 /*
@@ -292,12 +293,13 @@ int AVLTree::traverseTree(int startingNodeNumber, TraversalType traversalType)
 		// Return early if the tree is empty or if we are at a leaf node to prevent NPEs.
 		return 0;
 	}
-	AVLNode* startingNode = getNode(startingNodeNumber);
-	int leftCount = traverseTree(startingNode->leftChildId, traversalType);
+	AVLNode startingNode;
+	getNode(&startingNode, startingNodeNumber);
+	int leftCount = traverseTree(startingNode.leftChildId, traversalType);
 	int nodeCount = traversalType == TraversalType::UNIQUE_WORDS
 		? 1
-		: startingNode->numberOfOccurrences;
-	int rightCount = traverseTree(startingNode->rightChildId, traversalType);
+		: startingNode.numberOfOccurrences;
+	int rightCount = traverseTree(startingNode.rightChildId, traversalType);
 
 	if (traversalType == TraversalType::HEIGHT)
 	{
@@ -311,22 +313,14 @@ int AVLTree::traverseTree(int startingNodeNumber, TraversalType traversalType)
 	return leftCount + nodeCount + rightCount;
 }
 
-// Return the node's id, or NULL_NODE_ID if the node passed in is actually NULL
-unsigned int AVLTree::getId(AVLNode* node)
-{
-	return node != NULL 
-		? node->id 
-		: NULL_NODE_ID;
-}
-
-AVLNode* AVLTree::getNode(int nodeNumber)
+void AVLTree::getNode(AVLNode* node, int nodeNumber)
 {
 	if (nodeNumber == 0)
 	{
-		return NULL;
+		return;
 	}
 	numberOfReads++;
-	return DiskIO::loadAVLNode(nodeNumber);
+	DiskIO::loadAVLNode(node, nodeNumber);
 }
 
 void AVLTree::saveNode(AVLNode* node)

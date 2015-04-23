@@ -14,7 +14,7 @@ public:
 	static void openFileStream(string fileName); // Opens the filestream for the given file name if it isn't open already
 
 	static void saveAVLNode(AVLNode* avlNode); // Saves the requested node
-	static AVLNode* loadAVLNode(int nodeNumber); // Returns the node for the node number requested
+	static void loadAVLNode(AVLNode* node, int nodeNumber); // Returns the node for the node number requested
 
 	static void saveBTreeNode(BTreeNode* bTreeNode); // Saves the requested node
 	static void loadBTreeNode(BTreeNode* node, int nodeNumber); // Same as loadAVLNode, but for a BTreeNode
