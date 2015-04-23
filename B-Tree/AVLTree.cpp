@@ -101,6 +101,9 @@ void AVLTree::insertValue(string& key)
 		}
 	}
 
+	// Re-load b, as the above loop may have changed it
+	getNode(&b, b.id);
+
 	// Now we check the BF at A and see if we just 
 	// BALANCED the tree, IMBALANCED the tree, or if 
 	// it is still BALANCED ENOUGH.
@@ -181,7 +184,7 @@ void AVLTree::insertValue(string& key)
 			a.rightChildId = cl;
 			b.leftChildId = cr;
 			c.leftChildId = a.id;
-			c.rightChildId = a.id;
+			c.rightChildId = b.id;
 			switch (c.balanceFactor)
 			{
 				// Set the new BF’s at A and B, based on the
@@ -256,7 +259,7 @@ void AVLTree::outputMetrics()
 void AVLTree::addNodeToTree(AVLNode* newNode, string& key, AVLNode* parent)
 {
 	newNode->id = nextNewNodeNumber++;
-	newNode->key = key;
+	strcpy(newNode->key, key.c_str());
 	newNode->leftChildId = newNode->rightChildId = NULL_NODE_ID;
 	newNode->balanceFactor = 0;
 

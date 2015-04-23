@@ -71,7 +71,8 @@ void populateAVLNodes(unsigned int num)
 	{
 		AVLNode* node = new AVLNode();
 		node->id = i;
-		node->key = to_string(i) + "KEY" + to_string(i);
+		string key = "KEY" + to_string(i);
+		strcpy(node->key, key.c_str());
 		node->leftChildId = 0;
 		node->rightChildId = 0;
 		node->numberOfOccurrences = 0;
