@@ -1,7 +1,7 @@
 // DiskIO.h
 // Mike Koch
 // EECS 2510 | Spring 2015 | 04/18/2015
-// Disk IO header file. Responsible for saving and loading nodes to and from the disk drive.
+// Disk IO header file. Responsible for saving and loading nodes to and from the disk drive, obtaining the file size, and managing the file stream.
 #ifndef DISKIO_H
 #define DISKIO_H
 #include "AVLNode.h"

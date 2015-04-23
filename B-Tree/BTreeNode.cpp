@@ -1,3 +1,8 @@
+// BTreeNode.cpp
+// Mike Koch
+// EECS 2510 | Spring 2015 | 04/17/2015
+// Source file used for the BTreeNode
+
 #include "BTreeNode.h"
 
 void BTreeNode::initializeArrays()

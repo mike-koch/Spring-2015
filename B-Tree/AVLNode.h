@@ -1,8 +1,7 @@
-// NodeStruct.h
+// AVLNode.h
 // Mike Koch
 // EECS 2510 | Spring 2015 | 04/17/2015
-// Header file that contains all properties that any tree may use. Not all trees will use every property; however all properties will be 
-//    used at some point.
+// Header file that contains all properties that an AVL tree will need.
 #ifndef AVLNODE_H
 #define AVLNODE_H
 #include <string>

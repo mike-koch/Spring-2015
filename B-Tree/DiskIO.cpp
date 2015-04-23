@@ -1,7 +1,7 @@
 // DiskIO.cpp
 // Mike Koch
 // EECS 2510 | Spring 2015 | 04/18/2015
-// Disk IO source file. Responsible for saving and loading nodes to and from the disk drive.
+// Disk IO source file. Responsible for saving and loading nodes to and from the disk drive, obtaining the file size, and managing the file stream.
 
 #include "DiskIO.h"
 #include <iostream>
