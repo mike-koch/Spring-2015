@@ -196,3 +196,4 @@ FakesAssemblies/
 *.opt
 B-Tree/AVLNodes.nodes
 B-Tree/BTreeNodes.nodes
+T Value Tests/BTreeNodes.nodes
