@@ -64,7 +64,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Edge.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PriorityQueue.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Edge.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="LinkedListNode.h" />
+    <ClInclude Include="PriorityQueue.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
