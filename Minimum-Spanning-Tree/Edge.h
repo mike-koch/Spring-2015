@@ -5,7 +5,12 @@
 class Edge
 {
 public:
-	Edge(int edgeWeight, int startVertexId, int endVertexId);
+	Edge(int edgeWeight, int startVertexId, int endVertexId)
+	{
+		weight = edgeWeight;
+		startingVertexId = startVertexId;
+		endingVertexId = endVertexId;
+	};
 	~Edge();
 	int weight;
 	int startingVertexId;

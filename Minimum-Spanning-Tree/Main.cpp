@@ -7,44 +7,44 @@
 #include "Graph.h"
 #include "Edge.h"
 #include "Vertex.h"
-#include "LinkedListNode.h"
+#include "List.h"
 using namespace std;
+
+// Function prototypes
+List* parseVerticies(unsigned int numberOfHeaders);
+List* parseEdges(unsigned int numberOfHeaders);
 
 int main()
 {
-	int numberOfHeaders;
+	unsigned int numberOfHeaders;
 	cin >> numberOfHeaders;
 
-	// There will be N nodes for N numberOfHeaders
-	LinkedListNode* firstVertex = NULL;
-	LinkedListNode* mostRecentVertex = NULL;
+	List* vertexList = parseVerticies(numberOfHeaders);
+	List* edgeList = parseEdges(numberOfHeaders); // Returns a list of the parsed edges	
+
+	// Create our graph
+	Graph* graph = new Graph();
+}
+
+// There will be N verticies for N numberOfHeaders. Create a vertex for each header with a unique ID value
+List* parseVerticies(unsigned int numberOfHeaders)
+{
+	List* vertexList = new List();
 	for (int i = 0; i < numberOfHeaders; i++)
 	{
-		// Create a new vertex of id = i and name = the string passed in through the console
+		// Create a new vertex of id = i and name = the string passed in through the console. Add it to the list of verticies
 		string name;
 		cin >> name;
-		Vertex* vertex = new Vertex(i, name);
-
-		// add the vertex to the list. if this is the first node, simply set firstNode equal to this vertex
-		LinkedListNode* node = new LinkedListNode(vertex, NULL);
-		if (firstVertex == NULL)
-		{
-			firstVertex = node;
-		} 
-		else
-		{
-			// Otherwise, set the mostRecentNode's nextNode to this node
-			mostRecentVertex->nextNode = node;
-		}
-
-		// This new vertex was the node most recently created, so keep track of it.
-		mostRecentVertex = node;
+		vertexList->add(new Vertex(i, name));
 	}
+	return vertexList;
+}
 
-	// The next N*N characters indicate the edges that are connected to each vertex along with the weight. The first N pertain to the first
-	//   edge, the second N pertain to the second edge, and so forth.
-	LinkedListNode* firstEdge = NULL;
-	LinkedListNode* mostRecentEdge = NULL;
+// The next N*N characters indicate the edges that are connected to each vertex along with the weight. The first N pertain to the first
+//   edge, the second N pertain to the second edge, and so forth.
+List* parseEdges(unsigned int numberOfHeaders)
+{
+	List* edgeList = new List();
 	for (int i = 0; i < numberOfHeaders * numberOfHeaders; i++)
 	{
 		// the next N values indicate the edges that exist between two nodes.
@@ -61,43 +61,27 @@ int main()
 			{
 				bool shouldAddEdge = true;
 				// check if we already have this edge. if not, create it. if we do, just ignore it.
-				LinkedListNode* currentEdge = firstEdge;
+				unsigned int currentIndex = 0;
+				Edge* currentEdge = (Edge*)edgeList->get(currentIndex);
 				while (currentEdge != NULL)
 				{
-					Edge* edge = (Edge*)currentEdge->element;
 					// If the edge's startingVertex and endingVertex are i and j (in either direction), set shouldAddEdge to FALSE and break out of the loop
-					if ((edge->startingVertexId == i && edge->endingVertexId == j) ||
-						(edge->startingVertexId == j && edge->endingVertexId == i))
+					if ((currentEdge->startingVertexId == i && currentEdge->endingVertexId == j) ||
+						(currentEdge->startingVertexId == j && currentEdge->endingVertexId == i))
 					{
 						//-- we already have the edge recorded
 						shouldAddEdge = false;
 						break;
 					}
+					currentEdge = (Edge*)edgeList->get(++currentIndex);
 				}
 				if (shouldAddEdge)
 				{
-					//-- Create a new edge that connects vertex i to vertex j
-					Edge* newEdge = new Edge(nextWeight, i, j);
-
-					// add the edge to the list. if this is the first node, simply set firstNode equal to this edge
-					LinkedListNode* node = new LinkedListNode(newEdge, NULL);
-					if (firstEdge == NULL)
-					{
-						firstEdge = node;
-					}
-					else
-					{
-						// Otherwise, set the mostRecentEdge's nextNode to this node
-						mostRecentEdge->nextNode = node;
-					}
-
-					// This new edge was the node most recently created, so keep track of it.
-					mostRecentEdge = node;
+					//-- Create a new edge that connects vertex i to vertex j, and add it to the list of edges
+					edgeList->add(new Edge(nextWeight, i, j));
 				}
 			}
 		}
 	}
-
-	// Create our graph
-	Graph* graph = new Graph();
+	return edgeList;
 }
