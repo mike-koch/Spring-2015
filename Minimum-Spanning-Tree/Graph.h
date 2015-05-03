@@ -2,17 +2,19 @@
 #define GRAPH_H
 #include <iostream>
 #include "List.h"
+#include "Edge.h"
+#include "Vertex.h"
 class Graph
 {
 public:
-	Graph(List* edgeList, List* vertexList)
+	Graph(List<Edge>* edgeList, List<Vertex>* vertexList)
 	{
 		edges = edgeList;
 		verticies = vertexList;
 	};
 	~Graph();
-	List* edges;
-	List* verticies;
+	List<Edge>* edges;
+	List<Vertex>* verticies;
 };
 #endif
 

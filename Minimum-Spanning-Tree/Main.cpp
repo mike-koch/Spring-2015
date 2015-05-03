@@ -11,9 +11,9 @@
 using namespace std;
 
 // Function prototypes
-List* parseVerticies(unsigned int numberOfVerticies);
-List* parseEdges(unsigned int numberOfVerticies);
-bool shouldAddEdge(List* edgeList, unsigned int row, unsigned int column);
+List<Vertex>* parseVerticies(unsigned int numberOfVerticies);
+List<Edge>* parseEdges(unsigned int numberOfVerticies);
+bool shouldAddEdge(List<Edge>* edgeList, unsigned int row, unsigned int column);
 void executeKruskal(Graph* graph);
 void executePrim(Graph* graph);
 void pause(string text);
@@ -23,13 +23,13 @@ int main()
 	unsigned int numberOfVerticies;
 	cin >> numberOfVerticies;
 
-	List* vertexList = parseVerticies(numberOfVerticies);
-	List* edgeList = parseEdges(numberOfVerticies); // Returns a list of the parsed edges	
+	List<Vertex>* vertexList = parseVerticies(numberOfVerticies);
+	List<Edge>* edgeList = parseEdges(numberOfVerticies); // Returns a list of the parsed edges	
 
 	// Create our graph
 	Graph* graph = new Graph(edgeList, vertexList);
 
-	// Process Kruskal's algorthim with the graph
+	// Process Kruskal's algorithm with the graph
 	executeKruskal(graph);
 
 	// Process Prim's algorithm with the graph
@@ -40,9 +40,9 @@ int main()
 }
 
 // Create a vertex object for each vertex with a unique ID value
-List* parseVerticies(unsigned int numberOfVerticies)
+List<Vertex>* parseVerticies(unsigned int numberOfVerticies)
 {
-	List* vertexList = new List();
+	List<Vertex>* vertexList = new List<Vertex>();
 	for (unsigned int i = 0; i < numberOfVerticies; i++)
 	{
 		// Create a new vertex of id = i and name = the string passed in through the console. Add it to the list of verticies
@@ -55,9 +55,9 @@ List* parseVerticies(unsigned int numberOfVerticies)
 
 // The next N*N characters indicate the edges that are connected to each vertex along with the weight. The first N pertain to the first
 //   edge, the second N pertain to the second edge, and so forth. The outer loop keeps track of row # and the inner loop keeps track of column #
-List* parseEdges(unsigned int numberOfVerticies)
+List<Edge>* parseEdges(unsigned int numberOfVerticies)
 {
-	List* edgeList = new List();
+	List<Edge>* edgeList = new List<Edge>();
 	for (unsigned int i = 0; i < numberOfVerticies; i++)
 	{
 		// the next N values indicate the edges that exist between two nodes.
@@ -84,10 +84,10 @@ List* parseEdges(unsigned int numberOfVerticies)
 }
 
 // Checks if the list of edges already contains the edge discovered by checking the current edges.
-bool shouldAddEdge(List* edgeList, unsigned int row, unsigned int column)
+bool shouldAddEdge(List<Edge>* edgeList, unsigned int row, unsigned int column)
 {
 	unsigned int currentIndex = 0;
-	Edge* currentEdge = (Edge*)edgeList->get(currentIndex);
+	Edge* currentEdge = edgeList->get<Edge>(currentIndex);
 	while (currentEdge != NULL)
 	{
 		// If the edge's startingVertex and endingVertex are i and j (in either direction), set shouldAddEdge to FALSE and break out of the loop
@@ -98,7 +98,7 @@ bool shouldAddEdge(List* edgeList, unsigned int row, unsigned int column)
 			return false;
 		}
 		// Otherwise, grab the next edge in the list and repeat the process.
-		currentEdge = (Edge*)edgeList->get(++currentIndex);
+		currentEdge = edgeList->get<Edge>(++currentIndex);
 	}
 
 	// If we get to here, the edge doesn't exist yet. So return true.

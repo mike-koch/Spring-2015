@@ -1,16 +1,16 @@
 #ifndef LINKEDLISTNODE_H
 #define LINKEDLISTNODE_H
 #include <iostream>
-class LinkedListNode
+template <class T> class LinkedListNode
 {
 public:
-	LinkedListNode(void* listElement, LinkedListNode* listNextNode)
+	LinkedListNode(T* listElement, LinkedListNode* listNextNode)
 	{
 		element = listElement;
 		nextNode = listNextNode;
 	};
 	~LinkedListNode();
-	void* element = NULL;
+	T* element = NULL;
 	LinkedListNode* nextNode = NULL;
 };
 #endif
