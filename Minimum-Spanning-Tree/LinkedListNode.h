@@ -1,5 +1,6 @@
 #ifndef LINKEDLISTNODE_H
 #define LINKEDLISTNODE_H
+#include <iostream>
 class LinkedListNode
 {
 public:
@@ -9,8 +10,8 @@ public:
 		nextNode = listNextNode;
 	};
 	~LinkedListNode();
-	void* element;
-	LinkedListNode* nextNode;
+	void* element = NULL;
+	LinkedListNode* nextNode = NULL;
 };
 #endif
 

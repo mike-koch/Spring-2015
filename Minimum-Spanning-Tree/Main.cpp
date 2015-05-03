@@ -30,7 +30,7 @@ int main()
 List* parseVerticies(unsigned int numberOfHeaders)
 {
 	List* vertexList = new List();
-	for (int i = 0; i < numberOfHeaders; i++)
+	for (unsigned int i = 0; i < numberOfHeaders; i++)
 	{
 		// Create a new vertex of id = i and name = the string passed in through the console. Add it to the list of verticies
 		string name;
@@ -45,11 +45,11 @@ List* parseVerticies(unsigned int numberOfHeaders)
 List* parseEdges(unsigned int numberOfHeaders)
 {
 	List* edgeList = new List();
-	for (int i = 0; i < numberOfHeaders * numberOfHeaders; i++)
+	for (unsigned int i = 0; i < numberOfHeaders; i++)
 	{
 		// the next N values indicate the edges that exist between two nodes.
 		// check if the edge has already been created, and if not, create it.
-		for (int j = 0; j < numberOfHeaders; j++)
+		for (unsigned int j = 0; j < numberOfHeaders; j++)
 		{
 			// j indicates the current COLUMN we are looking at
 			// i indicates the current ROW    we are looking at
@@ -73,11 +73,13 @@ List* parseEdges(unsigned int numberOfHeaders)
 						shouldAddEdge = false;
 						break;
 					}
+					// Otherwise, grab the next edge in the list and repeat the process.
 					currentEdge = (Edge*)edgeList->get(++currentIndex);
 				}
+
+				// If we never found an edge with the current verticies, we should create a new edge and add it to the list.
 				if (shouldAddEdge)
 				{
-					//-- Create a new edge that connects vertex i to vertex j, and add it to the list of edges
 					edgeList->add(new Edge(nextWeight, i, j));
 				}
 			}

@@ -13,7 +13,7 @@ void List::add(void* item)
 		firstElement = newNode;
 		lastElement = newNode;
 	}
-	if (lastElement != NULL)
+	else if (lastElement != NULL)
 	{
 		lastElement->nextNode = newNode; // Update next pointer for the last element in the list, as we're adding a new item.
 	}
@@ -35,6 +35,7 @@ void* List::get(unsigned int index)
 		currentNode = currentNode->nextNode;
 		currentIndex++;
 	}
+	return NULL;
 }
 
 

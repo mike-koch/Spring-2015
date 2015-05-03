@@ -13,8 +13,8 @@ public:
 	};
 	~Edge();
 	int weight;
-	int startingVertexId;
-	int endingVertexId;
+	unsigned int startingVertexId;
+	unsigned int endingVertexId;
 };
 #endif
 

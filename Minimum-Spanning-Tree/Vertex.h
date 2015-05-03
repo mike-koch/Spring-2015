@@ -12,7 +12,7 @@ public:
 		name = vertexName;
 	};
 	~Vertex();
-	int id;
+	unsigned int id;
 	string name;
 	int weight = 0;
 	Vertex* predecessor;
