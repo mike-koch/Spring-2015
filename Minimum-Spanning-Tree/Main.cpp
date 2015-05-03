@@ -14,8 +14,9 @@ using namespace std;
 List* parseVerticies(unsigned int numberOfVerticies);
 List* parseEdges(unsigned int numberOfVerticies);
 bool shouldAddEdge(List* edgeList, unsigned int row, unsigned int column);
-//void executeKruskal(Graph* graph);
-//void executePrim(Graph* graph);
+void executeKruskal(Graph* graph);
+void executePrim(Graph* graph);
+void pause(string text);
 
 int main()
 {
@@ -29,12 +30,13 @@ int main()
 	Graph* graph = new Graph(edgeList, vertexList);
 
 	// Process Kruskal's algorthim with the graph
-	// TODO uncomment these lines
-	//executeKruskal(graph);
+	executeKruskal(graph);
 
 	// Process Prim's algorithm with the graph
-	// TODO uncomment these lines
-	//executePrim(graph);
+	executePrim(graph);
+
+	// Hold here so the user has a chance to read the data, in case the window disappears right away.
+	pause("Execution complete. Press ENTER to exit.");
 }
 
 // Create a vertex object for each vertex with a unique ID value
@@ -81,10 +83,9 @@ List* parseEdges(unsigned int numberOfVerticies)
 	return edgeList;
 }
 
-
+// Checks if the list of edges already contains the edge discovered by checking the current edges.
 bool shouldAddEdge(List* edgeList, unsigned int row, unsigned int column)
 {
-	// check if we already have this edge. if not, create it. if we do, just ignore it.
 	unsigned int currentIndex = 0;
 	Edge* currentEdge = (Edge*)edgeList->get(currentIndex);
 	while (currentEdge != NULL)
@@ -102,4 +103,31 @@ bool shouldAddEdge(List* edgeList, unsigned int row, unsigned int column)
 
 	// If we get to here, the edge doesn't exist yet. So return true.
 	return true;
+}
+
+// Executes Kruskal's algorithm against the given graph
+void executeKruskal(Graph* graph)
+{
+	cout << "Calculating MST using Kruskal's Algorithm\n----------------------------------------\n";
+	cout << "I would have done something here.... but not yet.\n";
+	// TODO
+}
+
+// Executes Prim's algorithm against the given graph
+void executePrim(Graph* graph)
+{
+	cout << "Calculating MST using Prim's Algorithm\n----------------------------------------\n";
+	cout << "I would have done something here.... but not yet.\n";
+	// TODO
+}
+
+// Waits for the user to press ENTER. Nothing fancy.
+void pause(string text)
+{
+	cout << endl << text << endl;
+	char throwaway = 0;
+	cin.get(throwaway);
+
+	// It *appears* that the final "ENTER" from entering in the edges triggers the first cin.get(), so adding a second one here
+	cin.get(throwaway);
 }
