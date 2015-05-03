@@ -66,7 +66,7 @@ List* parseEdges(unsigned int numberOfVerticies)
 			// i indicates the current ROW    we are looking at
 			// ex. if i = 1 and j = 3, we are looking at the edge that connects B and D (if the verticies are named alphabetically starting w/A)
 
-			int nextWeight;
+			double nextWeight;
 			cin >> nextWeight;
 			if (nextWeight != 0) // If the next weight is not 0, then we possibly have a newly discovered edge
 			{
