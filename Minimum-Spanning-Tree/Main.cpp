@@ -20,6 +20,7 @@ void executeKruskal(Graph* graph);
 void executePrim(Graph* graph);
 void pause(string text);
 void outputResults(List<Edge>* edgeList);
+unsigned int getWeightOfTree(List<Edge>* edgeList);
 
 int main()
 {
@@ -142,12 +143,25 @@ void pause(string text)
 */
 void outputResults(List<Edge>* edgeList)
 {
-	// Create a list of strings to hold the output verticies. We will sort by them later.
+	// Sort our edges by their formatted string output
 	Common::sortEdgesByString(edgeList);
+
+	// Output the total weight of the MST, and then each edge and its weight
+	cout << getWeightOfTree(edgeList) << endl;
 	for (int i = 0; i < edgeList->size(); i++)
 	{
 		Edge* currentEdge = edgeList->get<Edge>(i);
 		cout << currentEdge->startingVertexName + "-" + currentEdge->endingVertexName + ": " << currentEdge->weight << endl;
 	}
 
+}
+
+unsigned int getWeightOfTree(List<Edge>* edgeList)
+{
+	unsigned int weight = 0;
+	for (int i = 0; i < edgeList->size(); i++)
+	{
+		weight += edgeList->get<Edge>(i)->weight;
+	}
+	return weight;
 }
