@@ -16,6 +16,8 @@ public:
 	string name;
 	int weight = 0;
 	Vertex* predecessor;
+	Vertex* parent;
+	unsigned int rank;
 };
 #endif
 

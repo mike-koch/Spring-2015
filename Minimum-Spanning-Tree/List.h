@@ -42,6 +42,19 @@ public:
 		return NULL;
 	}
 
+	// Iterates through all of the nodes, increasing a counter and returning said counter.
+	int size()
+	{
+		int currentSize = 0;
+		LinkedListNode<T>* currentNode = firstElement;
+		while (currentNode != NULL)
+		{
+			currentSize++;
+			currentNode = currentNode->nextNode;
+		}
+		return currentSize;
+	}
+
 private:
 	// Keeps track of the first element in the list (for traversing), and the last element (for adding)
 	LinkedListNode<T>* firstElement = NULL;

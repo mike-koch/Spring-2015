@@ -8,6 +8,7 @@
 #include "Edge.h"
 #include "Vertex.h"
 #include "List.h"
+#include "Kruskal.h"
 using namespace std;
 
 // Function prototypes
@@ -109,7 +110,7 @@ bool shouldAddEdge(List<Edge>* edgeList, unsigned int row, unsigned int column)
 void executeKruskal(Graph* graph)
 {
 	cout << "Calculating MST using Kruskal's Algorithm\n----------------------------------------\n";
-	cout << "I would have done something here.... but not yet.\n";
+	Kruskal::execute(graph);
 	// TODO
 }
 

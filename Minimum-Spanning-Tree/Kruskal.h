@@ -5,9 +5,11 @@
 class Kruskal
 {
 public:
-	List<Edge>* execute(Graph* graph);
+	static List<Edge>* execute(Graph* graph);
 	Kruskal();
 	~Kruskal();
+private:
+	static Vertex* getVertexById(List<Vertex>* verticies, unsigned int id);
 };
 #endif
 
