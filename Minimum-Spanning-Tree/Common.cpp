@@ -7,10 +7,36 @@ void Common::sortEdgesByWeight(List<Edge>* edges)
 	{
 		// Perform an insertion sort on the edges.
 		Edge* currentEdge = edges->get<Edge>(i);
-		Edge* tempEdge = new Edge(currentEdge->weight, currentEdge->startingVertexId, currentEdge->endingVertexId);
+		Edge* tempEdge = new Edge(currentEdge->weight, 
+			currentEdge->startingVertexId, 
+			currentEdge->endingVertexId, 
+			currentEdge->startingVertexName, 
+			currentEdge->endingVertexName);
 
 		int j;
 		for (j = i - 1; j > -1 && tempEdge->weight < edges->get<Edge>(j)->weight; j--)
+		{
+			moveEdge(edges->get<Edge>(j), edges->get<Edge>(j + 1));
+		}
+
+		moveEdge(tempEdge, edges->get<Edge>(j + 1));
+	}
+}
+
+void Common::sortEdgesByString(List<Edge>* edges)
+{
+	for (int i = 1; i < edges->size(); i++)
+	{
+		// Perform an insertion sort on the edges.
+		Edge* currentEdge = edges->get<Edge>(i);
+		Edge* tempEdge = new Edge(currentEdge->weight,
+			currentEdge->startingVertexId,
+			currentEdge->endingVertexId,
+			currentEdge->startingVertexName,
+			currentEdge->endingVertexName);
+
+		int j;
+		for (j = i - 1; j > -1 && tempEdge->getFormattedName() < edges->get<Edge>(j)->getFormattedName(); j--)
 		{
 			moveEdge(edges->get<Edge>(j), edges->get<Edge>(j + 1));
 		}
@@ -56,7 +82,9 @@ void Common::moveEdge(Edge* source, Edge* destination)
 {
 	// Perform a hard copy of the data from the source edge to the destination edge
 	destination->endingVertexId = source->endingVertexId;
+	destination->endingVertexName = source->endingVertexName;
 	destination->startingVertexId = source->startingVertexId;
+	destination->startingVertexName = source->startingVertexName;
 	destination->weight = source->weight;
 }
 

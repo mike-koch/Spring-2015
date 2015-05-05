@@ -14,12 +14,12 @@ using namespace std;
 
 // Function prototypes
 List<Vertex>* parseVerticies(unsigned int numberOfVerticies);
-List<Edge>* parseEdges(unsigned int numberOfVerticies);
+List<Edge>* parseEdges(List<Vertex>* verticies, unsigned int numberOfVerticies);
 bool shouldAddEdge(List<Edge>* edgeList, unsigned int row, unsigned int column);
 void executeKruskal(Graph* graph);
 void executePrim(Graph* graph);
 void pause(string text);
-void outputResults(List<Vertex>* verticies, List<Edge>* edgeList);
+void outputResults(List<Edge>* edgeList);
 
 int main()
 {
@@ -27,7 +27,7 @@ int main()
 	cin >> numberOfVerticies;
 
 	List<Vertex>* vertexList = parseVerticies(numberOfVerticies);
-	List<Edge>* edgeList = parseEdges(numberOfVerticies); // Returns a list of the parsed edges	
+	List<Edge>* edgeList = parseEdges(vertexList, numberOfVerticies); // Returns a list of the parsed edges	
 
 	// Create our graph
 	Graph* graph = new Graph(edgeList, vertexList);
@@ -58,7 +58,7 @@ List<Vertex>* parseVerticies(unsigned int numberOfVerticies)
 
 // The next N*N characters indicate the edges that are connected to each vertex along with the weight. The first N pertain to the first
 //   edge, the second N pertain to the second edge, and so forth. The outer loop keeps track of row # and the inner loop keeps track of column #
-List<Edge>* parseEdges(unsigned int numberOfVerticies)
+List<Edge>* parseEdges(List<Vertex>* verticies, unsigned int numberOfVerticies)
 {
 	List<Edge>* edgeList = new List<Edge>();
 	for (unsigned int i = 0; i < numberOfVerticies; i++)
@@ -78,7 +78,7 @@ List<Edge>* parseEdges(unsigned int numberOfVerticies)
 				// If we never found an edge with the current verticies, we should create a new edge and add it to the list.
 				if (shouldAddEdge(edgeList, i, j))
 				{
-					edgeList->add(new Edge(nextWeight, i, j));
+					edgeList->add(new Edge(nextWeight, i, j, Common::getVertexById(verticies, i)->name, Common::getVertexById(verticies, j)->name));
 				}
 			}
 		}
@@ -113,7 +113,7 @@ void executeKruskal(Graph* graph)
 {
 	cout << "Calculating MST using Kruskal's Algorithm\n----------------------------------------\n";
 	List<Edge>* edges = Kruskal::execute(graph);
-	outputResults(graph->verticies, edges);
+	outputResults(edges);
 	// TODO
 }
 
@@ -140,16 +140,14 @@ void pause(string text)
 	- Total weight of all edges involved in MST
 	- The edges that make up the tree in alphabetical order
 */
-void outputResults(List<Vertex>* verticies, List<Edge>* edgeList)
+void outputResults(List<Edge>* edgeList)
 {
 	// Create a list of strings to hold the output verticies. We will sort by them later.
-	List<string>* outputStrings = new List<string>();
+	Common::sortEdgesByString(edgeList);
 	for (int i = 0; i < edgeList->size(); i++)
 	{
 		Edge* currentEdge = edgeList->get<Edge>(i);
-		string vertexOneName = Common::getVertexById(verticies, currentEdge->startingVertexId)->name;
-		string vertexTwoName = Common::getVertexById(verticies, currentEdge->endingVertexId)->name;
-		cout << vertexOneName + "-" + vertexTwoName + ": " << currentEdge->weight << endl;
+		cout << currentEdge->startingVertexName + "-" + currentEdge->endingVertexName + ": " << currentEdge->weight << endl;
 	}
 
 }

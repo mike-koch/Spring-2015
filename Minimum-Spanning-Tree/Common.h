@@ -6,6 +6,7 @@ class Common
 {
 public:
 	static void sortEdgesByWeight(List<Edge>* edges);
+	static void sortEdgesByString(List<Edge>* edges);
 	static void makeSet(Vertex* vertex);
 	static Vertex* findSet(Vertex* vertex);
 	static Vertex* getVertexById(List<Vertex>* verticies, unsigned int id);
