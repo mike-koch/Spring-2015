@@ -7,7 +7,8 @@ void Common::sortEdges(List<Edge>* edges)
 	for (int i = 1; i < edges->size(); i++)
 	{
 		// Perform an insertion sort on the edges.
-		Edge* tempEdge = edges->get<Edge>(i);
+		Edge* currentEdge = edges->get<Edge>(i);
+		Edge* tempEdge = new Edge(currentEdge->weight, currentEdge->startingVertexId, currentEdge->endingVertexId);
 
 		int j;
 		for (j = i - 1; j > -1 && tempEdge->weight < edges->get<Edge>(j)->weight; j--)
