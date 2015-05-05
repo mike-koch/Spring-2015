@@ -9,6 +9,7 @@
 #include "Vertex.h"
 #include "List.h"
 #include "Kruskal.h"
+#include "Common.h"
 using namespace std;
 
 // Function prototypes
@@ -18,6 +19,7 @@ bool shouldAddEdge(List<Edge>* edgeList, unsigned int row, unsigned int column);
 void executeKruskal(Graph* graph);
 void executePrim(Graph* graph);
 void pause(string text);
+void outputResults(List<Vertex>* verticies, List<Edge>* edgeList);
 
 int main()
 {
@@ -110,7 +112,8 @@ bool shouldAddEdge(List<Edge>* edgeList, unsigned int row, unsigned int column)
 void executeKruskal(Graph* graph)
 {
 	cout << "Calculating MST using Kruskal's Algorithm\n----------------------------------------\n";
-	Kruskal::execute(graph);
+	List<Edge>* edges = Kruskal::execute(graph);
+	outputResults(graph->verticies, edges);
 	// TODO
 }
 
@@ -131,4 +134,22 @@ void pause(string text)
 
 	// It *appears* that the final "ENTER" from entering in the edges triggers the first cin.get(), so adding a second one here
 	cin.get(throwaway);
+}
+
+/* Outputs the following:
+	- Total weight of all edges involved in MST
+	- The edges that make up the tree in alphabetical order
+*/
+void outputResults(List<Vertex>* verticies, List<Edge>* edgeList)
+{
+	// Create a list of strings to hold the output verticies. We will sort by them later.
+	List<string>* outputStrings = new List<string>();
+	for (int i = 0; i < edgeList->size(); i++)
+	{
+		Edge* currentEdge = edgeList->get<Edge>(i);
+		string vertexOneName = Common::getVertexById(verticies, currentEdge->startingVertexId)->name;
+		string vertexTwoName = Common::getVertexById(verticies, currentEdge->endingVertexId)->name;
+		cout << vertexOneName + "-" + vertexTwoName + ": " << currentEdge->weight << endl;
+	}
+
 }

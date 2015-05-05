@@ -12,12 +12,12 @@ List<Edge>* Kruskal::execute(Graph* graph)
 	{
 		Common::makeSet(graph->verticies->get<Vertex>(i));
 	}
-	Common::sortEdges(graph->edges);
+	Common::sortEdgesByWeight(graph->edges);
 	for (int i = 0; i < graph->edges->size(); i++)
 	{
 		Edge* currentEdge = graph->edges->get<Edge>(i);
-		Vertex* vertexU = getVertexById(graph->verticies, currentEdge->startingVertexId);
-		Vertex* vertexV = getVertexById(graph->verticies, currentEdge->endingVertexId);
+		Vertex* vertexU = Common::getVertexById(graph->verticies, currentEdge->startingVertexId);
+		Vertex* vertexV = Common::getVertexById(graph->verticies, currentEdge->endingVertexId);
 		if (Common::findSet(vertexU) != Common::findSet(vertexV))
 		{
 			A->add(currentEdge);
@@ -25,19 +25,6 @@ List<Edge>* Kruskal::execute(Graph* graph)
 		}
 	}
 	return A;
-}
-
-Vertex* Kruskal::getVertexById(List<Vertex>* verticies, unsigned int id)
-{
-	for (int i = 0; i < verticies->size(); i++)
-	{
-		Vertex* currentVertex = verticies->get<Vertex>(i);
-		if (currentVertex->id == id)
-		{
-			return currentVertex;
-		}
-	}
-	return NULL;
 }
 
 

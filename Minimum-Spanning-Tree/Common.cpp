@@ -1,8 +1,7 @@
 #include "Common.h"
 
-void Common::sortEdges(List<Edge>* edges)
+void Common::sortEdgesByWeight(List<Edge>* edges)
 {
-	List<Edge>* sortedEdges = new List<Edge>();
 	LinkedListNode<Edge>* firstNode = NULL;
 	for (int i = 1; i < edges->size(); i++)
 	{
@@ -33,6 +32,19 @@ Vertex* Common::findSet(Vertex* vertex)
 		vertex->parent = findSet(vertex->parent);
 	}
 	return vertex->parent;
+}
+
+Vertex* Common::getVertexById(List<Vertex>* verticies, unsigned int id)
+{
+	for (int i = 0; i < verticies->size(); i++)
+	{
+		Vertex* currentVertex = verticies->get<Vertex>(i);
+		if (currentVertex->id == id)
+		{
+			return currentVertex;
+		}
+	}
+	return NULL;
 }
 
 void Common::unionVerticies(Vertex* vertexOne, Vertex* vertexTwo)

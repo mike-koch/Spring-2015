@@ -1,6 +1,8 @@
 #ifndef EDGE_H
 #define EDGE_H
 #include "Vertex.h"
+#include <string>
+using namespace std;
 
 class Edge
 {
