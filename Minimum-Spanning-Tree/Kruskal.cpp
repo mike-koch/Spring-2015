@@ -10,8 +10,7 @@ List<Edge>* Kruskal::execute(Graph* graph)
 	List<Edge>* A = new List<Edge>();
 	for (int i = 0; i < graph->verticies->size(); i++)
 	{
-		//Make-set(graph->verticies->get(i));
-		cout << i << endl;
+		Common::makeSet(graph->verticies->get<Vertex>(i));
 	}
 	Common::sortEdges(graph->edges);
 	for (int i = 0; i < graph->edges->size(); i++)
