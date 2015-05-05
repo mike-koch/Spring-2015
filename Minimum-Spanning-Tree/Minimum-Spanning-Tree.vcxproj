@@ -65,9 +65,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Kruskal.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="PriorityQueue.cpp" />
+    <ClCompile Include="Prim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
@@ -76,6 +77,7 @@
     <ClInclude Include="Kruskal.h" />
     <ClInclude Include="LinkedListNode.h" />
     <ClInclude Include="List.h" />
+    <ClInclude Include="Prim.h" />
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>

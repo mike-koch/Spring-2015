@@ -9,6 +9,7 @@
 #include "Vertex.h"
 #include "List.h"
 #include "Kruskal.h"
+#include "Prim.h"
 #include "Common.h"
 using namespace std;
 
@@ -19,8 +20,9 @@ bool shouldAddEdge(List<Edge>* edgeList, unsigned int row, unsigned int column);
 void executeKruskal(Graph* graph);
 void executePrim(Graph* graph);
 void pause(string text);
-void outputResults(List<Edge>* edgeList);
-unsigned int getWeightOfTree(List<Edge>* edgeList);
+void outputEdgeResults(List<Edge>* edgeList);
+void outputVertexResults(Graph* graph);
+double getWeightOfTree(List<Edge>* edgeList, Graph* graph);
 
 int main()
 {
@@ -79,7 +81,14 @@ List<Edge>* parseEdges(List<Vertex>* verticies, unsigned int numberOfVerticies)
 				// If we never found an edge with the current verticies, we should create a new edge and add it to the list.
 				if (shouldAddEdge(edgeList, i, j))
 				{
-					edgeList->add(new Edge(nextWeight, i, j, Common::getVertexById(verticies, i)->name, Common::getVertexById(verticies, j)->name));
+					Edge* newEdge = new Edge(nextWeight, i, j, Common::getVertexById(verticies, i)->name, Common::getVertexById(verticies, j)->name);
+					edgeList->add(newEdge);
+
+					// Update each vertex's weight if needed
+					if (Common::getVertexById(verticies, i)->weight > newEdge->weight)
+					{
+						Common::getVertexById(verticies, i)->weight = newEdge->weight;
+					}
 				}
 			}
 		}
@@ -91,7 +100,7 @@ List<Edge>* parseEdges(List<Vertex>* verticies, unsigned int numberOfVerticies)
 bool shouldAddEdge(List<Edge>* edgeList, unsigned int row, unsigned int column)
 {
 	unsigned int currentIndex = 0;
-	Edge* currentEdge = edgeList->get<Edge>(currentIndex);
+	Edge* currentEdge = edgeList->get(currentIndex);
 	while (currentEdge != NULL)
 	{
 		// If the edge's startingVertex and endingVertex are i and j (in either direction), set shouldAddEdge to FALSE and break out of the loop
@@ -102,7 +111,7 @@ bool shouldAddEdge(List<Edge>* edgeList, unsigned int row, unsigned int column)
 			return false;
 		}
 		// Otherwise, grab the next edge in the list and repeat the process.
-		currentEdge = edgeList->get<Edge>(++currentIndex);
+		currentEdge = edgeList->get(++currentIndex);
 	}
 
 	// If we get to here, the edge doesn't exist yet. So return true.
@@ -114,7 +123,7 @@ void executeKruskal(Graph* graph)
 {
 	cout << "Calculating MST using Kruskal's Algorithm\n----------------------------------------\n";
 	List<Edge>* edges = Kruskal::execute(graph);
-	outputResults(edges);
+	outputEdgeResults(edges);
 	// TODO
 }
 
@@ -122,7 +131,10 @@ void executeKruskal(Graph* graph)
 void executePrim(Graph* graph)
 {
 	cout << "Calculating MST using Prim's Algorithm\n----------------------------------------\n";
-	cout << "I would have done something here.... but not yet.\n";
+
+	// We will use the first vertex to start Prim's algorithm.
+	Prim::execute(graph, graph->verticies->get(0));
+	outputVertexResults(graph);
 	// TODO
 }
 
@@ -141,27 +153,47 @@ void pause(string text)
 	- Total weight of all edges involved in MST
 	- The edges that make up the tree in alphabetical order
 */
-void outputResults(List<Edge>* edgeList)
+void outputEdgeResults(List<Edge>* edgeList)
 {
 	// Sort our edges by their formatted string output
 	Common::sortEdgesByString(edgeList);
 
 	// Output the total weight of the MST, and then each edge and its weight
-	cout << getWeightOfTree(edgeList) << endl;
+	cout << getWeightOfTree(edgeList, NULL) << endl;
 	for (int i = 0; i < edgeList->size(); i++)
 	{
-		Edge* currentEdge = edgeList->get<Edge>(i);
+		Edge* currentEdge = edgeList->get(i);
 		cout << currentEdge->startingVertexName + "-" + currentEdge->endingVertexName + ": " << currentEdge->weight << endl;
 	}
 
 }
 
-unsigned int getWeightOfTree(List<Edge>* edgeList)
+void outputVertexResults(Graph* graph)
 {
-	unsigned int weight = 0;
-	for (int i = 0; i < edgeList->size(); i++)
+	// Output the total weight of the MST, and then each vertex and its weight
+	cout << getWeightOfTree(NULL, graph) << endl;
+}
+
+// Calculates the total weights of all of the edges in the list and returns the value
+double getWeightOfTree(List<Edge>* edges, Graph* graph)
+{
+	double weight = 0;
+	if (edges != NULL)
 	{
-		weight += edgeList->get<Edge>(i)->weight;
+		for (int i = 0; i < edges->size(); i++)
+		{
+			weight += edges->get(i)->weight;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < graph->verticies->size(); i++)
+		{
+			if (graph->verticies->get(i)->weight != INT_MAX)
+			{
+				weight += graph->verticies->get(i)->weight;
+			}
+		}
 	}
 	return weight;
 }

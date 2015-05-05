@@ -6,7 +6,6 @@
 template <class T> class List
 {
 public:
-	template <class T>
 	void add(T* item)
 	{
 		// Create a linked list node and append it after the last item added. Returns the index of the new node
@@ -24,7 +23,6 @@ public:
 		lastElement = newNode;
 	}
 
-	template <class T>
 	T* get(unsigned int index)
 	{
 		// Returns the element at the specified index by traversing through the list, incrementing an index counter.
@@ -40,6 +38,47 @@ public:
 			currentIndex++;
 		}
 		return NULL;
+	}
+
+	void remove(T* element)
+	{
+		// Removes the element provided, if it exists
+		LinkedListNode<T>* previousElement = NULL;
+		LinkedListNode<T>* currentElement = firstElement;
+		while (currentElement != NULL)
+		{
+			if (currentElement->element == element)
+			{
+				if (previousElement == NULL) // We're removing the first element in the list
+				{
+					firstElement = currentElement->nextNode;
+				}
+				else
+				{
+					// Set the previous element's nextNode to this nodes next element
+					previousElement->nextNode = currentElement->nextNode;
+				}
+				return;
+			}
+			// Otherwise increment previousElement and currentElement and try again
+			previousElement = currentElement;
+			currentElement = currentElement->nextNode;
+		}
+	}
+
+	// Iterates through the list to see if the requested element exists
+	bool contains(T* element)
+	{
+		LinkedListNode<T>* currentNode = firstElement;
+		while (currentNode != NULL)
+		{
+			if (currentNode->element == element)
+			{
+				return true;
+			}
+			currentNode = currentNode->nextNode;
+		}
+		return false;
 	}
 
 	// Iterates through all of the nodes, increasing a counter and returning said counter.

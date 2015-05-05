@@ -14,7 +14,7 @@ public:
 	~Vertex();
 	unsigned int id;
 	string name;
-	int weight = 0;
+	double weight = 0;
 	Vertex* predecessor;
 	Vertex* parent;
 	unsigned int rank;

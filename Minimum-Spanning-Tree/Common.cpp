@@ -6,7 +6,7 @@ void Common::sortEdgesByWeight(List<Edge>* edges)
 	for (int i = 1; i < edges->size(); i++)
 	{
 		// Perform an insertion sort on the edges.
-		Edge* currentEdge = edges->get<Edge>(i);
+		Edge* currentEdge = edges->get(i);
 		Edge* tempEdge = new Edge(currentEdge->weight, 
 			currentEdge->startingVertexId, 
 			currentEdge->endingVertexId, 
@@ -14,12 +14,12 @@ void Common::sortEdgesByWeight(List<Edge>* edges)
 			currentEdge->endingVertexName);
 
 		int j;
-		for (j = i - 1; j > -1 && tempEdge->weight < edges->get<Edge>(j)->weight; j--)
+		for (j = i - 1; j > -1 && tempEdge->weight < edges->get(j)->weight; j--)
 		{
-			moveEdge(edges->get<Edge>(j), edges->get<Edge>(j + 1));
+			moveEdge(edges->get(j), edges->get(j + 1));
 		}
 
-		moveEdge(tempEdge, edges->get<Edge>(j + 1));
+		moveEdge(tempEdge, edges->get(j + 1));
 	}
 }
 
@@ -28,7 +28,7 @@ void Common::sortEdgesByString(List<Edge>* edges)
 	for (int i = 1; i < edges->size(); i++)
 	{
 		// Perform an insertion sort on the edges.
-		Edge* currentEdge = edges->get<Edge>(i);
+		Edge* currentEdge = edges->get(i);
 		Edge* tempEdge = new Edge(currentEdge->weight,
 			currentEdge->startingVertexId,
 			currentEdge->endingVertexId,
@@ -36,12 +36,12 @@ void Common::sortEdgesByString(List<Edge>* edges)
 			currentEdge->endingVertexName);
 
 		int j;
-		for (j = i - 1; j > -1 && tempEdge->getFormattedName() < edges->get<Edge>(j)->getFormattedName(); j--)
+		for (j = i - 1; j > -1 && tempEdge->getFormattedName() < edges->get(j)->getFormattedName(); j--)
 		{
-			moveEdge(edges->get<Edge>(j), edges->get<Edge>(j + 1));
+			moveEdge(edges->get(j), edges->get(j + 1));
 		}
 
-		moveEdge(tempEdge, edges->get<Edge>(j + 1));
+		moveEdge(tempEdge, edges->get(j + 1));
 	}
 }
 
@@ -64,7 +64,7 @@ Vertex* Common::getVertexById(List<Vertex>* verticies, unsigned int id)
 {
 	for (int i = 0; i < verticies->size(); i++)
 	{
-		Vertex* currentVertex = verticies->get<Vertex>(i);
+		Vertex* currentVertex = verticies->get(i);
 		if (currentVertex->id == id)
 		{
 			return currentVertex;

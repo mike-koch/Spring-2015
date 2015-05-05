@@ -15,6 +15,8 @@ public:
 	~Graph();
 	List<Edge>* edges;
 	List<Vertex>* verticies;
+	List<Vertex>* getAdjacentVerticies(Vertex* startingVertex);
+	Edge* findEdgeConnectingVerticies(Vertex* vertexOne, Vertex* vertexTwo);
 };
 #endif
 
