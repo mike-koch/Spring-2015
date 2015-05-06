@@ -124,7 +124,7 @@ void executeKruskal(Graph* graph)
 	cout << "Calculating MST using Kruskal's Algorithm\n----------------------------------------\n";
 	List<Edge>* edges = Kruskal::execute(graph);
 	outputEdgeResults(edges);
-	// TODO
+	cout << endl;
 }
 
 // Executes Prim's algorithm against the given graph
@@ -135,7 +135,6 @@ void executePrim(Graph* graph)
 	// We will use the first vertex to start Prim's algorithm.
 	Prim::execute(graph, graph->verticies->get(0));
 	outputVertexResults(graph);
-	// TODO
 }
 
 // Waits for the user to press ENTER. Nothing fancy.
