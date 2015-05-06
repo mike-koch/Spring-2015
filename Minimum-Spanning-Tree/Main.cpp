@@ -172,6 +172,27 @@ void outputVertexResults(Graph* graph)
 {
 	// Output the total weight of the MST, and then each vertex and its weight
 	cout << getWeightOfTree(NULL, graph) << endl;
+	List<Edge>* tempEdges = new List<Edge>();
+	for (int i = 0; i < graph->verticies->size(); i++)
+	{
+		if (graph->verticies->get(i)->weight != 0)
+		{
+			// Create a temporary edge containing the information needed for sorting
+			Vertex* currentVertex = graph->verticies->get(i);
+			Edge* tempEdge = new Edge(currentVertex->weight,
+				currentVertex->parent->id,
+				currentVertex->id,
+				currentVertex->parent->name,
+				currentVertex->name);
+			tempEdges->add(tempEdge);
+		}
+	}
+	Common::sortEdgesByString(tempEdges);
+	for (int i = 0; i < tempEdges->size(); i++)
+	{
+		Edge* currentEdge = tempEdges->get(i);
+		cout << currentEdge->startingVertexName + "-" + currentEdge->endingVertexName + ": " << currentEdge->weight << endl;
+	}
 }
 
 // Calculates the total weights of all of the edges in the list and returns the value

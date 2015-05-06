@@ -16,7 +16,7 @@ public:
 		for (int i = 0; i < list->size(); i++)
 		{
 			Vertex* currentVertex = list->get(i);
-			if (currentMinimum == NULL || currentVertex->weight > currentMinimum->weight)
+			if (currentMinimum == NULL || currentVertex->weight < currentMinimum->weight)
 			{
 				currentMinimum = currentVertex;
 			}

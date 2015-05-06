@@ -15,7 +15,6 @@ public:
 	unsigned int id;
 	string name;
 	double weight = 0;
-	Vertex* predecessor;
 	Vertex* parent;
 	unsigned int rank;
 };

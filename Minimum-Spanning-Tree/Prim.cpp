@@ -1,13 +1,16 @@
 #include "Prim.h"
 #include "PriorityQueue.h"
+#include "Common.h"
 
 void Prim::execute(Graph* graph, Vertex* root)
 {
+	List<Edge>* F = new List<Edge>();
+	List<Vertex>* Y = new List<Vertex>();
 	for (int i = 0; i < graph->verticies->size(); i++)
 	{
 		Vertex* currentVertex = graph->verticies->get(i);
 		currentVertex->weight = INT_MAX;
-		currentVertex->predecessor = NULL;
+		currentVertex->parent = NULL;
 	}
 	root->weight = 0;
 
@@ -19,17 +22,19 @@ void Prim::execute(Graph* graph, Vertex* root)
 	}
 	while (queue->size() != 0)
 	{
-		Vertex* currentVertex = queue->extractMinimum();
-		List<Vertex>* adjacentVerticies = graph->getAdjacentVerticies(currentVertex);
+		Vertex* u = queue->extractMinimum();
+		List<Vertex>* adjacentVerticies = graph->getAdjacentVerticies(u);
 		for (int i = 0; i < adjacentVerticies->size(); i++)
 		{
-			Vertex* currentAdjacentVertex = adjacentVerticies->get(i);
-			if (queue->contains(currentAdjacentVertex) && graph->findEdgeConnectingVerticies(currentVertex, currentAdjacentVertex)->weight < currentAdjacentVertex->weight)
+			Vertex* v = adjacentVerticies->get(i);
+			if (queue->contains(v) && graph->findEdgeConnectingVerticies(u, v)->weight < v->weight)
 			{
-				currentAdjacentVertex->predecessor = currentVertex;
-				currentAdjacentVertex->weight = graph->findEdgeConnectingVerticies(currentVertex, currentAdjacentVertex)->weight;
+				v->parent = u;
+				v->weight = graph->findEdgeConnectingVerticies(u, v)->weight;
+				F->add(graph->findEdgeConnectingVerticies(u, v));
 			}
 		}
+		Y->add(u);
 	}
 
 	// We only manipulated the graph's current list verticies, so the caller will have the updated graph
