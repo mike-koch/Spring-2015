@@ -1,3 +1,7 @@
+// Mike Koch - Minimum Spanning Tree
+// EECS 2510 | 05/03/2015
+// Vertex.h - Vertex header file, which contains properties about the vertex
+
 #ifndef VERTEX_H
 #define VERTEX_H
 #include <string>
@@ -11,7 +15,6 @@ public:
 		id = vertexId;
 		name = vertexName;
 	};
-	~Vertex();
 	unsigned int id;
 	string name;
 	double weight = 0;

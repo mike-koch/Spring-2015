@@ -1,6 +1,6 @@
 // Mike Koch - Minimum Spanning Tree
-// EECS 2510 | 04/28/2015
-// Main.cpp - Responsible for parsing input and executing required tree algorithms
+// EECS 2510 | 05/03/2015
+// Main.cpp - Responsible for parsing input and executing required tree algorithms (Krusakl and Prim)
 
 #include <iostream>
 #include <climits>
@@ -29,8 +29,9 @@ int main()
 	unsigned int numberOfVerticies;
 	cin >> numberOfVerticies;
 
+	// Parse the input and create our verticies and edges
 	List<Vertex>* vertexList = parseVerticies(numberOfVerticies);
-	List<Edge>* edgeList = parseEdges(vertexList, numberOfVerticies); // Returns a list of the parsed edges	
+	List<Edge>* edgeList = parseEdges(vertexList, numberOfVerticies);
 
 	// Create our graph
 	Graph* graph = new Graph(edgeList, vertexList);
@@ -83,12 +84,6 @@ List<Edge>* parseEdges(List<Vertex>* verticies, unsigned int numberOfVerticies)
 				{
 					Edge* newEdge = new Edge(nextWeight, i, j, Common::getVertexById(verticies, i)->name, Common::getVertexById(verticies, j)->name);
 					edgeList->add(newEdge);
-
-					// Update each vertex's weight if needed
-					if (Common::getVertexById(verticies, i)->weight > newEdge->weight)
-					{
-						Common::getVertexById(verticies, i)->weight = newEdge->weight;
-					}
 				}
 			}
 		}

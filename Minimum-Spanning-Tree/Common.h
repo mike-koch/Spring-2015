@@ -1,3 +1,7 @@
+// Mike Koch - Minimum Spanning Tree
+// EECS 2510 | 05/03/2015
+// Common.h - The common header file contains code used by various source files in this solution, and therefore have no "specific" place
+
 #ifndef COMMON_H
 #define COMMON_H
 #include "List.h"

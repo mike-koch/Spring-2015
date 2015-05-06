@@ -1,3 +1,7 @@
+// Mike Koch - Minimum Spanning Tree
+// EECS 2510 | 05/03/2015
+// List.h - List template used to hold a collection of objects. The template allows for an arbitrary object/primitive type to be added.
+
 #ifndef LIST_H
 #define LIST_H
 #include "LinkedListNode.h"
@@ -23,9 +27,9 @@ public:
 		lastElement = newNode;
 	}
 
+	// Returns the element at the specified index by traversing through the list, incrementing an index counter.
 	T* get(unsigned int index)
 	{
-		// Returns the element at the specified index by traversing through the list, incrementing an index counter.
 		unsigned int currentIndex = 0;
 		LinkedListNode<T>* currentNode = firstElement;
 		while (currentNode != NULL)
@@ -40,9 +44,9 @@ public:
 		return NULL;
 	}
 
+	// Removes the element provided, if it exists. LinkedListNode pointers are updated to simply "leap" over the removed node. Otherwise nothing occurs.
 	void remove(T* element)
 	{
-		// Removes the element provided, if it exists
 		LinkedListNode<T>* previousElement = NULL;
 		LinkedListNode<T>* currentElement = firstElement;
 		while (currentElement != NULL)

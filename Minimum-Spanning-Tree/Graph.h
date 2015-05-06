@@ -1,3 +1,7 @@
+// Mike Koch - Minimum Spanning Tree
+// EECS 2510 | 05/03/2015
+// Graph.h - Graph header file, which contains properties needed for the graph as well as helper functions
+
 #ifndef GRAPH_H
 #define GRAPH_H
 #include <iostream>
@@ -12,7 +16,6 @@ public:
 		edges = edgeList;
 		verticies = vertexList;
 	};
-	~Graph();
 	List<Edge>* edges;
 	List<Vertex>* verticies;
 	List<Vertex>* getAdjacentVerticies(Vertex* startingVertex);
