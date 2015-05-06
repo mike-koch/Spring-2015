@@ -22,7 +22,6 @@ void executePrim(Graph* graph);
 void pause(string text);
 void outputEdgeResults(List<Edge>* edgeList);
 void outputVertexResults(Graph* graph);
-double getWeightOfTree(List<Edge>* edgeList, Graph* graph);
 
 int main()
 {
@@ -118,6 +117,12 @@ void executeKruskal(Graph* graph)
 {
 	cout << "Calculating MST using Kruskal's Algorithm\n----------------------------------------\n";
 	List<Edge>* edges = Kruskal::execute(graph);
+	double weightOfTree = 0;
+	for (int i = 0; i < edges->size(); i++)
+	{
+		weightOfTree += edges->get(i)->weight;
+	}
+	cout << weightOfTree << endl;
 	outputEdgeResults(edges);
 	cout << endl;
 }
@@ -129,6 +134,15 @@ void executePrim(Graph* graph)
 
 	// We will use the first vertex to start Prim's algorithm.
 	Prim::execute(graph, graph->verticies->get(0));
+	double weightOfTree = 0;
+	for (int i = 0; i < graph->verticies->size(); i++)
+	{
+		if (graph->verticies->get(i)->weight != INT_MAX)
+		{
+			weightOfTree += graph->verticies->get(i)->weight;
+		}
+	}
+	cout << weightOfTree << endl;
 	outputVertexResults(graph);
 }
 
@@ -143,17 +157,13 @@ void pause(string text)
 	cin.get(throwaway);
 }
 
-/* Outputs the following:
-	- Total weight of all edges involved in MST
-	- The edges that make up the tree in alphabetical order
-*/
+// Outputs the edges that make up the tree in alphabetical order
 void outputEdgeResults(List<Edge>* edgeList)
 {
 	// Sort our edges by their formatted string output
 	Common::sortEdgesByString(edgeList);
 
-	// Output the total weight of the MST, and then each edge and its weight
-	cout << getWeightOfTree(edgeList, NULL) << endl;
+	// Output each edge and its weight
 	for (int i = 0; i < edgeList->size(); i++)
 	{
 		Edge* currentEdge = edgeList->get(i);
@@ -162,53 +172,24 @@ void outputEdgeResults(List<Edge>* edgeList)
 
 }
 
+// Outputs the edges of the verticies that make up the tree in alphabetical order
 void outputVertexResults(Graph* graph)
 {
-	// Output the total weight of the MST, and then each vertex and its weight
-	cout << getWeightOfTree(NULL, graph) << endl;
-	List<Edge>* tempEdges = new List<Edge>();
+	// Output the edges that connect these verticies and its weight
+	List<Edge>* edges = new List<Edge>();
 	for (int i = 0; i < graph->verticies->size(); i++)
 	{
-		if (graph->verticies->get(i)->weight != 0)
+		if (graph->verticies->get(i)->weight != 0) // Don't try to add the starting vertex. It's weight is 0 and it will cause bad things to happen!
 		{
 			// Create a temporary edge containing the information needed for sorting
 			Vertex* currentVertex = graph->verticies->get(i);
-			Edge* tempEdge = new Edge(currentVertex->weight,
-				currentVertex->parent->id,
-				currentVertex->id,
-				currentVertex->parent->name,
-				currentVertex->name);
-			tempEdges->add(tempEdge);
+			edges->add(graph->findEdgeConnectingVerticies(graph->verticies->get(i), graph->verticies->get(i)->parent));
 		}
 	}
-	Common::sortEdgesByString(tempEdges);
-	for (int i = 0; i < tempEdges->size(); i++)
+	Common::sortEdgesByString(edges);
+	for (int i = 0; i < edges->size(); i++)
 	{
-		Edge* currentEdge = tempEdges->get(i);
+		Edge* currentEdge = edges->get(i);
 		cout << currentEdge->startingVertexName + "-" + currentEdge->endingVertexName + ": " << currentEdge->weight << endl;
 	}
-}
-
-// Calculates the total weights of all of the edges in the list and returns the value
-double getWeightOfTree(List<Edge>* edges, Graph* graph)
-{
-	double weight = 0;
-	if (edges != NULL)
-	{
-		for (int i = 0; i < edges->size(); i++)
-		{
-			weight += edges->get(i)->weight;
-		}
-	}
-	else
-	{
-		for (int i = 0; i < graph->verticies->size(); i++)
-		{
-			if (graph->verticies->get(i)->weight != INT_MAX)
-			{
-				weight += graph->verticies->get(i)->weight;
-			}
-		}
-	}
-	return weight;
 }
