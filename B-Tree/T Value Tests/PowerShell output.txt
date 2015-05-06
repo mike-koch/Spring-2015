@@ -1,0 +1,164 @@
+Starting BTree [2]
+-----------------------
+Height of tree: 11
+Total number of nodes: 21810
+Total number of "available" keys: 65430
+Total number of used keys: 38004
+Load factor (used keys / available keys): 58.083448%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 8194604
+Total number of disk writes: 948694
+File size: 5583616 bytes
+Elapsed time: 90521 clock cycles.
+Excluding overhead, elapsed time: 90521 clock cycles.
+
+Starting BTree [4]
+-----------------------
+Height of tree: 6
+Total number of nodes: 8262
+Total number of "available" keys: 57834
+Total number of used keys: 38004
+Load factor (used keys / available keys): 65.712211%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 5144965
+Total number of disk writes: 908065
+File size: 4032344 bytes
+Elapsed time: 78710 clock cycles.
+Excluding overhead, elapsed time: 78710 clock cycles.
+
+Starting BTree [8]
+-----------------------
+Height of tree: 4
+Total number of nodes: 3730
+Total number of "available" keys: 55950
+Total number of used keys: 38004
+Load factor (used keys / available keys): 67.924933%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 3971255
+Total number of disk writes: 894475
+File size: 3551912 bytes
+Elapsed time: 67160 clock cycles.
+Excluding overhead, elapsed time: 67160 clock cycles.
+
+Starting BTree [16]
+-----------------------
+Height of tree: 3
+Total number of nodes: 1767
+Total number of "available" keys: 54777
+Total number of used keys: 38004
+Load factor (used keys / available keys): 69.379484%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 3341408
+Total number of disk writes: 888589
+File size: 3323840 bytes
+Elapsed time: 76183 clock cycles.
+Excluding overhead, elapsed time: 76183 clock cycles.
+
+Starting BTree [32]
+-----------------------
+Height of tree: 2
+Total number of nodes: 882
+Total number of "available" keys: 55566
+Total number of used keys: 38004
+Load factor (used keys / available keys): 68.394342%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 2654308
+Total number of disk writes: 885937
+File size: 3298888 bytes
+Elapsed time: 91331 clock cycles.
+Excluding overhead, elapsed time: 91331 clock cycles.
+
+Starting BTree [64]
+-----------------------
+Height of tree: 2
+Total number of nodes: 438
+Total number of "available" keys: 55626
+Total number of used keys: 38004
+Load factor (used keys / available keys): 68.320570%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 2561899
+Total number of disk writes: 884605
+File size: 3269672 bytes
+Elapsed time: 154296 clock cycles.
+Excluding overhead, elapsed time: 154296 clock cycles.
+
+Starting BTree [128]
+-----------------------
+Height of tree: 1
+Total number of nodes: 220
+Total number of "available" keys: 56100
+Total number of used keys: 38004
+Load factor (used keys / available keys): 67.743316%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 1798452
+Total number of disk writes: 883954
+File size: 3286712 bytes
+Elapsed time: 244007 clock cycles.
+Excluding overhead, elapsed time: 244007 clock cycles.
+
+Starting BTree [256]
+-----------------------
+Height of tree: 1
+Total number of nodes: 110
+Total number of "available" keys: 56210
+Total number of used keys: 38004
+Load factor (used keys / available keys): 67.610745%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 1786993
+Total number of disk writes: 883624
+File size: 3298920 bytes
+Elapsed time: 420270 clock cycles.
+Excluding overhead, elapsed time: 420270 clock cycles.
+
+Starting BTree [512]
+-----------------------
+Height of tree: 1
+Total number of nodes: 57
+Total number of "available" keys: 58311
+Total number of used keys: 38004
+Load factor (used keys / available keys): 65.174667%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 1795175
+Total number of disk writes: 883465
+File size: 3446128 bytes
+Elapsed time: 794286 clock cycles.
+Excluding overhead, elapsed time: 794286 clock cycles.
+
+Starting BTree [1024]
+-----------------------
+Height of tree: 1
+Total number of nodes: 30
+Total number of "available" keys: 61410
+Total number of used keys: 38004
+Load factor (used keys / available keys): 61.885686%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 1794772
+Total number of disk writes: 883384
+File size: 3683048 bytes
+Elapsed time: 1512871 clock cycles.
+Excluding overhead, elapsed time: 1512871 clock cycles.
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 58
+Seconds           : 50
+Milliseconds      : 173
+Ticks             : 35301738210
+TotalDays         : 0.0408584932986111
+TotalHours        : 0.980603839166667
+TotalMinutes      : 58.83623035
+TotalSeconds      : 3530.173821
+TotalMilliseconds : 3530173.821
+
+Execution complete. Press any key to exit ...

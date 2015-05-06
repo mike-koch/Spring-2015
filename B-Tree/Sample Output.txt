@@ -1,0 +1,33 @@
+Starting dry run
+-----------------------
+Elapsed time: 5937 clock cycles.
+
+Starting AVL Tree
+-----------------------
+Height of tree: 18
+Total number of nodes: 38004
+Total number of unique words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 9952498
+Total number of disk writes: 1073309
+File size: 2736360 bytes
+Elapsed time: 102580 clock cycles.
+Excluding overhead, elapsed time: 96643 clock cycles.
+
+Starting BTree
+-----------------------
+Height of tree: 11
+Total number of nodes: 21810
+Total number of "available" keys: 65430
+Total number of used keys: 38004
+Load factor (used keys / available keys): 58.083448%
+Number of distinct words: 38004
+Total number of words (incl. duplicates): 883299
+Total number of disk reads: 8194604
+Total number of disk writes: 948694
+File size: 5583616 bytes
+Elapsed time: 100167 clock cycles.
+Excluding overhead, elapsed time: 94230 clock cycles.
+
+
+Finished. Press ENTER to exit.
